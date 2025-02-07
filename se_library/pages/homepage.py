@@ -59,10 +59,49 @@ def navbar() -> rx.Component:
         class_name="justify-center w-full items-center py-2",
     )
 
+def hero():
+    return rx.flex(
+        rx.flex(
+            rx.mobile_and_tablet(
+                rx.flex(
+                    rx.image(src="/static/numnan.png", placeholder="numnan", class_name="w-[19rem] h-[20rem]"),
+                    rx.text("Discover and Exchange Books", class_name="text-5xl font-Outfit font-semibold text-[#182449] w-4/5"),
+                    rx.text("A seamless way to discover, borrow and exchange books", class_name="text-lg font-Roboto text-[#182449] w-4/5 mt-2"),
+                    rx.flex(
+                        rx.button("Borrow", class_name="text-white text-lg rounded-full px-4 py-2 font-Roboto cursor-pointer w-2/5 h-[3rem] bg-[#1F2D5C]"),
+                        rx.button("Lend", class_name="text-[#1F2D5C] text-lg rounded-full px-4 py-2 font-Roboto cursor-pointer w-2/5 h-[3rem] bg-[#D6E1FF]"),
+                        class_name="w-3/5 mt-8 justify-evenly",
+                    ),
+                    class_name="flex-col w-full h-full items-center justify-center",
+                ),
+            ),
+            rx.desktop_only(
+                rx.flex(
+                    rx.flex(
+                        rx.text("Discover and Exchange Books", class_name="text-8xl font-Outfit font-semibold text-[#182449] w-4/5"),
+                        rx.text("A seamless way to discover, borrow and exchange books", class_name="text-2xl font-Roboto text-[#182449] w-4/5 mt-4"),
+                        rx.flex(
+                            rx.button("Borrow", class_name="text-white text-lg rounded-full px-4 py-2 font-Roboto cursor-pointer w-2/5 h-[3rem] bg-[#1F2D5C] hover:bg-[#25366E]"),
+                            rx.button("Lend", class_name="text-[#1F2D5C] text-lg rounded-full px-4 py-2 font-Roboto cursor-pointer w-2/5 h-[3rem] bg-[#D6E1FF] hover:bg-[#ABB4E1]"),
+                            class_name="w-3/5 mt-8 justify-evenly",
+                        ),
+                        class_name="w-3/5 h-2/5 items-start justify-center flex-col",
+                    ),
+                    rx.image(src="/static/numnan.png", placeholder="numnan", class_name="w-[30rem] h-[30rem]"),
+                    class_name="w-full h-full justify-between items-center mt-16",
+                ),
+            ),
+            class_name="w-10/12 h-[70%] items-center justify-center mt-5",
+        ),
+        class_name="w-full h-2/5 items-center justify-center flex-col",
+    ),
+        
+
 
 @rx.page(route="/")
 def homepage() -> rx.Component:
     return rx.flex(
         navbar(),
+        hero(),
         class_name="w-full h-full min-h-screen bg-[#FDFDFD] flex-col justify-start py-4",
     )
