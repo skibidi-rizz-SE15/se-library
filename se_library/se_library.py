@@ -4,6 +4,9 @@ import reflex as rx
 
 from rxconfig import config
 from .pages.homepage import homepage
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = rx.App(
     theme=rx.theme(

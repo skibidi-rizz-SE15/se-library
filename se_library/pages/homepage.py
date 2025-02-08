@@ -1,4 +1,5 @@
 import reflex as rx
+import os
 
 class HomePageState(rx.State):
     """homepage state."""
@@ -16,7 +17,7 @@ class GoogleMapsAPI(rx.NoSSRComponent):
     library = "@vis.gl/react-google-maps"
     tag = "APIProvider"
 
-    apiKey: rx.Var[str] = "AIzaSyBj-uc9iF6aKI67EaXaP7KuRYDW4PXBviA"
+    apiKey: rx.Var[str] = os.getenv("GOOGLE_MAPS_API")
 
 class Marker(rx.NoSSRComponent):
     library = "@vis.gl/react-google-maps"
