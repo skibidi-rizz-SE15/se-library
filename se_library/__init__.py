@@ -1,3 +1,5 @@
-from .pages import homepage
+from .pages import homepage, login
 
-__all__ = ["homepage"]
+__all__ = [
+    "homepage"
+    "login"]

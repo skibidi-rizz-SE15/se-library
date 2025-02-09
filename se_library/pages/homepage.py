@@ -68,7 +68,8 @@ def navbar() -> rx.Component:
                                 rx.flex(
                                     rx.button("Login",
                                             class_name="text-white rounded-md font-Roboto w-2/5 cursor-pointer",
-                                            color_scheme="indigo"),
+                                            color_scheme="indigo",
+                                            on_click=rx.redirect("/login")),
                                     rx.button("Close",
                                             class_name="font-Roboto cursor-pointer w-1/5",
                                             color_scheme="red",
@@ -97,7 +98,8 @@ def navbar() -> rx.Component:
                             on_click=rx.scroll_to("contact")),
                     rx.button("Login",
                             class_name="text-white border border-black rounded-md px-2 py-1 font-Roboto cursor-pointer",
-                            color_scheme="indigo"),
+                            color_scheme="indigo",
+                            on_click=rx.redirect("/login")),
                     class_name="justify-between w-full items-center px-4",
                 ),
                 class_name="w-2/5"
@@ -418,8 +420,7 @@ def footer() -> rx.Component:
     )
 
 
-
-@rx.page(route="/")
+@rx.page(route="/", title="SELibrary")
 def homepage() -> rx.Component:
     return rx.flex(
         navbar(),
