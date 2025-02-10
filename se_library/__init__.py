@@ -1,7 +1,9 @@
 from . import models
-from .pages import homepage, login
+from .pages import explore, homepage, login
 
 __all__ = [
     "homepage"
-    "login"]
+    "login"
+    "explore"
+]
 
