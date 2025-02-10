@@ -34,6 +34,7 @@ pydantic==2.10.6
 pydantic_core==2.27.2
 Pygments==2.19.1
 pyproject_hooks==1.2.0
+python-dotenv==1.0.1
 python-engineio==4.11.2
 python-multipart==0.0.20
 python-socketio==5.12.1
