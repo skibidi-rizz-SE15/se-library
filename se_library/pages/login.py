@@ -13,6 +13,7 @@ class LoginForm(rx.State):
         self.password = ""
         self.name = ""
         self.is_login_form = not self.is_login_form
+        print(self.is_login_form)
         yield
 
     @rx.event
@@ -64,7 +65,6 @@ def login_form() -> rx.Component:
             class_name="w-4/5 h-2/3 bg-[#FDFDFD] rounded-lg shadow-lg p-4",
         ),
         rx.desktop_only(
-            LoginForm.is_login_form,
             rx.flex(
                 rx.text("SELibrary", class_name="text-5xl font-semibold text-[#253974]"),
                 rx.vstack(
