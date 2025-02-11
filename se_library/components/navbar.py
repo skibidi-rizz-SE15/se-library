@@ -24,6 +24,15 @@ def search_menu() -> rx.Component:
         class_name="w-full h-fit items-center justify-center space-x-2"
     )
 
+def search_dialog() -> rx.Component:
+    return rx.dialog.root(
+        rx.dialog.trigger(search_menu()),
+        rx.dialog.content(
+            rx.input(class_name="w-full h-1/4", placeholder="Search for books"),
+            class_name="w-full h-1/4"
+        ),
+    )
+
 def profile_menu() -> rx.Component:
     return rx.flex(
         rx.icon("user", color="#737373", size=16),
@@ -53,7 +62,7 @@ def logout_menu() -> rx.Component:
 
 def menu_section() -> rx.Component:
     return rx.flex(
-        search_menu(),
+        search_dialog(),
         profile_menu(),
         add_book_menu(),
         class_name="w-full h-1/4 p-4 flex-col justify-between items-center"
