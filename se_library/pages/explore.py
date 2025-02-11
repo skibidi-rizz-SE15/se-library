@@ -1,7 +1,9 @@
 import reflex as rx
 
+from ..components.navbar import navbar
+
 def explore() -> rx.Component:
     return rx.flex(
-        rx.text("Coming Soon", class_name="text-5xl font-semibold text-[#253974]"),
-        class_name="w-full h-full items-center justify-center flex-col",
+        navbar(),
+        class_name="flex flex-col h-screen w-screen bg-neutral-300",
     )

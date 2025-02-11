@@ -80,7 +80,7 @@ def login_form() -> rx.Component:
                         rx.text("Password", rx.text.span("*", color="red"), class_name="text-lg font-semibold text-[#253974] mt-4"),
                         rx.input(type="password", class_name="w-full h-10 border-2 border-[#253974] rounded-lg p-2", value=LoginForm.password, on_change=LoginForm.set_password),
                         rx.box(
-                            rx.button("Register", class_name="px-8 py-2 bg-[#253974] text-white rounded-lg"),
+                            rx.button("Register", class_name="px-8 py-2 bg-[#253974] text-white rounded-lg", on_click=LoginForm.handle_register),
                             rx.text("have an account?", rx.text.strong(" Sign in", class_name="italic", on_click=LoginForm.handle_change_login_to_register), class_name="text-sm text-neutral-500 mt-2"),
                             class_name="mt-8 mx-auto flex flex-col items-center justify-center",
                         ),
@@ -96,7 +96,7 @@ def login_form() -> rx.Component:
                         rx.text("Password", rx.text.span("*", color="red"), class_name="text-lg font-semibold text-[#253974] mt-4"),
                         rx.input(type="password", class_name="w-full h-10 border-2 border-[#253974] rounded-lg p-2", value=LoginForm.password, on_change=LoginForm.set_password),
                         rx.box(
-                            rx.button("Login", class_name="px-8 py-2 bg-[#253974] text-white rounded-lg"),
+                            rx.button("Login", class_name="px-8 py-2 bg-[#253974] text-white rounded-lg", on_click=LoginForm.handle_login),
                             rx.text("Don't have an account?", rx.text.strong(" Sign up", class_name="italic", on_click=LoginForm.handle_change_login_to_register), class_name="text-sm text-neutral-500 mt-2"),
                             class_name="mt-8 mx-auto flex flex-col items-center justify-center",
                         ),
