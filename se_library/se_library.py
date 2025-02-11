@@ -5,7 +5,9 @@ import reflex as rx
 from rxconfig import config
 from .pages.homepage import homepage
 from .pages.login import login_page
+from .pages.explore import explore
 from dotenv import load_dotenv
+from .state.auth import AuthState
 
 load_dotenv()
 
@@ -23,3 +25,5 @@ app = rx.App(
 )
 app.add_page(homepage)
 app.add_page(login_page)
+
+app.add_page(explore, on_load=AuthState.check_token)

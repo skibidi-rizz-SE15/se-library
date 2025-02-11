@@ -3,11 +3,21 @@ import reflex as rx
 from typing import Optional, List
 from enum import Enum
 from datetime import datetime
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class User(rx.Model, table=True):
     name: str = Field(unique=True, nullable=False)
     email: str = Field(unique=True, index=True, nullable=False)
     password: str = Field(nullable=False)
+
+    @classmethod
+    def hash_password(cls, password: str) -> str:
+        return pwd_context.hash(password)
+
+    def verify_password(self, plain_password: str) -> bool:
+        return pwd_context.verify(plain_password, self.password)
 
 class BookAuthorLink(rx.Model, table=True):
     book_id: int = Field(foreign_key="book.id")
