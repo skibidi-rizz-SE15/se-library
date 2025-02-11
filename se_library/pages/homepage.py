@@ -97,14 +97,13 @@ def navbar() -> rx.Component:
                             class_name="text-black font-Robot cursor-pointer",
                             on_click=rx.scroll_to("contact")),
                     rx.button("Login",
-                            class_name="text-white border border-black rounded-md px-2 py-1 font-Roboto cursor-pointer",
+                            class_name="text-white border border-black rounded-md px-6 py-4 ml-10 font-Roboto cursor-pointer",
                             color_scheme="indigo",
                             on_click=rx.redirect("/login")),
-                    class_name="justify-between w-full items-center px-4",
+                    class_name="gap-10 w-full items-center px-4",
                 ),
-                class_name="w-2/5"
             ),
-        class_name="justify-between w-10/12 items-center",
+            class_name="justify-between w-10/12 items-center",
         ),
         class_name="justify-center w-full items-center py-2 mt-4",
     )
@@ -115,7 +114,7 @@ def hero():
             rx.mobile_only(
                 rx.flex(
                     rx.image(src="/static/numnan.png", placeholder="numnan", class_name="w-[12rem] h-[12rem]"),
-                    rx.text("Discover and Exchange Books", class_name="text-5xl font-Outfit font-semibold text-[#182449] w-4/5"),
+                    rx.text("Discover and Exchange Books", class_name="break-normal text-5xl font-Outfit font-semibold text-[#182449] w-4/5"),
                     rx.text("A seamless way to discover, borrow and exchange books", class_name="text-lg font-Roboto text-[#182449] w-4/5 mt-2"),
                     rx.flex(
                         rx.button("Borrow", class_name="text-white text-lg rounded-full px-4 py-2 font-Roboto cursor-pointer w-2/5 h-[3rem] bg-[#1F2D5C]"),
