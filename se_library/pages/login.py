@@ -1,5 +1,6 @@
 import reflex as rx
 from ..models import User
+from ..state.auth import AuthState
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timedelta
@@ -52,9 +53,8 @@ class LoginForm(rx.State):
                     return
                 
                 access_token = self.create_access_token(user.id)
-                
-                yield rx.local_storage.set("access_token", access_token)
-                yield rx.local_storage.set("user_id", str(user.id))
+                # Save token in local storage
+                yield AuthState.set_token(access_token)
                 
                 # Clear form and redirect
                 self.email = ""
@@ -96,8 +96,8 @@ class LoginForm(rx.State):
                 session.refresh(new_user)
 
                 access_token = self.create_access_token(new_user.id)
-                yield rx.local_storage.set("access_token", access_token)
-                yield rx.local_storage.set("user_id", str(new_user.id))
+                # Save token in local storage
+                yield AuthState.set_token(access_token)
 
                 self.email = ""
                 self.password = ""
