@@ -13,7 +13,6 @@ class LoginForm(rx.State):
         self.password = ""
         self.name = ""
         self.is_login_form = not self.is_login_form
-        print(self.is_login_form)
         yield
 
     @rx.event
@@ -39,7 +38,6 @@ def login_form() -> rx.Component:
                             rx.text("Username", rx.text.span("*", color="red"), class_name="text-lg font-semibold text-[#253974]"),
                             rx.input(class_name="w-full h-10 border-2 border-[#253974] rounded-lg p-2", value=LoginForm.name, on_change=LoginForm.set_name),
                         ),
-                        rx.fragment(),
                     ),
                     rx.text("Email", rx.text.span("*", color="red"), class_name="text-lg font-semibold text-[#253974]"),
                     rx.input(class_name="w-full h-10 border-2 border-[#253974] rounded-lg p-2", value=LoginForm.email, on_change=LoginForm.set_email),
@@ -74,8 +72,7 @@ def login_form() -> rx.Component:
                         rx.fragment(
                             rx.text("Username", rx.text.span("*", color="red"), class_name="text-lg font-semibold text-[#253974]"),
                             rx.input(class_name="w-full h-10 border-2 border-[#253974] rounded-lg p-2", value=LoginForm.name, on_change=LoginForm.set_name),
-                        ),
-                        rx.fragment(),
+                        ), 
                     ),
                     rx.text("Email", rx.text.span("*", color="red"), class_name="text-lg font-semibold text-[#253974]"),
                     rx.input(class_name="w-full h-10 border-2 border-[#253974] rounded-lg p-2", value=LoginForm.email, on_change=LoginForm.set_email),
