@@ -114,7 +114,7 @@ def hero():
             rx.mobile_only(
                 rx.flex(
                     rx.image(src="/static/numnan.png", placeholder="numnan", class_name="w-[12rem] h-[12rem]"),
-                    rx.text("Discover and Exchange Books", class_name="break-normal text-5xl font-Outfit font-semibold text-[#182449] w-4/5"),
+                    rx.text("Discover and Exchange Books", class_name="text-5xl font-Outfit font-semibold text-[#182449] w-4/5"),
                     rx.text("A seamless way to discover, borrow and exchange books", class_name="text-lg font-Roboto text-[#182449] w-4/5 mt-2"),
                     rx.flex(
                         rx.button("Borrow", class_name="text-white text-lg rounded-full px-4 py-2 font-Roboto cursor-pointer w-2/5 h-[3rem] bg-[#1F2D5C]"),
@@ -140,7 +140,7 @@ def hero():
             rx.desktop_only(
                 rx.flex(
                     rx.flex(
-                        rx.text("Discover and Exchange Books", class_name="text-8xl font-Outfit font-semibold text-[#182449] w-4/5"),
+                        rx.text("Discover and Exchange Books", class_name="break-normal text-8xl font-Outfit font-semibold text-[#182449] w-4/5"),
                         rx.text("A seamless way to discover, borrow and exchange books", class_name="text-2xl font-Roboto text-[#182449] w-4/5 mt-4"),
                         rx.flex(
                             rx.button("Borrow", class_name="text-white text-lg rounded-full px-4 py-2 font-Roboto cursor-pointer w-2/5 h-[3rem] bg-[#1F2D5C] hover:bg-[#25366E]"),
