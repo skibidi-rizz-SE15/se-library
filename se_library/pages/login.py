@@ -1,4 +1,13 @@
 import reflex as rx
+from ..models import User
+from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
+from datetime import datetime, timedelta
+import jwt
+
+SECRET_KEY = "your-secret-key"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 class LoginForm(rx.State):
     email: str = ""
@@ -6,24 +15,103 @@ class LoginForm(rx.State):
     name: str = ""
 
     is_login_form: bool = True
+    error_message: str = ""
+    
+    def create_access_token(self, user_id: int) -> str:
+        expires_delta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.now() + expires_delta
+        
+        to_encode = {
+            "sub": str(user_id),
+            "exp": expire
+        }
+        return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
     @rx.event
     def handle_switch_login_and_register(self):
         self.email = ""
         self.password = ""
         self.name = ""
+        self.error_message = ""
         self.is_login_form = not self.is_login_form
         yield
 
     @rx.event
-    def handle_login(self):
-        print(f"Email: {self.email}, Password: {self.password}")
-        return rx.redirect("/explore")
-    
+    async def handle_login(self):
+        """Handle user login."""
+        try:
+            with rx.session() as session:
+                user = session.exec(
+                    User.select().where(
+                        User.email == self.email
+                    )
+                ).first()
+                
+                if not user or not user.verify_password(self.password):
+                    self.error_message = "Invalid email or password"
+                    return
+                
+                access_token = self.create_access_token(user.id)
+                
+                yield rx.local_storage.set("access_token", access_token)
+                yield rx.local_storage.set("user_id", str(user.id))
+                
+                # Clear form and redirect
+                self.email = ""
+                self.password = ""
+                self.error_message = ""
+                yield rx.redirect("/explore")
+                
+        except Exception as e:
+            self.error_message = "An error occurred during login"
+            print(f"Login error: {str(e)}")
+
     @rx.event
-    def handle_register(self):
-        print(f"Name: {self.name}, Email: {self.email}, Password: {self.password}")
-        return rx.redirect("/explore")
+    async def handle_register(self):
+        """Handle user registration."""
+        try:
+            if not all([self.name, self.email, self.password]):
+                self.error_message = "All fields are required"
+                return
+
+            with rx.session() as session:
+                existing_user = session.exec(
+                    User.select().where(
+                        User.email == self.email
+                    )
+                ).first()
+
+                if existing_user:
+                    self.error_message = "Email already registered"
+                    return
+
+                new_user = User(
+                    name=self.name,
+                    email=self.email,
+                    password=User.hash_password(self.password)
+                )
+                
+                session.add(new_user)
+                session.commit()
+                session.refresh(new_user)
+
+                access_token = self.create_access_token(new_user.id)
+                yield rx.local_storage.set("access_token", access_token)
+                yield rx.local_storage.set("user_id", str(new_user.id))
+
+                self.email = ""
+                self.password = ""
+                self.name = ""
+                self.error_message = ""
+                yield rx.redirect("/explore")
+
+        except IntegrityError:
+            self.error_message = "Email already registered"
+            session.rollback()
+        except Exception as e:
+            self.error_message = "An error occurred during registration"
+            print(f"Registration error: {str(e)}")
+            session.rollback()
 
 def login_form() -> rx.Component:
     return rx.flex(
@@ -81,12 +169,12 @@ def login_form() -> rx.Component:
                     rx.cond(
                         LoginForm.is_login_form,
                         rx.box(
-                            rx.button("Login", class_name="px-8 py-2 bg-[#253974] text-white rounded-lg"),
+                            rx.button("Login", class_name="px-8 py-2 bg-[#253974] text-white rounded-lg", on_click=LoginForm.handle_login),
                             rx.text("Don't have an account?", rx.text.strong(" Sign up", class_name="italic", on_click=LoginForm.handle_switch_login_and_register), class_name="text-sm text-neutral-500 mt-2"),
                             class_name="mt-8 mx-auto flex flex-col items-center justify-center",
                         ),
                         rx.box(
-                            rx.button("Register", class_name="px-8 py-2 bg-[#253974] text-white rounded-lg"),
+                            rx.button("Register", class_name="px-8 py-2 bg-[#253974] text-white rounded-lg", on_click=LoginForm.handle_register),
                             rx.text("Already have an account?", rx.text.strong(" Sign in", class_name="italic", on_click=LoginForm.handle_switch_login_and_register), class_name="text-sm text-neutral-500 mt-2"),
                             class_name="mt-8 mx-auto flex flex-col items-center justify-center",
                         ),
