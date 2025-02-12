@@ -1,6 +1,7 @@
 import reflex as rx
 
 from ..components.navbar import navbar_desktop, navbar_mobile_tablet
+from ..components.book_library import book_library
 
 @rx.page("/explore", title="Explore")
 def explore() -> rx.Component:
@@ -14,6 +15,7 @@ def explore() -> rx.Component:
         rx.desktop_only(
             rx.flex(
                 navbar_desktop(),
+                book_library(),
                 class_name="flex flex-col h-screen w-screen bg-neutral-300",
             ),
         ),

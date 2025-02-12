@@ -1,6 +1,5 @@
 import reflex as rx
 
-
 def profile_section() -> rx.Component:
     return rx.flex(
         rx.flex(rx.icon("circle-user-round", color="black", size=50), class_name="w-full justify-center"),
@@ -96,13 +95,13 @@ def profile_menu_desktop() -> rx.Component:
         )
     )
 
-def navbar_desktop() -> rx.Component:
+def navbar_desktop(class_name: str="") -> rx.Component:
     return rx.flex(
         rx.text("SELibrary", class_name="mr-auto text-3xl font-semibold text-[#FDFDFD] font-Outfit"),
         searchbar(),
         rx.icon("book-copy", color="#FDFDFD", size=24, class_name="flex cursor-pointer"),
         profile_menu_desktop(),
-        class_name="w-full items-center justify-center drop-shadow-lg px-8 py-2 gap-6 rounded-b-md bg-[#253974]"
+        class_name=f"w-full items-center justify-center drop-shadow-lg px-8 py-2 gap-6 rounded-b-md bg-[#253974] {class_name}"
     )
             
 def navbar_mobile_tablet() -> rx.Component:
