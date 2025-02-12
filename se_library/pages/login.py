@@ -128,9 +128,9 @@ def login_form() -> rx.Component:
                         ),
                     ),
                     rx.text("Email", rx.text.span("*", color="red"), class_name="text-lg font-semibold text-[#253974]"),
-                    rx.input(class_name="w-full h-10 border-2 border-[#253974] rounded-lg p-2", value=LoginForm.email, on_change=LoginForm.set_email),
+                    rx.input(class_name="w-full h-10 border-2 border-[#253974] rounded-lg p-2", type="email", value=LoginForm.email, on_change=LoginForm.set_email),
                     rx.text("Password", rx.text.span("*", color="red"), class_name="text-lg font-semibold text-[#253974]"),
-                    rx.input(type="password", class_name="w-full h-10 border-2 border-[#253974] rounded-lg p-2", value=LoginForm.password, on_change=LoginForm.set_password),
+                    rx.input(class_name="w-full h-10 border-2 border-[#253974] rounded-lg p-2", type="password", value=LoginForm.password, on_change=LoginForm.set_password),
                     rx.cond(
                         LoginForm.is_login_form,
                         rx.box(
@@ -163,9 +163,9 @@ def login_form() -> rx.Component:
                         ), 
                     ),
                     rx.text("Email", rx.text.span("*", color="red"), class_name="text-lg font-semibold text-[#253974]"),
-                    rx.input(class_name="w-full h-10 border-2 border-[#253974] rounded-lg p-2", value=LoginForm.email, on_change=LoginForm.set_email),
+                    rx.input(class_name="w-full h-10 border-2 border-[#253974] rounded-lg p-2", type="email", value=LoginForm.email, on_change=LoginForm.set_email),
                     rx.text("Password", rx.text.span("*", color="red"), class_name="text-lg font-semibold text-[#253974] mt-4"),
-                    rx.input(type="password", class_name="w-full h-10 border-2 border-[#253974] rounded-lg p-2", value=LoginForm.password, on_change=LoginForm.set_password),
+                    rx.input(class_name="w-full h-10 border-2 border-[#253974] rounded-lg p-2", type="password", value=LoginForm.password, on_change=LoginForm.set_password),
                     rx.cond(
                         LoginForm.is_login_form,
                         rx.box(
