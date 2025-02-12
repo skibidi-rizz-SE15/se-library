@@ -59,7 +59,6 @@ def logout_menu() -> rx.Component:
         class_name="w-full h-1/4 items-center p-1"        
     )
 
-
 def menu_section() -> rx.Component:
     return rx.flex(
         search_dialog(),
@@ -81,14 +80,14 @@ def drawer_content() -> rx.Component:
 def searchbar() -> rx.Component:
     return rx.flex(
         rx.icon("search", color="#FDFDFD", size=20),
-        rx.input(class_name="w-1/2 h-[60%]", placeholder="Search for books"),
-        class_name="w-full h-full items-center space-x-2 justify-center"
+        rx.input(class_name="w-[15rem]", placeholder="Search for books"),
+        class_name="items-center gap-2 justify-center"
     )
 
 def profile_menu_desktop() -> rx.Component:
     return rx.menu.root(
         rx.menu.trigger(
-            rx.icon("circle-user-round", color="#FDFDFD", size=24, class_name="cursor-pointer"),
+            rx.icon("circle-user-round", color="#FDFDFD", size=24, class_name="flex cursor-pointer"),
         ),
         rx.menu.content(
             rx.menu.item("Profile"),
@@ -97,45 +96,28 @@ def profile_menu_desktop() -> rx.Component:
         )
     )
 
-def navbar() -> rx.Component:
+def navbar_desktop() -> rx.Component:
     return rx.flex(
-        rx.mobile_and_tablet(
-            rx.flex(
-                rx.text("SELibrary", class_name="text-3xl font-semibold text-[#FDFDFD] font-Outfit"),
-                rx.drawer.root(
-                    rx.drawer.trigger(rx.icon("menu", color="white", size=32)),
-                    rx.drawer.overlay(z_index="1"),
-                    rx.drawer.portal(
-                        rx.drawer.content(
-                            drawer_content(),
-                            class_name="w-[65%] bg-neutral-200 h-full",
-                        ),
-                    ),
-                    direction="left"
+        rx.text("SELibrary", class_name="mr-auto text-3xl font-semibold text-[#FDFDFD] font-Outfit"),
+        searchbar(),
+        rx.icon("book-copy", color="#FDFDFD", size=24, class_name="flex cursor-pointer"),
+        profile_menu_desktop(),
+        class_name="w-full items-center justify-center drop-shadow-lg px-8 py-2 gap-6 rounded-b-md bg-[#253974]"
+    )
+            
+def navbar_mobile_tablet() -> rx.Component:
+    return rx.flex(
+        rx.text("SELibrary", class_name="text-3xl font-semibold text-[#FDFDFD] font-Outfit"),
+        rx.drawer.root(
+            rx.drawer.trigger(rx.icon("menu", color="white", size=32)),
+            rx.drawer.overlay(z_index="1"),
+            rx.drawer.portal(
+                rx.drawer.content(
+                    drawer_content(),
+                    class_name="w-[65%] bg-neutral-200 h-full",
                 ),
-                class_name="w-full h-full items-center justify-between p-2"
             ),
-            class_name="w-full h-full"
+            direction="left"
         ),
-        rx.desktop_only(
-            rx.flex(
-                rx.flex(
-                    rx.text("SELibrary", class_name="text-3xl font-semibold text-[#FDFDFD] font-Outfit"),
-                    class_name="w-1/4 justify-center items-center"
-                ),
-                rx.flex(
-                    searchbar(),
-                    class_name="w-1/2 h-full items-center"
-                ),
-                rx.flex(
-                    rx.icon("book-copy", color="#FDFDFD", size=24, class_name="cursor-pointer"),
-                    profile_menu_desktop(),
-                    class_name="w-1/4 h-full items-center justify-around"
-                ),
-                class_name="w-full h-full"
-            ),
-            class_name="w-full h-full"
-        ),
-        
-        class_name="w-full h-[8%] items-center drop-shadow-lg p-2 rounded-b-md bg-[#253974]",
+        class_name="w-full h-fit items-center justify-between drop-shadow-lg p-2 rounded-b-md bg-[#253974]"
     )
