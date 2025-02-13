@@ -1,7 +1,7 @@
 import reflex as rx
 
 class AuthState(rx.State):
-    token: str = rx.LocalStorage("")
+    token: str = rx.LocalStorage(name="token")
     
     @rx.event
     def check_token(self):
