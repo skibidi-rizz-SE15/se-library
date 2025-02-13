@@ -6,6 +6,7 @@ from rxconfig import config
 from .pages.homepage import homepage
 from .pages.login import login_page
 from .pages.explore import explore
+from .pages.profile import profile
 from dotenv import load_dotenv
 from .state.auth import AuthState
 
@@ -27,3 +28,4 @@ app.add_page(homepage)
 app.add_page(login_page)
 
 app.add_page(explore, on_load=AuthState.check_token)
+app.add_page(profile, on_load=AuthState.check_token)
