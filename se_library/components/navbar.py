@@ -89,15 +89,19 @@ def profile_menu_desktop() -> rx.Component:
             rx.icon("circle-user-round", color="#FDFDFD", size=24, class_name="flex cursor-pointer"),
         ),
         rx.menu.content(
-            rx.menu.item("Profile"),
+            rx.menu.item("Profile", on_click=lambda: rx.redirect("/profile")),
             rx.separator(),
-            rx.menu.item("Logout", color_scheme="red"),
+            rx.menu.item("Logout", on_click=rx.remove_local_storage("token"), color_scheme="red"),
         )
     )
 
 def navbar_desktop(class_name: str="") -> rx.Component:
     return rx.flex(
-        rx.text("SELibrary", class_name="mr-auto text-3xl font-semibold text-[#FDFDFD] font-Outfit"),
+        rx.text(
+            "SELibrary", 
+            on_click=lambda: rx.redirect("/explore"), 
+            class_name="mr-auto text-3xl font-semibold text-[#FDFDFD] font-Outfit cursor-pointer"
+        ),
         searchbar(),
         rx.icon("book-copy", color="#FDFDFD", size=24, class_name="flex cursor-pointer"),
         profile_menu_desktop(),
