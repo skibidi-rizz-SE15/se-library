@@ -53,10 +53,9 @@ class LoginForm(rx.State):
                     return
                 
                 access_token = self.create_access_token(user.id)
-                # Save token in local storage
+
                 yield AuthState.set_token(access_token)
                 
-                # Clear form and redirect
                 self.email = ""
                 self.password = ""
                 self.error_message = ""
@@ -96,7 +95,7 @@ class LoginForm(rx.State):
                 session.refresh(new_user)
 
                 access_token = self.create_access_token(new_user.id)
-                # Save token in local storage
+
                 yield AuthState.set_token(access_token)
 
                 self.email = ""
@@ -169,13 +168,13 @@ def login_form() -> rx.Component:
                     rx.cond(
                         LoginForm.is_login_form,
                         rx.box(
-                            rx.button("Login", class_name="px-8 py-2 bg-[#253974] text-white rounded-lg", on_click=LoginForm.handle_login),
-                            rx.text("Don't have an account?", rx.text.strong(" Sign up", class_name="italic", on_click=LoginForm.handle_switch_login_and_register), class_name="text-sm text-neutral-500 mt-2"),
+                            rx.button("Login", class_name="px-8 py-2 bg-[#253974] text-white rounded-lg cursor-pointer", on_click=LoginForm.handle_login),
+                            rx.text("Don't have an account?", rx.text.strong(" Sign up", class_name="italic cursor-pointer", on_click=LoginForm.handle_switch_login_and_register), class_name="text-sm text-neutral-500 mt-2"),
                             class_name="mt-8 mx-auto flex flex-col items-center justify-center",
                         ),
                         rx.box(
-                            rx.button("Register", class_name="px-8 py-2 bg-[#253974] text-white rounded-lg", on_click=LoginForm.handle_register),
-                            rx.text("Already have an account?", rx.text.strong(" Sign in", class_name="italic", on_click=LoginForm.handle_switch_login_and_register), class_name="text-sm text-neutral-500 mt-2"),
+                            rx.button("Register", class_name="px-8 py-2 bg-[#253974] text-white rounded-lg cursor-pointer", on_click=LoginForm.handle_register),
+                            rx.text("Already have an account?", rx.text.strong(" Sign in", class_name="italic cursor-pointer", on_click=LoginForm.handle_switch_login_and_register), class_name="text-sm text-neutral-500 mt-2"),
                             class_name="mt-8 mx-auto flex flex-col items-center justify-center",
                         ),
                     ),

@@ -89,9 +89,9 @@ def profile_menu_desktop() -> rx.Component:
             rx.icon("circle-user-round", color="#FDFDFD", size=24, class_name="flex cursor-pointer"),
         ),
         rx.menu.content(
-            rx.menu.item("Profile", on_click=lambda: rx.redirect("/profile")),
+            rx.menu.item("Profile", on_click=lambda: rx.redirect("/profile"), class_name="cursor-pointer"),
             rx.separator(),
-            rx.menu.item("Logout", on_click=rx.remove_local_storage("token"), color_scheme="red"),
+            rx.menu.item("Logout", on_click=rx.remove_local_storage("token"), color_scheme="red", class_name="cursor-pointer"),
         )
     )
 

@@ -21,8 +21,8 @@ def profile_dashboard() -> rx.Component:
         ),
         rx.tabs.root(
             rx.tabs.list(
-                rx.tabs.trigger("Borrow List", value="borrow_list", class_name="px-4 py-2 font-semibold"),
-                rx.tabs.trigger("Lent Books", value="lent_books", class_name="px-4 py-2 font-semibold"),
+                rx.tabs.trigger("Borrow List", value="borrow_list", class_name="px-4 py-2 font-semibold cursor-pointer"),
+                rx.tabs.trigger("Lent Books", value="lent_books", class_name="px-4 py-2 font-semibold cursor-pointer"),
                 class_name="border-b border-gray-300"
             ),
             rx.tabs.content(

@@ -34,7 +34,7 @@ def genre_dropdown() -> rx.Component:
             ["All Books", "Python Books", "Rust Books"],  
             placeholder="Select a genre",  
             default_value="All Books",
-            class_name="w-full p-2 border rounded-md"
+            class_name="w-full p-2 border rounded-md cursor-pointer"
         ),
         class_name="items-center gap-2"
     )
