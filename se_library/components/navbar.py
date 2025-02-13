@@ -95,6 +95,18 @@ def profile_menu_desktop() -> rx.Component:
         )
     )
 
+def book_menu_desktop() -> rx.Component:
+    return rx.menu.root(
+        rx.menu.trigger(
+            rx.icon("book-copy", color="#FDFDFD", size=24, class_name="flex cursor-pointer"),
+        ),
+        rx.menu.content(
+            rx.menu.item("Borrow a book", class_name="cursor-pointer"),
+            rx.separator(),
+            rx.menu.item("Lend a book", class_name="cursor-pointer"),
+        )
+    )
+
 def navbar_desktop(class_name: str="") -> rx.Component:
     return rx.flex(
         rx.text(
@@ -103,7 +115,7 @@ def navbar_desktop(class_name: str="") -> rx.Component:
             class_name="mr-auto text-3xl font-semibold text-[#FDFDFD] font-Outfit cursor-pointer"
         ),
         searchbar(),
-        rx.icon("book-copy", color="#FDFDFD", size=24, class_name="flex cursor-pointer"),
+        book_menu_desktop(),
         profile_menu_desktop(),
         class_name=f"w-full items-center justify-center drop-shadow-lg px-8 py-2 gap-6 rounded-b-md bg-[#253974] {class_name}"
     )
