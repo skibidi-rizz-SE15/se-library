@@ -16,22 +16,6 @@ def profile_section() -> rx.Component:
         class_name="w-full h-1/4 p-4 flex-col"
     )
 
-def search_menu() -> rx.Component:
-    return rx.flex(
-        rx.icon("search", color="#737373", size=16),
-        rx.text("Search", class_name="text-lg text-neutral-500 font-Roboto"),
-        class_name="w-full h-fit items-center justify-center space-x-2"
-    )
-
-def search_dialog() -> rx.Component:
-    return rx.dialog.root(
-        rx.dialog.trigger(search_menu()),
-        rx.dialog.content(
-            rx.input(class_name="w-full h-1/4", placeholder="Search for books"),
-            class_name="w-full h-1/4"
-        ),
-    )
-
 def profile_menu() -> rx.Component:
     return rx.flex(
         rx.icon("user", color="#737373", size=16),
@@ -60,10 +44,10 @@ def logout_menu() -> rx.Component:
 
 def menu_section() -> rx.Component:
     return rx.flex(
-        search_dialog(),
         profile_menu(),
+        rx.separator(),
         add_book_menu(),
-        class_name="w-full h-1/4 p-4 flex-col justify-between items-center"
+        class_name="w-full h-1/4 p-4 flex-col justify-evenly items-center"
     )
 
 def drawer_content() -> rx.Component:
@@ -80,7 +64,7 @@ def searchbar() -> rx.Component:
     return rx.flex(
         rx.icon("search", color="#FDFDFD", size=20),
         rx.input(class_name="w-[15rem]", placeholder="Search for books"),
-        class_name="items-center gap-2 justify-center"
+        class_name="items-center gap-2 justify-center",
     )
 
 def profile_menu_desktop() -> rx.Component:
@@ -97,15 +81,15 @@ def profile_menu_desktop() -> rx.Component:
 
 def book_menu_desktop() -> rx.Component:
     return rx.menu.root(
-        rx.menu.trigger(
-            rx.icon("book-copy", color="#FDFDFD", size=24, class_name="flex cursor-pointer"),
-        ),
-        rx.menu.content(
-            rx.menu.item("Borrow a book", class_name="cursor-pointer"),
-            rx.separator(),
-            rx.menu.item("Lend a book", class_name="cursor-pointer"),
+            rx.menu.trigger(
+                rx.icon("book-copy", color="#FDFDFD", size=24, class_name="flex cursor-pointer"),
+            ),
+            rx.menu.content(
+                rx.menu.item("Borrow a book", class_name="cursor-pointer"),
+                rx.separator(),
+                rx.menu.item("Lend a book", class_name="cursor-pointer"),
+            ),
         )
-    )
 
 def navbar_desktop(class_name: str="") -> rx.Component:
     return rx.flex(
@@ -114,10 +98,9 @@ def navbar_desktop(class_name: str="") -> rx.Component:
             on_click=lambda: rx.redirect("/explore"), 
             class_name="mr-auto text-3xl font-semibold text-[#FDFDFD] font-Outfit cursor-pointer"
         ),
-        searchbar(),
         book_menu_desktop(),
         profile_menu_desktop(),
-        class_name=f"w-full items-center justify-center drop-shadow-lg px-8 py-2 gap-6 rounded-b-md bg-[#253974] {class_name}"
+        class_name=f"w-full items-center justify-center drop-shadow-lg px-8 py-2 gap-6 rounded-b-md bg-[#3358D4] {class_name}"
     )
             
 def navbar_mobile_tablet() -> rx.Component:
@@ -129,10 +112,10 @@ def navbar_mobile_tablet() -> rx.Component:
             rx.drawer.portal(
                 rx.drawer.content(
                     drawer_content(),
-                    class_name="w-[65%] bg-neutral-200 h-full",
+                    class_name="w-[65%] bg-neutral-100 h-full",
                 ),
             ),
-            direction="left"
+            direction="left",
         ),
-        class_name="w-full h-fit items-center justify-between drop-shadow-lg p-2 rounded-b-md bg-[#253974]"
+        class_name="w-full h-fit items-center justify-between drop-shadow-lg p-2 rounded-b-md bg-[#3358D4]"
     )
