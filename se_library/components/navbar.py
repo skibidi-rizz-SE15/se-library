@@ -73,7 +73,7 @@ def profile_menu_desktop() -> rx.Component:
             rx.icon("circle-user-round", color="#FDFDFD", size=24, class_name="flex cursor-pointer"),
         ),
         rx.menu.content(
-            rx.menu.item("Profile", on_click=lambda: rx.redirect("/profile"), class_name="cursor-pointer"),
+            rx.menu.item("Profile", on_click=rx.redirect("/profile"), class_name="cursor-pointer"),
             rx.separator(),
             rx.menu.item("Logout", on_click=rx.remove_local_storage("token"), color_scheme="red", class_name="cursor-pointer"),
         )
@@ -87,7 +87,7 @@ def book_menu_desktop() -> rx.Component:
             rx.menu.content(
                 rx.menu.item("Borrow a book", class_name="cursor-pointer"),
                 rx.separator(),
-                rx.menu.item("Lend a book", class_name="cursor-pointer"),
+                rx.menu.item("Lend a book", on_click=rx.redirect("/lend"), class_name="cursor-pointer"),
             ),
         )
 
@@ -95,7 +95,7 @@ def navbar_desktop(class_name: str="") -> rx.Component:
     return rx.flex(
         rx.text(
             "SELibrary", 
-            on_click=lambda: rx.redirect("/explore"), 
+            on_click=rx.redirect("/explore"), 
             class_name="mr-auto text-3xl font-semibold text-[#FDFDFD] font-Outfit cursor-pointer"
         ),
         book_menu_desktop(),
