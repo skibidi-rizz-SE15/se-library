@@ -13,19 +13,19 @@ def lend_page() -> rx.Component:
             ),
         ),
         rx.desktop_only(
-            rx.flex(
-                navbar_desktop(),
+            rx.grid(
+                navbar_desktop(class_name="h-fit"),
                 rx.flex(
                     rx.flex(
                         rx.text("Lend a Book", class_name="font-bold text-xl mb-4 self-center"),
                         lend_form(),
                         rx.text("Selected Book", class_name="font-bold text-xl mb-4 self-center"),
                         lend_confirmation_section(),
-                        class_name="flex-col gap-4 p-4 mx-auto bg-[#cecaca] w-[max(30rem,60%)] h-full"
+                        class_name="flex-col gap-4 p-4 mx-auto bg-[#cecaca] w-[max(30rem,60%)] min-h-full h-max"
                     ),
-                    class_name="h-full w-full overflow-y-auto"
+                    class_name="w-full overflow-y-auto"
                 ),
-                class_name="flex flex-col h-screen w-screen bg-neutral-300",
+                class_name="grid-rows-[min-content_1fr] h-screen w-screen bg-neutral-300",
             ),
         ),
     )

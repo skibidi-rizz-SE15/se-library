@@ -40,8 +40,8 @@ def lend_confirmation_section() -> rx.Component:
             rx.text("authorson authorman, auth von authorington"),
             rx.text("Synopsis", class_name="font-semibold"),
             rx.text("long time ago in a galaxy far, far away..."),
-            class_name="grid grid-cols-[fit-content(1rem)_1fr] h-fit gap-4"
+            class_name="grid grid-cols-[minmax(5rem,max-content)_1fr] h-fit gap-4"
         ),
-        rx.button("Lend Book", class_name="col-span-2 self-center w-fit px-4 py-2"),
-        class_name="grid grid-cols-[minmax(10rem,25%)_1fr] w-full gap-x-4 gap-y-2"
+        rx.button("Lend Book", class_name="col-span-2 w-fit mx-auto px-4 py-2"),
+        class_name="grid grid-cols-[minmax(10rem,25%)_1fr] w-full gap-x-4 gap-y-2 max-h-min overflow-y-auto"
     )
