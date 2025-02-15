@@ -43,5 +43,5 @@ def lend_confirmation_section() -> rx.Component:
             class_name="grid grid-cols-[minmax(5rem,max-content)_1fr] h-fit gap-4"
         ),
         rx.button("Lend Book", class_name="col-span-2 w-fit mx-auto px-4 py-2"),
-        class_name="grid grid-cols-[minmax(10rem,25%)_1fr] w-full gap-x-4 gap-y-2 max-h-min overflow-y-auto"
+        class_name="grid grid-cols-[minmax(10rem,25%)_1fr] w-full gap-x-4 gap-y-2 max-h-min overflow-hidden" # fix overflow
     )
