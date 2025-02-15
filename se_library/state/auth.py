@@ -2,9 +2,16 @@ import reflex as rx
 
 class AuthState(rx.State):
     token: str = rx.LocalStorage(name="token")
+    authenticated: bool = False
     
     @rx.event
     def check_token(self):
-        if not self.token:
+        self.authenticated = check_auth(self.token)
+        if not self.authenticated:
             return rx.redirect("/login")
-        yield
+
+def check_auth(token):
+    # Logic to check if token is valid need to be implemented
+    if not token:
+        return False
+    return True

@@ -1,6 +1,7 @@
 import reflex as rx
 
 class ExplorePageState(rx.State):
+    search_input: str = ""
     search_query: str = ""
     genre: str = "All Genres"
     sort_by: str = "Newest"
@@ -8,8 +9,8 @@ class ExplorePageState(rx.State):
     is_available_selected: bool = False
 
     @rx.event
-    def handle_change_search_query(self, query: str) -> None:
-        self.search_query = query
+    def handle_search(self) -> None:
+        self.search_query = "Result for: " + self.search_input
 
     @rx.event
     def handle_select_all(self) -> None:

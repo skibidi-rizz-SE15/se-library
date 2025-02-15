@@ -10,6 +10,7 @@ config = rx.Config(
                 "fontFamily": {
                     "Outfit": ['Outfit', 'sans-serif'],
                     "Roboto": ['Roboto', 'sans-serif'],
+                    "Varela": ['Varela', 'sans-serif'],
                 },
             },
         }
