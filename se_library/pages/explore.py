@@ -4,9 +4,20 @@ from ..components.navbar import navbar_desktop, navbar_mobile_tablet
 from ..components.searchbar import searchbar
 from ..components.sort_option import sort_option_mobile_and_tablet, sort_option_desktop
 from ..components.book_library import book_library
+from se_library.state.base import State
 
 @rx.page("/explore", title="Explore")
-def explore() -> rx.Component:
+def explore():
+    return rx.fragment(
+        rx.cond(
+            State.logged_in,
+            page(),
+            rx.flex(),
+        )
+    )
+
+
+def page() -> rx.Component:
     return rx.flex(
         rx.mobile_and_tablet(
             rx.flex(

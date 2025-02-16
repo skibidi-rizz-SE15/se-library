@@ -9,7 +9,7 @@ from .pages.explore import explore
 from .pages.profile import profile
 from .pages.lend import lend_page
 from dotenv import load_dotenv
-from .state.auth import AuthState
+from se_library.state.base import State
 
 load_dotenv()
 
@@ -29,6 +29,6 @@ app = rx.App(
 app.add_page(homepage)
 app.add_page(login_page)
 
-app.add_page(explore, on_load=AuthState.check_token)
-app.add_page(profile, on_load=AuthState.check_token)
-app.add_page(lend_page, on_load=AuthState.check_token)
+app.add_page(explore, on_load=State.check_login())
+app.add_page(profile, on_load=State.check_login())
+app.add_page(lend_page, on_load=State.check_login())

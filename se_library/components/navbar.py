@@ -1,4 +1,5 @@
 import reflex as rx
+from se_library.state.base import State
 
 def profile_section() -> rx.Component:
     return rx.flex(
@@ -75,7 +76,7 @@ def profile_menu_desktop() -> rx.Component:
         rx.menu.content(
             rx.menu.item("Profile", on_click=rx.redirect("/profile"), class_name="cursor-pointer"),
             rx.separator(),
-            rx.menu.item("Logout", on_click=rx.remove_local_storage("token"), color_scheme="red", class_name="cursor-pointer"),
+            rx.menu.item("Logout", on_click=State.logout, color_scheme="red", class_name="cursor-pointer"),
         )
     )
 
@@ -102,7 +103,7 @@ def navbar_desktop(class_name: str="") -> rx.Component:
         profile_menu_desktop(),
         class_name=f"w-full items-center justify-center drop-shadow-lg px-8 py-2 gap-6 rounded-b-md bg-[#3358D4] {class_name}"
     )
-            
+
 def navbar_mobile_tablet() -> rx.Component:
     return rx.flex(
         rx.text("SELibrary", class_name="text-3xl font-semibold text-[#FDFDFD] font-Outfit"),
