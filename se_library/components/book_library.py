@@ -1,27 +1,31 @@
 import reflex as rx
 
 # contains book cover, name, details, bla bla bla (dont set explicit height)
-def book_slot(class_name: str="", has_quantity: bool=True) -> rx.Component:
+def book_slot(title: str, authors: str, quantity: int=0, image_src:str="", class_name: str="", has_quantity: bool=True) -> rx.Component:
     return rx.flex(
-        rx.icon("book-copy", class_name="self-center border-2 w-full h-[20rem]"), # book cover
-        rx.text("very extremely really long book name", class_name="font-semibold text-[1.1rem] leading-[1.2rem]"),
-        rx.text("authorson authorman, auth von authorington", class_name="text-[#636363] text-[0.9rem] leading-[1.2rem]"),
-        rx.text("[NUM] available", class_name=f"self-end text-[0.9rem] leading-[1.2rem] {'' if has_quantity else 'collapse'}"),
+        rx.cond(
+            image_src,
+            rx.image(src=image_src, alt="BOOK COVER", class_name="self-center shadow w-full h-[20rem]"),
+            rx.icon("book-copy", class_name="self-center border-2 w-full h-[20rem]"),
+        ),
+        rx.text(title, class_name="font-semibold text-[1.1rem] leading-[1.2rem]"),
+        rx.text(authors, class_name="text-[#636363] text-[0.9rem] leading-[1.2rem]"),
+        rx.text(f"{quantity} available", class_name=f"self-end text-[0.9rem] leading-[1.2rem] {'' if has_quantity else 'collapse'}"),
         class_name=f"flex-col gap-2 {class_name}"
     )
 
 def book_display(class_name: str="", min_item_width=12) -> rx.Component:
     return rx.grid(
-        book_slot(class_name="w-full"),
-        book_slot(class_name="w-full"),
-        book_slot(class_name="w-full"),
-        book_slot(class_name="w-full"),
-        book_slot(class_name="w-full"),
-        book_slot(class_name="w-full"),
-        book_slot(class_name="w-full"),
-        book_slot(class_name="w-full"),
-        book_slot(class_name="w-full"),
-        book_slot(class_name="w-full"),
+        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
+        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
+        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
+        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
+        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
+        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
+        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
+        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
+        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
+        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
         class_name=f"grid grid-cols-[repeat(auto-fill,minmax({min_item_width}rem,1fr))] gap-5 {class_name}"
     )
 
