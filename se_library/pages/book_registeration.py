@@ -2,14 +2,18 @@ import reflex as rx
 
 from ..components.navbar import navbar_desktop, navbar_mobile_tablet
 from ..components.lend_form import lend_form, lend_confirmation_section
+from ..components.book_registeration_form import book_registeration_form
+from ..components.book_library import book_library
 
-@rx.page("/lend", title="Lend a Book")
-def lend_page() -> rx.Component:
+@rx.page("/book-registeration", title="Lend a Book")
+def book_registeration_page() -> rx.Component:
     return rx.flex(
         rx.mobile_and_tablet(
             rx.flex(
                 navbar_mobile_tablet(),
-                class_name="w-svw h-svh"
+                book_registeration_form(),
+                lend_confirmation_section(),
+                class_name="w-svw h-svh flex-col bg-[#F7F9FF]",
             ),
         ),
         rx.desktop_only(

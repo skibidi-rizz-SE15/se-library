@@ -7,7 +7,7 @@ from .pages.homepage import homepage
 from .pages.login import login_page
 from .pages.explore import explore
 from .pages.profile import profile
-from .pages.lend import lend_page
+from .pages.book_registeration import book_registeration_page
 from dotenv import load_dotenv
 from se_library.state.base import State
 
@@ -31,4 +31,4 @@ app.add_page(login_page)
 
 app.add_page(explore, on_load=State.check_login())
 app.add_page(profile, on_load=State.check_login())
-app.add_page(lend_page, on_load=State.check_login())
+app.add_page(book_registeration_page, on_load=State.check_login())
