@@ -81,7 +81,7 @@ def book_details_list() -> rx.Component:
             class_name="text-gray-400"
     )
 
-def book_registeration_details_mobile_and_tablet() -> rx.Component:
+def book_registration_details_mobile_and_tablet() -> rx.Component:
     return rx.flex(
         rx.text(f"{BookRegistrationPageState.title}", class_name="font-semibold font-Varela text-sm text-center", trim="normal"),
         rx.image(src=BookRegistrationPageState.cover_image_link, class_name="max-w-[45rem] max-h-[35rem] w-[300px] mx-auto"),
@@ -96,7 +96,7 @@ def book_registeration_details_mobile_and_tablet() -> rx.Component:
         class_name="w-svw h-fit flex-col bg-[#F7F9FF] border border-gray-300 rounded-xl mt-2 p-2 space-y-4",
     )
 
-def book_registeration_details() -> rx.Component:
+def book_registration_details() -> rx.Component:
     return rx.cond(
         BookRegistrationPageState.book_exists,
         rx.grid(

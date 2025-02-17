@@ -1,7 +1,7 @@
 import reflex as rx
 
 from ..components.navbar import navbar_desktop, navbar_mobile_tablet
-from ..components.book_registration_form import book_registration_form, book_registeration_details, book_registeration_details_mobile_and_tablet
+from ..components.book_registration_form import book_registration_form, book_registration_details, book_registration_details_mobile_and_tablet
 
 @rx.page("/book-registration", title="Book registration")
 def book_registration_page() -> rx.Component:
@@ -10,7 +10,7 @@ def book_registration_page() -> rx.Component:
             rx.flex(
                 navbar_mobile_tablet(),
                 book_registration_form(),
-                book_registeration_details_mobile_and_tablet(),
+                book_registration_details_mobile_and_tablet(),
                 class_name="w-svw h-svh flex-col bg-[#F7F9FF]",
             ),
         ),
@@ -22,7 +22,7 @@ def book_registration_page() -> rx.Component:
                         rx.text("Lend a Book", class_name="font-bold text-xl mb-4 self-center"),
                         book_registration_form(),
                         rx.text("Selected Book", class_name="font-bold text-xl mb-4 self-center"),
-                        book_registeration_details(),
+                        book_registration_details(),
                         class_name="flex-col gap-4 p-4 mx-auto bg-[#F7F9FF] w-[max(30rem,70%)] min-h-full h-max"
                     ),
                     class_name="w-full overflow-y-auto"
