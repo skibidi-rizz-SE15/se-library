@@ -1,5 +1,5 @@
 import reflex as rx
-from se_library.state.base import State
+from se_library.states.base import BaseState
 
 def profile_section() -> rx.Component:
     return rx.flex(
@@ -76,7 +76,7 @@ def profile_menu_desktop() -> rx.Component:
         rx.menu.content(
             rx.menu.item("Profile", on_click=rx.redirect("/profile"), class_name="cursor-pointer"),
             rx.separator(),
-            rx.menu.item("Logout", on_click=State.logout, color_scheme="red", class_name="cursor-pointer"),
+            rx.menu.item("Logout", on_click=BaseState.logout, color_scheme="red", class_name="cursor-pointer"),
         )
     )
 
@@ -88,7 +88,7 @@ def book_menu_desktop() -> rx.Component:
             rx.menu.content(
                 rx.menu.item("Borrow a book", class_name="cursor-pointer"),
                 rx.separator(),
-                rx.menu.item("Lend a book", on_click=rx.redirect("/lend"), class_name="cursor-pointer"),
+                rx.menu.item("Lend a book", on_click=rx.redirect("/book-registration"), class_name="cursor-pointer"),
             ),
         )
 

@@ -1,5 +1,5 @@
 import reflex as rx
-from ..state.explore_page import ExplorePageState
+from ..states.explore_page import ExplorePageState
 
 def genre_dropdown() -> rx.Component:
     return rx.menu.root(

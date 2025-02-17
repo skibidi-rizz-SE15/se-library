@@ -5,7 +5,7 @@ from typing import Optional
 
 from se_library.models import User
 
-class State(rx.State):
+class BaseState(rx.State):
     """The base state for the app."""
 
     user: Optional[User] = None

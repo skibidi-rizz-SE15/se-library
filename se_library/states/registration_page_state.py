@@ -4,7 +4,10 @@ import json
 from typing import List
 from enum import Enum
 from ..models import Book, BookInventory, Publisher, Author, BookAuthorLink
-from .base import State
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 class ConditionEnum(Enum):
     FACTORY_NEW = "factory_new"
@@ -30,7 +33,7 @@ class BookInfo(rx.State):
     def set_formatted_isbn(self, raw_isbn: str):
         self.isbn = raw_isbn.strip().replace(" ", "")
     
-class BookRegisterationPageState(BookInfo):
+class BookRegistrationPageState(BookInfo):
     loading: bool = False
     book_exists: bool = None
     
@@ -108,7 +111,7 @@ class BookRegisterationPageState(BookInfo):
             res = requests.get(f"https://api2.isbndb.com/book/{self.isbn}", headers={
                 "Host": "api2.isbndb.com",
                 "User-Agent": "insomnia/5.12.4",
-                "Authorization": "59216_fcf89c5986222e95f3c0a14ed62b61fb",
+                "Authorization": os.getenv("ISBN_API_KEY"),
                 "Accept": "*/*"
             })
             data = json.loads(res.content)

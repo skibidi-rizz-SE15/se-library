@@ -2,9 +2,9 @@
 import reflex as rx
 from sqlmodel import select
 
-from .base import State, User
+from .base import BaseState, User
 
-class AuthState(State):
+class AuthState(BaseState):
     """The authentication state for sign up and login page."""
 
     email: str

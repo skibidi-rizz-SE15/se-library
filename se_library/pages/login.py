@@ -1,5 +1,5 @@
 import reflex as rx
-from se_library.state.auth import AuthState
+from se_library.states.auth import AuthState
 
 class LoginForm(AuthState):
 

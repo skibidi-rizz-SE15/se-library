@@ -4,13 +4,13 @@ from ..components.navbar import navbar_desktop, navbar_mobile_tablet
 from ..components.searchbar import searchbar
 from ..components.sort_option import sort_option_mobile_and_tablet, sort_option_desktop
 from ..components.book_library import book_library
-from se_library.state.base import State
+from se_library.states.base import BaseState
 
 @rx.page("/explore", title="Explore")
 def explore():
     return rx.fragment(
         rx.cond(
-            State.logged_in,
+            BaseState.logged_in,
             page(),
             rx.flex(),
         )

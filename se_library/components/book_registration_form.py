@@ -1,5 +1,5 @@
 import reflex as rx
-from ..state.registeration_page_state import BookRegisterationPageState
+from ..states.registration_page_state import BookRegistrationPageState
 from .book_library import book_slot
 
 class PatternFormat(rx.NoSSRComponent):
@@ -25,35 +25,35 @@ def isbn_searchbar() -> rx.Component:
         class_name="w-full h-[70%] flex-col space-y-2",
     )
 
-def book_registeration_form() -> rx.Component:
+def book_registration_form() -> rx.Component:
     return rx.flex(
         rx.form(
-            rx.text("Book Registeration", class_name="font-semibold text-xl self-center font-Roboto mb-2"),
+            rx.text("Book registration", class_name="font-semibold text-xl self-center font-Roboto mb-2"),
             isbn_searchbar(),
             rx.button("Search", class_name="w-full h-[17%]"),
-            on_submit=BookRegisterationPageState.handle_search,
+            on_submit=BookRegistrationPageState.handle_search,
             reset_on_submit=True,
             class_name="h-[12rem] max-w-[25rem] flex-col bg-[#FDFDFD] shadow-xl rounded-xl p-3 mt-4 border border-gray-300",
         ),
         class_name="w-full justify-center mb-4"
     )
 
-def book_registeration_details() -> rx.Component:
+def book_registration_details() -> rx.Component:
     return rx.cond(
-        BookRegisterationPageState.book_exists,
+        BookRegistrationPageState.book_exists,
         rx.grid(
-            book_slot(title=BookRegisterationPageState.title, authors=BookRegisterationPageState.get_formatted_authors, image_src=BookRegisterationPageState.cover_image_link, has_quantity=False, class_name="w-full"),
+            book_slot(title=BookRegistrationPageState.title, authors=BookRegistrationPageState.get_formatted_authors, image_src=BookRegistrationPageState.cover_image_link, has_quantity=False, class_name="w-full"),
             rx.grid(
                 rx.text("Name", class_name="font-semibold"),
-                rx.text(BookRegisterationPageState.title),
+                rx.text(BookRegistrationPageState.title),
                 rx.text("ISBN", class_name="font-semibold"),
-                rx.text(BookRegisterationPageState.isbn),
+                rx.text(BookRegistrationPageState.isbn),
                 rx.text("Publisher", class_name="font-semibold"),
-                rx.text(BookRegisterationPageState.publisher),
+                rx.text(BookRegistrationPageState.publisher),
                 rx.text("Authors", class_name="font-semibold"),
-                rx.text(BookRegisterationPageState.get_formatted_authors),
+                rx.text(BookRegistrationPageState.get_formatted_authors),
                 rx.text("Description", class_name="font-semibold"),
-                rx.text(BookRegisterationPageState.description, class_name="overflow-y-auto pr-1 max-h-[15rem]"),
+                rx.text(BookRegistrationPageState.description, class_name="overflow-y-auto pr-1 max-h-[15rem]"),
                 class_name="grid grid-cols-[minmax(5rem,max-content)_1fr] h-fit gap-4"
             ),
             # add condition dropdown

@@ -7,9 +7,9 @@ from .pages.homepage import homepage
 from .pages.login import login_page
 from .pages.explore import explore
 from .pages.profile import profile
-from .pages.book_registeration import book_registeration_page
+from .pages.book_registration import book_registration_page
 from dotenv import load_dotenv
-from se_library.state.base import State
+from se_library.states.base import BaseState
 
 load_dotenv()
 
@@ -29,6 +29,6 @@ app = rx.App(
 app.add_page(homepage)
 app.add_page(login_page)
 
-app.add_page(explore, on_load=State.check_login())
-app.add_page(profile, on_load=State.check_login())
-app.add_page(book_registeration_page, on_load=State.check_login())
+app.add_page(explore, on_load=BaseState.check_login())
+app.add_page(profile, on_load=BaseState.check_login())
+app.add_page(book_registration_page, on_load=BaseState.check_login())
