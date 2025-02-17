@@ -5,7 +5,7 @@ def book_slot(title: str, authors: str, quantity: int=0, image_src:str="", class
     return rx.flex(
         rx.cond(
             image_src,
-            rx.image(src=image_src, alt="BOOK COVER", class_name="self-center shadow max-h-[20rem] rounded-sm"),
+            rx.image(src=image_src, alt="BOOK COVER", class_name="self-center shadow-lg max-h-[20rem] rounded-sm"),
             rx.icon("book-copy", class_name="self-center border-2 w-full h-[20rem]"),
         ),
         rx.text(title, class_name="font-semibold text-[1.1rem] leading-[1.2rem] font-Varela"),

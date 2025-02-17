@@ -49,10 +49,12 @@ class BookInfo(rx.State):
 class BookRegistrationPageState(BookInfo):
     loading: bool = False
     book_exists: bool = None
+    is_search: bool = False
     
     @rx.event
     async def handle_search(self, form_data: dict):
         self.loading = True
+        self.is_search = True
         yield
         await asyncio.sleep(1)
         self.set_formatted_isbn(form_data["raw_isbn"])
