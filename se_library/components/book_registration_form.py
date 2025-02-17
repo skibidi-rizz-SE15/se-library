@@ -27,17 +27,19 @@ def book_registration_form() -> rx.Component:
         class_name="flex flex-col gap-4 items-center h-[12rem] max-w-[25rem] bg-[#FDFDFD] shadow-xl rounded-xl p-3 mx-auto border border-gray-300",
     )
 
-def confirmation_dialog() -> rx.Component:
+def confirmation_dialog(dialog_button: rx.Component) -> rx.Component:
     return rx.dialog.root(
-            rx.dialog.trigger(rx.button("Register This Book", class_name="w-full rounded-xl")),
-            rx.dialog.content(
-                rx.dialog.title("Welcome to Reflex!"),
-                rx.dialog.description(
-                    "This is a dialog component. You can render anything you want in here.",
-                ),
-                rx.dialog.close(
-                    rx.button("Close Dialog", size="3"),
-                ),
+        rx.dialog.trigger(dialog_button),
+        rx.dialog.content(
+            rx.dialog.title("Please choose the condition of your book"),
+            rx.flex(
+                rx.text("Condition:"),
+                rx.select(["test1", "test2"]),
+            ),
+            rx.dialog.close(
+                rx.button("Close Dialog", size="3"),
+            ),
+            class_name="flex flex-col items-center justify-center"
         ),
     )
 
@@ -86,7 +88,7 @@ def book_registration_details_mobile_and_tablet() -> rx.Component:
         rx.text(f"{BookRegistrationPageState.title}", class_name="font-semibold font-Varela text-sm text-center", trim="normal"),
         rx.image(src=BookRegistrationPageState.cover_image_link, class_name="max-w-[45rem] max-h-[35rem] w-[300px] mx-auto"),
         rx.text(f"By: {BookRegistrationPageState.get_formatted_authors}", class_name="text-center text-sm font-Varela text-gray-500"),
-        confirmation_dialog(),
+        confirmation_dialog(dialog_button=rx.flex("Lend Book", class_name="col-span-2 w-fit mx-auto px-8 py-2 mt-4 rounded-xl bg-[#F7F9FF] border-2 border-[#5472E4] text-[#5472E4] font-semibold cursor-pointer")),
         rx.separator(),
         rx.text("Details", class_name="text-xl text-gray-400 font-Varela mt-5 font-semibold"),
         book_details_list(),
@@ -114,7 +116,7 @@ def book_registration_details() -> rx.Component:
                 rx.text(BookRegistrationPageState.description, class_name="overflow-y-auto pr-1 max-h-[15rem] font-Varela text-gray-500"),
                 class_name="grid grid-cols-[minmax(5rem,max-content)_1fr] h-fit gap-4"
             ),
-            rx.flex("Lend Book", class_name="col-span-2 w-fit mx-auto px-8 py-2 mt-4 rounded-xl bg-[#F7F9FF] border-2 border-[#5472E4] text-[#5472E4] font-semibold cursor-pointer"),
+            confirmation_dialog(dialog_button=rx.flex("Lend Book", class_name="col-span-2 w-fit mx-auto px-8 py-2 mt-4 rounded-xl bg-[#F7F9FF] border-2 border-[#5472E4] text-[#5472E4] font-semibold cursor-pointer")),
             class_name="grid grid-cols-[minmax(10rem,25%)_1fr] w-full gap-x-4 gap-y-2 max-h-min overflow-hidden border border-gray-300 rounded-xl p-4"
         ),
         rx.text("ISBN not found.", class_name="flex self-center")

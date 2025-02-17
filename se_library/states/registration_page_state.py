@@ -4,6 +4,7 @@ import json
 from typing import List
 from enum import Enum
 from ..models import Book, BookInventory, Publisher, Author, BookAuthorLink
+from .base import BaseState
 from dotenv import load_dotenv
 import os
 
@@ -15,6 +16,11 @@ class ConditionEnum(Enum):
     FIELD_TESTED = "field_tested"
     WELL_WORN = "well_worn"
     BATTLE_SCARRED = "battle_scarred"
+
+class AvailabilityEnum(Enum):
+    AVAILABLE = "available"
+    UNAVAILABLE = "unavailable"
+    RESERVED = "reserved"
 
 class BookInfo(rx.State):
     title: str = ""
@@ -77,6 +83,7 @@ class BookRegistrationPageState(BookInfo):
                     Book.isbn == self.isbn
                 )
             ).first()
+
             if not existing_book:   
                 session.add(Publisher(
                     name=self.publisher
@@ -111,7 +118,15 @@ class BookRegistrationPageState(BookInfo):
                         book_id=new_book.id,
                         author_id=new_author.id
                     ))
-                # add instance
+
+            # add instance
+            user = BaseState.user
+            session.add(BookInventory(
+                owner_id=user.id,
+                book_id=new_book.id,
+                availability=AvailabilityEnum.AVAILABLE,
+                condition=self.condition
+            ))
     
     async def fetch_isbndb(self) -> None:
         try:
