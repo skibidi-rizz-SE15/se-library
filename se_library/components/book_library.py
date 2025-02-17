@@ -5,11 +5,11 @@ def book_slot(title: str, authors: str, quantity: int=0, image_src:str="", class
     return rx.flex(
         rx.cond(
             image_src,
-            rx.image(src=image_src, alt="BOOK COVER", class_name="self-center shadow w-full h-[20rem]"),
+            rx.image(src=image_src, alt="BOOK COVER", class_name="self-center shadow w-full h-[22rem] rounded-sm"),
             rx.icon("book-copy", class_name="self-center border-2 w-full h-[20rem]"),
         ),
-        rx.text(title, class_name="font-semibold text-[1.1rem] leading-[1.2rem]"),
-        rx.text(authors, class_name="text-[#636363] text-[0.9rem] leading-[1.2rem]"),
+        rx.text(title, class_name="font-semibold text-[1.1rem] leading-[1.2rem] font-Varela"),
+        rx.text(authors, class_name="text-gray-500 font-Varela text-[0.9rem] leading-[1.2rem]"),
         rx.text(f"{quantity} available", class_name=f"self-end text-[0.9rem] leading-[1.2rem] {'' if has_quantity else 'collapse'}"),
         class_name=f"flex-col gap-2 {class_name}"
     )

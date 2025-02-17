@@ -113,21 +113,21 @@ def book_registeration_details() -> rx.Component:
         rx.grid(
             book_slot(title=BookRegistrationPageState.title, authors=BookRegistrationPageState.get_formatted_authors, image_src=BookRegistrationPageState.cover_image_link, has_quantity=False, class_name="w-full"),
             rx.grid(
-                rx.text("Name", class_name="font-semibold"),
-                rx.text(BookRegistrationPageState.title),
-                rx.text("ISBN", class_name="font-semibold"),
-                rx.text(BookRegistrationPageState.isbn),
-                rx.text("Publisher", class_name="font-semibold"),
-                rx.text(BookRegistrationPageState.publisher),
-                rx.text("Authors", class_name="font-semibold"),
-                rx.text(BookRegistrationPageState.get_formatted_authors),
-                rx.text("Description", class_name="font-semibold"),
-                rx.text(BookRegistrationPageState.description, class_name="overflow-y-auto pr-1 max-h-[15rem]"),
+                rx.text("Name", class_name="font-semibold font-Roboto"),
+                rx.text(BookRegistrationPageState.title, class_name="font-Varela text-gray-500"),
+                rx.text("ISBN", class_name="font-semibold font-Roboto"),
+                rx.code(BookRegistrationPageState.isbn, variant="ghost", color_scheme="gray"),
+                rx.text("Publisher", class_name="font-semibold font-Roboto"),
+                rx.text(BookRegistrationPageState.publisher, class_name="font-Varela text-gray-500"),
+                rx.text("Authors", class_name="font-semibold font-Roboto"),
+                rx.text(BookRegistrationPageState.get_formatted_authors, class_name="font-Varela text-gray-500"),
+                rx.text("Description", class_name="font-semibold font-Roboto"),
+                rx.text(BookRegistrationPageState.description, class_name="overflow-y-auto pr-1 max-h-[15rem] font-Varela text-gray-500"),
                 class_name="grid grid-cols-[minmax(5rem,max-content)_1fr] h-fit gap-4"
             ),
             # add condition dropdown
             rx.button("Lend Book", class_name="col-span-2 w-fit mx-auto px-4 py-2"),
-            class_name="grid grid-cols-[minmax(10rem,25%)_1fr] w-full gap-x-4 gap-y-2 max-h-min overflow-hidden"
+            class_name="grid grid-cols-[minmax(10rem,25%)_1fr] w-full gap-x-4 gap-y-2 max-h-min overflow-hidden border border-gray-300 rounded-xl p-4"
         ),
         rx.text("ISBN not found.", class_name="flex self-center")
     )
