@@ -27,7 +27,76 @@ def book_registration_form() -> rx.Component:
         class_name="flex flex-col gap-4 items-center h-[12rem] max-w-[25rem] bg-[#FDFDFD] shadow-xl rounded-xl p-3 mx-auto border border-gray-300",
     )
 
-def book_registration_details() -> rx.Component:
+def confirmation_dialog() -> rx.Component:
+    return rx.dialog.root(
+            rx.dialog.trigger(rx.button("Register This Book", class_name="w-full rounded-xl")),
+            rx.dialog.content(
+                rx.dialog.title("Welcome to Reflex!"),
+                rx.dialog.description(
+                    "This is a dialog component. You can render anything you want in here.",
+                ),
+                rx.dialog.close(
+                    rx.button("Close Dialog", size="3"),
+                ),
+        ),
+    )
+
+def book_details_list() -> rx.Component:
+    return rx.data_list.root(
+            rx.data_list.item(
+                rx.data_list.label("ISBN"),
+                rx.data_list.value(rx.code(BookRegistrationPageState.isbn, variant="ghost")),
+                align="center",
+            ),
+            rx.data_list.item(
+                rx.data_list.label("ISBN-13"),
+                rx.data_list.value(rx.code(BookRegistrationPageState.isbn13, variant="ghost")),
+                align="center",
+            ),
+            rx.data_list.item(
+                rx.data_list.label("Language"),
+                rx.data_list.value(BookRegistrationPageState.language),
+                align="center",
+            ),
+            rx.data_list.item(
+                rx.data_list.label("Publisher"),
+                rx.data_list.value(BookRegistrationPageState.publisher),
+                align="center",
+            ),
+            rx.data_list.item(
+                rx.data_list.label("Edition"),
+                rx.data_list.value(BookRegistrationPageState.edition),
+                align="center",
+            ),
+            rx.data_list.item(
+                rx.data_list.label("Pages"),
+                rx.data_list.value(BookRegistrationPageState.pages),
+                align="center",
+            ),
+            rx.data_list.item(
+                rx.data_list.label("Is Already Registered"),
+                rx.data_list.value(rx.cond(BookRegistrationPageState.is_found_in_db, "Yes", "No")),
+                align="center",
+            ),
+            class_name="text-gray-400"
+    )
+
+def book_registeration_details_mobile_and_tablet() -> rx.Component:
+    return rx.flex(
+        rx.text(f"{BookRegistrationPageState.title}", class_name="font-semibold font-Varela text-sm text-center", trim="normal"),
+        rx.image(src=BookRegistrationPageState.cover_image_link, class_name="max-w-[45rem] max-h-[35rem] w-[300px] mx-auto"),
+        rx.text(f"By: {BookRegistrationPageState.get_formatted_authors}", class_name="text-center text-sm font-Varela text-gray-500"),
+        confirmation_dialog(),
+        rx.separator(),
+        rx.text("Details", class_name="text-xl text-gray-400 font-Varela mt-5 font-semibold"),
+        book_details_list(),
+        rx.separator(),
+        rx.text("Description", class_name="text-xl text-gray-400 font-Varela mt-5 font-semibold"),
+        rx.text(BookRegistrationPageState.description, class_name="text-sm text-gray-400 font-Varela text-justify"),
+        class_name="w-svw h-fit flex-col bg-[#F7F9FF] border border-gray-300 rounded-xl mt-2 p-2 space-y-4",
+    )
+
+def book_registeration_details() -> rx.Component:
     return rx.cond(
         BookRegistrationPageState.book_exists,
         rx.grid(
