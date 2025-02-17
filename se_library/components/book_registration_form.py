@@ -112,10 +112,9 @@ def book_registration_details() -> rx.Component:
                 rx.text(BookRegistrationPageState.get_formatted_authors, class_name="font-Varela text-gray-500"),
                 rx.text("Description", class_name="font-semibold font-Roboto"),
                 rx.text(BookRegistrationPageState.description, class_name="overflow-y-auto pr-1 max-h-[15rem] font-Varela text-gray-500"),
-                rx.flex("Lend Book", class_name="col-span-2 w-fit mx-auto px-8 py-2 mt-4 rounded-xl bg-[#F7F9FF] border border-2 border-[#5472E4] text-[#5472E4] font-semibold cursor-pointer"),
                 class_name="grid grid-cols-[minmax(5rem,max-content)_1fr] h-fit gap-4"
             ),
-            # add condition dropdown
+            rx.flex("Lend Book", class_name="col-span-2 w-fit mx-auto px-8 py-2 mt-4 rounded-xl bg-[#F7F9FF] border-2 border-[#5472E4] text-[#5472E4] font-semibold cursor-pointer"),
             class_name="grid grid-cols-[minmax(10rem,25%)_1fr] w-full gap-x-4 gap-y-2 max-h-min overflow-hidden border border-gray-300 rounded-xl p-4"
         ),
         rx.text("ISBN not found.", class_name="flex self-center")
