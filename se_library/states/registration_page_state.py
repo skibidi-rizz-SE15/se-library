@@ -7,6 +7,7 @@ from ..models import Book, BookInventory, Publisher, Author, BookAuthorLink
 from .base import BaseState
 from dotenv import load_dotenv
 import os
+import asyncio
 
 load_dotenv()
 
@@ -52,6 +53,8 @@ class BookRegistrationPageState(BookInfo):
     @rx.event
     async def handle_search(self, form_data: dict):
         self.loading = True
+        yield
+        await asyncio.sleep(1)
         self.set_formatted_isbn(form_data["raw_isbn"])
         await self.set_book_info()
         if self.book_exists:

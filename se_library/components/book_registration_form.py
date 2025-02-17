@@ -101,23 +101,30 @@ def book_registration_details_mobile_and_tablet() -> rx.Component:
 def book_registration_details() -> rx.Component:
     return rx.cond(
         BookRegistrationPageState.book_exists,
-        rx.grid(
-            book_slot(title=BookRegistrationPageState.title, authors=BookRegistrationPageState.get_formatted_authors, image_src=BookRegistrationPageState.cover_image_link, has_quantity=False, class_name="w-full"),
-            rx.grid(
-                rx.text("Title", class_name="font-semibold font-Roboto"),
-                rx.text(BookRegistrationPageState.title, class_name="font-Varela text-gray-500"),
-                rx.text("ISBN", class_name="font-semibold font-Roboto"),
-                rx.code(BookRegistrationPageState.isbn, variant="ghost", color_scheme="gray"),
-                rx.text("Publisher", class_name="font-semibold font-Roboto"),
-                rx.text(BookRegistrationPageState.publisher, class_name="font-Varela text-gray-500"),
-                rx.text("Authors", class_name="font-semibold font-Roboto"),
-                rx.text(BookRegistrationPageState.get_formatted_authors, class_name="font-Varela text-gray-500"),
-                rx.text("Description", class_name="font-semibold font-Roboto"),
-                rx.text(BookRegistrationPageState.description, class_name="overflow-y-auto pr-1 max-h-[15rem] font-Varela text-gray-500"),
-                class_name="grid grid-cols-[minmax(5rem,max-content)_1fr] h-fit gap-4"
-            ),
-            confirmation_dialog(dialog_button=rx.flex("Lend Book", class_name="col-span-2 w-fit mx-auto px-8 py-2 mt-4 rounded-xl bg-[#F7F9FF] border-2 border-[#5472E4] text-[#5472E4] font-semibold cursor-pointer")),
-            class_name="grid grid-cols-[minmax(10rem,25%)_1fr] w-full gap-x-4 gap-y-2 max-h-min overflow-hidden border border-gray-300 rounded-xl p-4"
+        rx.cond(
+            BookRegistrationPageState.loading,
+            rx.flex(rx.spinner(size="3"), class_name="w-full h-[55%] justify-center items-center"),
+            book_details(),
         ),
         rx.text("ISBN not found.", class_name="flex self-center")
+    )
+
+def book_details() -> rx.Component:
+    return rx.grid(
+        book_slot(title=BookRegistrationPageState.title, authors=BookRegistrationPageState.get_formatted_authors, image_src=BookRegistrationPageState.cover_image_link, has_quantity=False, class_name="w-full"),
+        rx.grid(
+            rx.text("Title", class_name="font-semibold font-Roboto"),
+            rx.text(BookRegistrationPageState.title, class_name="font-Varela text-gray-500"),
+            rx.text("ISBN", class_name="font-semibold font-Roboto"),
+            rx.code(BookRegistrationPageState.isbn, variant="ghost", color_scheme="gray"),
+            rx.text("Publisher", class_name="font-semibold font-Roboto"),
+            rx.text(BookRegistrationPageState.publisher, class_name="font-Varela text-gray-500"),
+            rx.text("Authors", class_name="font-semibold font-Roboto"),
+            rx.text(BookRegistrationPageState.get_formatted_authors, class_name="font-Varela text-gray-500"),
+            rx.text("Description", class_name="font-semibold font-Roboto"),
+            rx.text(BookRegistrationPageState.description, class_name="overflow-y-auto pr-1 max-h-[15rem] font-Varela text-gray-500"),
+            rx.flex("Lend Book", class_name="col-span-2 w-fit mx-auto px-8 py-2 mt-4 rounded-xl bg-[#F7F9FF] border border-2 border-[#5472E4] text-[#5472E4] font-semibold cursor-pointer"),
+            class_name="grid grid-cols-[minmax(5rem,max-content)_1fr] h-fit gap-4"
+        ),
+        class_name="grid grid-cols-[minmax(10rem,25%)_1fr] w-full gap-x-4 gap-y-2 max-h-min overflow-hidden border border-gray-300 rounded-xl p-4"
     )
