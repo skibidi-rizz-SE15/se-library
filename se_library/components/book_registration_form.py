@@ -12,30 +12,19 @@ class PatternFormat(rx.NoSSRComponent):
     placeholder: rx.Var[str]
     name: rx.Var[str] = "raw_isbn"
 
-def isbn_searchbar() -> rx.Component:
-    return rx.flex(
-        rx.text("ISBN-13", class_name="font-semibold text-sm"),
+def book_registration_form() -> rx.Component:
+    return rx.form(
+        rx.text("Enter ISBN-13", class_name="font-semibold text-xl font-Roboto mb-2"),
         PatternFormat(
             format="### # ### ##### #",
-            placeholder="ISBN",
+            placeholder="XXX-X-XXXXXX-XX-X",
             name="raw_isbn",
-            class_name="w-full rounded-md h-[30%] border border-gray-300 p-2",
+            class_name="w-full rounded-md border border-gray-300 p-2",
         ),
-        rx.text("Format: 978-X-XXXXXX-XX-X or 979-X-XXXXXX-XX-X", class_name="text-[0.7rem] text-gray-500 italic"),
-        class_name="w-full h-[70%] flex-col space-y-2",
-    )
-
-def book_registration_form() -> rx.Component:
-    return rx.flex(
-        rx.form(
-            rx.text("Book registration", class_name="font-semibold text-xl self-center font-Roboto mb-2"),
-            isbn_searchbar(),
-            rx.button("Search", class_name="w-full h-[17%]"),
-            on_submit=BookRegistrationPageState.handle_search,
-            reset_on_submit=True,
-            class_name="h-[12rem] max-w-[25rem] flex-col bg-[#FDFDFD] shadow-xl rounded-xl p-3 mt-4 border border-gray-300",
-        ),
-        class_name="w-full justify-center mb-4"
+        rx.button("Search", class_name="w-fit px-4 py-2 mt-auto"),
+        on_submit=BookRegistrationPageState.handle_search,
+        reset_on_submit=True,
+        class_name="flex flex-col gap-4 items-center h-[12rem] max-w-[25rem] bg-[#FDFDFD] shadow-xl rounded-xl p-3 mx-auto border border-gray-300",
     )
 
 def book_registration_details() -> rx.Component:
