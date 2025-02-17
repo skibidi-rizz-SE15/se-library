@@ -23,7 +23,7 @@ def book_registration_page() -> rx.Component:
                         book_registration_form(),
                         rx.text("Selected Book", class_name="font-bold text-xl mb-4 self-center"),
                         book_registeration_details(),
-                        class_name="flex-col gap-4 p-4 mx-auto bg-[#F7F9FF] w-[max(30rem,60%)] min-h-full h-max"
+                        class_name="flex-col gap-4 p-4 mx-auto bg-[#F7F9FF] w-[max(30rem,70%)] min-h-full h-max"
                     ),
                     class_name="w-full overflow-y-auto"
                 ),
