@@ -40,4 +40,5 @@ class AuthState(BaseState):
             )
             session.add(new_user)
             session.commit()
+            self.user = session.exec(select(User).where(User.email == self.email)).first()
             return rx.redirect("/explore")

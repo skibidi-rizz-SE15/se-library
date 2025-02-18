@@ -31,18 +31,21 @@ def book_condition_dialog(dialog_button: rx.Component) -> rx.Component:
     return rx.dialog.root(
         rx.dialog.trigger(dialog_button),
         rx.dialog.content(
-            rx.dialog.title(rx.text("Confirmation", class_name="font-semibold font-Valera text-center text-lg")),
-            rx.flex(
-                rx.text("Quantity", class_name="font-semibold font-Valera text-center"),
-                rx.checkbox(rx.text("Multiple Books", class_name="font-semibold font-Valera"), name="has_multiple_books", default_checked=False, on_change=ConditionDialogState.set_has_multiple_books),
-                class_name="items-center space-x-2 w-full"
+            rx.dialog.title(rx.text("Your Book Details", class_name="font-semibold font-Valera text-center text-lg")),
+            rx.form(
+                rx.flex(
+                    rx.text("Quantity", class_name="font-semibold font-Valera text-center"),
+                    rx.checkbox(rx.text("Multiple Books", class_name="font-semibold font-Valera"), name="has_multiple_books", default_checked=False, on_change=ConditionDialogState.set_has_multiple_books),
+                    class_name="items-center space-x-2 w-full"
+                ),
+                rx.cond(
+                    ConditionDialogState.has_multiple_books,
+                    multiple_quantity_subform(),
+                    single_quantity_subform(),
+                ),
+                rx.button("Lend Book", class_name="border"),
+                class_name="contents"
             ),
-            rx.cond(
-                ConditionDialogState.has_multiple_books,
-                multiple_quantity_subform(),
-                single_quantity_subform(),
-            ),
-            rx.button("Lend Book", class_name="border"),
             size="2",
             on_close_auto_focus=ConditionDialogState.reset_states,
             on_unmount=ConditionDialogState.reset_states,
