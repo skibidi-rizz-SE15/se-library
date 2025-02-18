@@ -36,7 +36,7 @@ class Publisher(rx.Model, table=True):
 class Book(rx.Model, table=True):
     title: str = Field(nullable=False)
     description: str
-    isbn: str = Field(unique=True, nullable=False)
+    isbn13: str = Field(unique=True, nullable=False)
     publisher_id: int = Field(foreign_key="publisher.id")
 
     publisher: Optional["Publisher"] = Relationship(back_populates="books")

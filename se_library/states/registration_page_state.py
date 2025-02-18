@@ -66,7 +66,7 @@ class BookRegistrationPageState(BookInfo):
         with rx.session() as session:
             existing_book = session.exec(
                 Book.select().where(
-                    Book.isbn == self.isbn
+                    Book.isbn13 == self.isbn13
                 )
             ).first()
 
@@ -85,7 +85,7 @@ class BookRegistrationPageState(BookInfo):
         with rx.session() as session:
             existing_book = session.exec(
                 Book.select().where(
-                    Book.isbn == self.isbn
+                    Book.isbn13 == self.isbn13
                 )
             ).first()
 
@@ -101,7 +101,7 @@ class BookRegistrationPageState(BookInfo):
                 session.add(Book(
                     title=self.title,
                     description=self.description,
-                    isbn=self.isbn,
+                    isbn13=self.isbn13,
                     publisher_id=new_publisher.id
                 ))
                 for author_name in self.authors:
@@ -110,7 +110,7 @@ class BookRegistrationPageState(BookInfo):
                     ))
                 new_book = session.exec(
                     Book.select().where(
-                        Book.isbn == self.isbn
+                        Book.isbn13 == self.isbn13
                     )
                 ).first()
                 new_authors = session.exec(

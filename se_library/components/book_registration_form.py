@@ -31,26 +31,36 @@ def confirmation_dialog(dialog_button: rx.Component) -> rx.Component:
     return rx.dialog.root(
         rx.dialog.trigger(dialog_button),
         rx.dialog.content(
-            rx.dialog.title(rx.text("Confirmation", class_name="font-semibold text-lg font-Varela")),
-            rx.dialog.description("Book Registration Confirmation", class_name="text-gray-400 font-Varela text-sm italic"),
-            rx.card(
-                rx.text("Condition:"),
-                rx.select(["test1", "test2"]),
-                rx.text("Quantity:"),
-                rx.input(type="number", class_name="w-[2.5rem]"),
-                rx.text("Due Date:"),
-                rx.input(type="date", class_name="w-[8rem]"),
-                class_name="mt-2 space-y-2"
-            ),
-            rx.flex(
-                rx.button("Confirm", class_name="px-4 py-2 bg-[#5472E4] text-white rounded-xl font-semibold cursor-pointer"),
-                rx.dialog.close(
-                    rx.button("Cancel", color_scheme="tomato", high_contrast=False, class_name="px-4 py-2 rounded-xl font-semibold cursor-pointer"),
-                ),
-                class_name="gap-4 mt-4"
-            ),
-            class_name="flex flex-col"
+            quantity_contents(),
+            class_name="flex flex-col w-fit p-4",
+            size="2"
         ),
+    )
+
+def single_condition_contents() -> rx.Component:
+    return rx.fragment(
+        rx.dialog.title(rx.text("Condition", class_name="font-semibold font-Valera text-center text-lg")),
+        rx.data_list.root(
+            rx.data_list.item(
+                rx.data_list.label("Factory New"),
+                rx.data_list.value(rx.input(name="condition", placeholder="")),
+            ),
+        )
+    )
+
+def quantity_contents() -> rx.Component:
+    return  rx.fragment(
+        rx.dialog.title(rx.text("Quantity", class_name="font-semibold font-Valera text-center text-lg")),
+        rx.flex(
+            rx.select(
+                ["1", "More than 1"],
+            ),
+            class_name="mt-2 flex-col items-center space-y-2 w-full"
+        ),
+        rx.flex(
+            rx.button("Next", rx.icon("arrow-right"), class_name="px-4 py-2 bg-[#5472E4] text-white rounded-xl font-semibold cursor-pointer"),
+            class_name="gap-4 mt-4 justify-center"
+        )
     )
 
 def book_details_list() -> rx.Component:
