@@ -2,6 +2,7 @@ import reflex as rx
 
 from ..components.navbar import navbar_desktop, navbar_mobile_tablet
 from ..components.book_registration_form import book_registration_form, book_registration_details, book_registration_details_mobile_and_tablet
+from ..states.registration_page_state import BookRegistrationPageState
 
 @rx.page("/book-registration", title="Book Registration")
 def book_registration_page() -> rx.Component:
@@ -29,4 +30,5 @@ def book_registration_page() -> rx.Component:
                 class_name="grid-rows-[min-content_1fr] h-screen w-screen bg-[#F7F9FF]",
             ),
         ),
+        on_unmount=BookRegistrationPageState.reset_state
     )

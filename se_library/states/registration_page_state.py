@@ -164,4 +164,6 @@ class BookRegistrationPageState(BookInfo):
         finally:
             self.loading = False
 
-
+    @rx.event
+    def reset_state(self):
+        self.reset()
