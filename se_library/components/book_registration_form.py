@@ -153,14 +153,14 @@ def book_registration_details() -> rx.Component:
             BookRegistrationPageState.loading,
             rx.flex(rx.spinner(size="3"), class_name="w-full h-[55%] justify-center items-center"),
             book_details(),
-        ),
-        rx.text("ISBN not found.", class_name="flex self-center")
+        )
     )
 
 def book_details() -> rx.Component:
     return rx.cond(
         BookRegistrationPageState.book_exists,
         rx.grid(
+            rx.text("Selected Book", class_name="col-span-2 font-bold text-xl mb-4 self-center"),
             book_slot(title=BookRegistrationPageState.title, authors=BookRegistrationPageState.get_formatted_authors, image_src=BookRegistrationPageState.cover_image_link, has_quantity=False, class_name="w-full"),
             rx.grid(
                 rx.text("Title", class_name="font-semibold font-Roboto"),
@@ -177,5 +177,6 @@ def book_details() -> rx.Component:
                 class_name="grid grid-cols-[minmax(5rem,max-content)_1fr] h-fit gap-4"
             ),
             class_name="grid grid-cols-[minmax(10rem,25%)_1fr] w-full gap-x-4 gap-y-2 max-h-min overflow-hidden border border-gray-300 rounded-xl p-4"
-        )
+        ),
+        rx.text("ISBN not found.", class_name="flex self-center")
     )

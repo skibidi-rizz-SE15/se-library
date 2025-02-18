@@ -5,8 +5,9 @@ from ..components.searchbar import searchbar
 from ..components.sort_option import sort_option_mobile_and_tablet, sort_option_desktop
 from ..components.book_library import book_library
 from se_library.states.base import BaseState
+from se_library.states.explore_page import ExplorePageState
 
-@rx.page("/explore", title="Explore")
+@rx.page("/explore", title="Explore", on_load=ExplorePageState.handle_on_load())
 def explore():
     return rx.fragment(
         rx.cond(

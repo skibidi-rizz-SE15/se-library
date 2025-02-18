@@ -1,4 +1,6 @@
 import reflex as rx
+from .registration_page_state import BookRegistrationPageState
+from .base import BaseState
 
 class ExplorePageState(rx.State):
     search_input: str = ""
@@ -25,3 +27,7 @@ class ExplorePageState(rx.State):
     @rx.event
     def handle_change_genre(self, genre: str) -> None:
         self.genre = genre
+
+    def handle_on_load(self):
+        yield BaseState.check_login()
+        yield BookRegistrationPageState.reset_states()

@@ -164,8 +164,7 @@ class BookRegistrationPageState(BookInfo):
         finally:
             self.loading = False
 
-    @rx.event
-    def reset_states(self):
+    async def reset_states(self):
         self.reset()
 
 class ConditionDialogState(rx.State):

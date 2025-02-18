@@ -1,5 +1,6 @@
 import reflex as rx
 from se_library.states.base import BaseState
+from reflex.style import toggle_color_mode
 
 def profile_section() -> rx.Component:
     return rx.flex(
@@ -68,6 +69,9 @@ def searchbar() -> rx.Component:
         class_name="items-center gap-2 justify-center",
     )
 
+def dark_mode_toggle() -> rx.Component:
+    return rx.button(rx.icon("moon", color="#FDFDFD", size=20), class_name="cursor-pointer", on_click=toggle_color_mode)
+
 def profile_menu_desktop() -> rx.Component:
     return rx.menu.root(
         rx.menu.trigger(
@@ -99,6 +103,7 @@ def navbar_desktop(class_name: str="") -> rx.Component:
             on_click=rx.redirect("/explore"), 
             class_name="mr-auto text-3xl font-semibold text-[#FDFDFD] font-Outfit cursor-pointer"
         ),
+        dark_mode_toggle(),
         book_menu_desktop(),
         profile_menu_desktop(),
         class_name=f"w-full items-center justify-center drop-shadow-lg px-8 py-2 gap-6 rounded-b-md bg-[#3358D4] {class_name}"

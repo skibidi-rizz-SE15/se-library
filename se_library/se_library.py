@@ -29,6 +29,6 @@ app = rx.App(
 app.add_page(homepage)
 app.add_page(login_page)
 
-app.add_page(explore, on_load=BaseState.check_login())
+app.add_page(explore)
 app.add_page(profile, on_load=BaseState.check_login())
 app.add_page(book_registration_page, on_load=BaseState.check_login())
