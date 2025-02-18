@@ -31,11 +31,7 @@ class BookInfo(rx.State):
     cover_image_link: str = "" # Stay
     isbn: str = ""
     isbn13: str = "" # Stay
-    language: str = ""
-    date: str = ""
     pages: int = None # Stay
-    edition: str = ""
-    is_found_in_db: bool = False
     condition: ConditionEnum = None
 
     @rx.var(cache=False)
@@ -76,7 +72,6 @@ class BookRegistrationPageState(BookInfo):
                 self.publisher = existing_book.publisher.name
                 self.authors = [author.name for author in existing_book.authors]
                 self.book_exists = True
-                self.is_found_in_db = True
             else:
                 await self.fetch_isbndb()
         
@@ -153,11 +148,7 @@ class BookRegistrationPageState(BookInfo):
                 self.cover_image_link = book["image"]
                 self.isbn13 = book["isbn13"]
                 self.isbn = book["isbn"]
-                self.language = book["language"]
-                self.date = book["date_published"]
                 self.pages = book["pages"]
-                self.edition = book["edition"]
-                self.is_found_in_db = False
         except Exception as e:
             print(f"Error fetching book info: {e}")
             self.book_exists = False

@@ -43,7 +43,7 @@ def book_condition_dialog(dialog_button: rx.Component) -> rx.Component:
                     multiple_quantity_subform(),
                     single_quantity_subform(),
                 ),
-                rx.button("Lend Book", class_name="border"),
+                rx.button("Confirm", class_name="border"),
                 class_name="contents"
             ),
             size="2",
@@ -67,7 +67,7 @@ def single_quantity_subform() -> rx.Component:
 def multiple_quantity_subform() -> rx.Component:
     return  rx.grid(
         rx.text("Condition", class_name="w-full font-semibold font-Valera text-center"),
-        rx.text("Quantity", class_name="w-full font-semibold font-Valera text-center"),
+        rx.text("Copies", class_name="w-full font-semibold font-Valera text-center"),
         rx.text("Factory New"),
         rx.input(placeholder="0", type="number", class_name="w-fit"),
         rx.text("Minimal Wear"),
@@ -89,28 +89,13 @@ def book_details_list() -> rx.Component:
                 align="center",
             ),
             rx.data_list.item(
-                rx.data_list.label("Language"),
-                rx.data_list.value(BookRegistrationPageState.language),
-                align="center",
-            ),
-            rx.data_list.item(
                 rx.data_list.label("Publisher"),
                 rx.data_list.value(BookRegistrationPageState.publisher),
                 align="center",
             ),
             rx.data_list.item(
-                rx.data_list.label("Edition"),
-                rx.data_list.value(BookRegistrationPageState.edition),
-                align="center",
-            ),
-            rx.data_list.item(
                 rx.data_list.label("Pages"),
                 rx.data_list.value(BookRegistrationPageState.pages),
-                align="center",
-            ),
-            rx.data_list.item(
-                rx.data_list.label("Is Already Registered"),
-                rx.data_list.value(rx.cond(BookRegistrationPageState.is_found_in_db, "Yes", "No")),
                 align="center",
             ),
             class_name="text-gray-400"
@@ -138,15 +123,15 @@ def book_details_mobile_and_tablet() -> rx.Component:
                 rx.text(f"By: {BookRegistrationPageState.get_formatted_authors}", class_name="text-center text-sm font-Varela text-gray-500"),
                 book_condition_dialog(dialog_button=rx.flex("Lend Book", class_name="col-span-2 w-fit mx-auto px-8 py-2 mt-4 rounded-xl bg-[#F7F9FF] border-2 border-[#5472E4] text-[#5472E4] font-semibold cursor-pointer")),
                 rx.separator(),
-                rx.text("Details", class_name="text-xl text-gray-400 font-Varela mt-5 font-semibold"),
+                rx.text("Details", class_name="text-xl text-gray-400 font-Varela font-semibold"),
                 book_details_list(),
                 rx.separator(),
-                rx.text("Description", class_name="text-xl text-gray-400 font-Varela mt-5 font-semibold"),
+                rx.text("Description", class_name="text-xl text-gray-400 font-Varela font-semibold"),
                 rx.text(BookRegistrationPageState.description, class_name="text-sm text-gray-400 font-Varela text-justify"),
                 class_name="flex flex-col gap-4"
             ),
         ),
-        class_name="w-svw flex-col bg-[#F7F9FF] border border-gray-300 rounded-xl mt-2 p-2 space-y-4",
+        class_name="w-svw flex-col bg-[#FDFDFD] border border-gray-300 rounded-xl mt-2 p-2 space-y-4",
     )
 
 def book_registration_details() -> rx.Component:
@@ -174,6 +159,8 @@ def book_details() -> rx.Component:
                 rx.text(BookRegistrationPageState.publisher, class_name="font-Varela text-gray-500"),
                 rx.text("Authors", class_name="font-semibold font-Roboto"),
                 rx.text(BookRegistrationPageState.get_formatted_authors, class_name="font-Varela text-gray-500"),
+                rx.text("Pages", class_name="font-semibold font-Roboto"),
+                rx.text(BookRegistrationPageState.pages, class_name="font-Varela text-gray-500"),
                 rx.text("Description", class_name="font-semibold font-Roboto"),
                 rx.text(BookRegistrationPageState.description, class_name="overflow-y-auto pr-1 max-h-[15rem] font-Varela text-gray-500"),
                 book_condition_dialog(dialog_button=rx.flex("Lend Book", class_name="col-span-2 w-fit mx-auto px-8 py-2 mt-4 rounded-xl bg-[#F7F9FF] border-2 border-[#5472E4] text-[#5472E4] font-semibold cursor-pointer")),

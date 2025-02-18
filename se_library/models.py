@@ -38,6 +38,8 @@ class Book(rx.Model, table=True):
     description: str
     isbn13: str = Field(unique=True, nullable=False)
     publisher_id: int = Field(foreign_key="publisher.id")
+    cover_image_link: str = Field(unique=True, nullable=True)
+    pages: int = Field(nullable=False)
 
     publisher: Optional["Publisher"] = Relationship(back_populates="books")
     authors: List["Author"] = Relationship(back_populates="books", link_model=BookAuthorLink)
