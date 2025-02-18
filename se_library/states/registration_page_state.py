@@ -24,16 +24,16 @@ class AvailabilityEnum(Enum):
     RESERVED = "reserved"
 
 class BookInfo(rx.State):
-    title: str = ""
-    description: str = ""
-    authors: List[str] = []
-    publisher: str = ""
-    cover_image_link: str = ""
+    title: str = "" # Stay
+    description: str = "" # Stay
+    authors: List[str] = [] # Stay
+    publisher: str = "" # Stay
+    cover_image_link: str = "" # Stay
     isbn: str = ""
-    isbn13: str = ""
+    isbn13: str = "" # Stay
     language: str = ""
     date: str = ""
-    pages: int = None
+    pages: int = None # Stay
     edition: str = ""
     is_found_in_db: bool = False
     condition: ConditionEnum = None
@@ -165,5 +165,12 @@ class BookRegistrationPageState(BookInfo):
             self.loading = False
 
     @rx.event
-    def reset_state(self):
+    def reset_states(self):
+        self.reset()
+
+class ConditionDialogState(rx.State):
+    has_multiple_books: bool = False
+
+    @rx.event
+    def reset_states(self):
         self.reset()

@@ -1,5 +1,5 @@
 import reflex as rx
-from ..states.registration_page_state import BookRegistrationPageState
+from ..states.registration_page_state import BookRegistrationPageState, ConditionDialogState
 from .book_library import book_slot
 
 class PatternFormat(rx.NoSSRComponent):
@@ -27,49 +27,59 @@ def book_registration_form() -> rx.Component:
         class_name="flex flex-col gap-4 items-center h-[12rem] max-w-[25rem] bg-[#FDFDFD] shadow-xl rounded-xl p-3 mx-auto border border-gray-300 mt-4",
     )
 
-def confirmation_dialog(dialog_button: rx.Component) -> rx.Component:
+def book_condition_dialog(dialog_button: rx.Component) -> rx.Component:
     return rx.dialog.root(
         rx.dialog.trigger(dialog_button),
         rx.dialog.content(
-            quantity_contents(),
-            class_name="flex flex-col w-fit p-4",
-            size="2"
+            rx.dialog.title(rx.text("Confirmation", class_name="font-semibold font-Valera text-center text-lg")),
+            rx.flex(
+                rx.text("Quantity", class_name="font-semibold font-Valera text-center"),
+                rx.checkbox(rx.text("Multiple Books", class_name="font-semibold font-Valera"), name="has_multiple_books", default_checked=False, on_change=ConditionDialogState.set_has_multiple_books),
+                class_name="items-center space-x-2 w-full"
+            ),
+            rx.cond(
+                ConditionDialogState.has_multiple_books,
+                multiple_quantity_subform(),
+                single_quantity_subform(),
+            ),
+            rx.button("Lend Book", class_name="border"),
+            size="2",
+            on_close_auto_focus=ConditionDialogState.reset_states,
+            on_unmount=ConditionDialogState.reset_states,
+            class_name="flex flex-col gap-4 w-[20rem] p-4"
         ),
     )
 
-def single_condition_contents() -> rx.Component:
-    return rx.fragment(
-        rx.dialog.title(rx.text("Condition", class_name="font-semibold font-Valera text-center text-lg")),
-        rx.data_list.root(
-            rx.data_list.item(
-                rx.data_list.label("Factory New"),
-                rx.data_list.value(rx.input(name="condition", placeholder="")),
-            ),
-        )
+def single_quantity_subform() -> rx.Component:
+    return rx.flex(
+        rx.text("Condition", class_name="font-semibold font-Valera text-center"),
+        rx.select(
+            ["Factory New", "Minimal Wear", "Field Tested", "Well Worn", "Battle Scarred"],
+            name="condition",
+            class_name="w-full border border-gray-300 p-2 rounded-md",
+        ),
+        class_name="items-center space-x-2 w-full"
     )
 
-def quantity_contents() -> rx.Component:
-    return  rx.fragment(
-        rx.dialog.title(rx.text("Quantity", class_name="font-semibold font-Valera text-center text-lg")),
-        rx.flex(
-            rx.select(
-                ["1", "More than 1"],
-            ),
-            class_name="mt-2 flex-col items-center space-y-2 w-full"
-        ),
-        rx.flex(
-            rx.button("Next", rx.icon("arrow-right"), class_name="px-4 py-2 bg-[#5472E4] text-white rounded-xl font-semibold cursor-pointer"),
-            class_name="gap-4 mt-4 justify-center"
-        )
+def multiple_quantity_subform() -> rx.Component:
+    return  rx.grid(
+        rx.text("Condition", class_name="w-full font-semibold font-Valera text-center"),
+        rx.text("Quantity", class_name="w-full font-semibold font-Valera text-center"),
+        rx.text("Factory New"),
+        rx.input(placeholder="0", type="number", class_name="w-fit"),
+        rx.text("Minimal Wear"),
+        rx.input(placeholder="0", type="number", class_name="w-fit"),
+        rx.text("Field Tested"),
+        rx.input(placeholder="0", type="number", class_name="w-fit"),
+        rx.text("Well Worn"),
+        rx.input(placeholder="0", type="number", class_name="w-fit"),
+        rx.text("Battle Scarred"),
+        rx.input(placeholder="0", type="number", class_name="w-fit"),
+        class_name="grid grid-cols-[minmax(5rem,max-content)_1fr] h-fit gap-4"
     )
 
 def book_details_list() -> rx.Component:
     return rx.data_list.root(
-            rx.data_list.item(
-                rx.data_list.label("ISBN"),
-                rx.data_list.value(rx.code(BookRegistrationPageState.isbn, variant="ghost")),
-                align="center",
-            ),
             rx.data_list.item(
                 rx.data_list.label("ISBN-13"),
                 rx.data_list.value(rx.code(BookRegistrationPageState.isbn13, variant="ghost")),
@@ -119,20 +129,21 @@ def book_details_mobile_and_tablet() -> rx.Component:
         rx.cond(
             BookRegistrationPageState.loading,
             rx.flex(rx.spinner(size="3"), class_name="w-full h-full justify-center items-center"),
-            rx.fragment(
+            rx.flex(
                 rx.text(f"{BookRegistrationPageState.title}", class_name="font-semibold font-Varela text-sm text-center", trim="normal"),
                 rx.image(src=BookRegistrationPageState.cover_image_link, class_name="max-w-[45rem] max-h-[35rem] w-[300px] mx-auto rounded-sm shadow-md"),
                 rx.text(f"By: {BookRegistrationPageState.get_formatted_authors}", class_name="text-center text-sm font-Varela text-gray-500"),
-                confirmation_dialog(dialog_button=rx.flex("Lend Book", class_name="col-span-2 w-fit mx-auto px-8 py-2 mt-4 rounded-xl bg-[#F7F9FF] border-2 border-[#5472E4] text-[#5472E4] font-semibold cursor-pointer")),
+                book_condition_dialog(dialog_button=rx.flex("Lend Book", class_name="col-span-2 w-fit mx-auto px-8 py-2 mt-4 rounded-xl bg-[#F7F9FF] border-2 border-[#5472E4] text-[#5472E4] font-semibold cursor-pointer")),
                 rx.separator(),
                 rx.text("Details", class_name="text-xl text-gray-400 font-Varela mt-5 font-semibold"),
                 book_details_list(),
                 rx.separator(),
                 rx.text("Description", class_name="text-xl text-gray-400 font-Varela mt-5 font-semibold"),
                 rx.text(BookRegistrationPageState.description, class_name="text-sm text-gray-400 font-Varela text-justify"),
+                class_name="flex flex-col gap-4"
             ),
         ),
-        class_name="w-svw h-[77%] flex-col bg-[#F7F9FF] border border-gray-300 rounded-xl mt-2 p-2 space-y-4",
+        class_name="w-svw flex-col bg-[#F7F9FF] border border-gray-300 rounded-xl mt-2 p-2 space-y-4",
     )
 
 def book_registration_details() -> rx.Component:
@@ -154,15 +165,15 @@ def book_details() -> rx.Component:
             rx.grid(
                 rx.text("Title", class_name="font-semibold font-Roboto"),
                 rx.text(BookRegistrationPageState.title, class_name="font-Varela text-gray-500"),
-                rx.text("ISBN", class_name="font-semibold font-Roboto"),
-                rx.code(BookRegistrationPageState.isbn, variant="ghost", color_scheme="gray"),
+                rx.text("ISBN13", class_name="font-semibold font-Roboto"),
+                rx.code(BookRegistrationPageState.isbn13, variant="ghost", color_scheme="gray"),
                 rx.text("Publisher", class_name="font-semibold font-Roboto"),
                 rx.text(BookRegistrationPageState.publisher, class_name="font-Varela text-gray-500"),
                 rx.text("Authors", class_name="font-semibold font-Roboto"),
                 rx.text(BookRegistrationPageState.get_formatted_authors, class_name="font-Varela text-gray-500"),
                 rx.text("Description", class_name="font-semibold font-Roboto"),
                 rx.text(BookRegistrationPageState.description, class_name="overflow-y-auto pr-1 max-h-[15rem] font-Varela text-gray-500"),
-                confirmation_dialog(dialog_button=rx.flex("Lend Book", class_name="col-span-2 w-fit mx-auto px-8 py-2 mt-4 rounded-xl bg-[#F7F9FF] border-2 border-[#5472E4] text-[#5472E4] font-semibold cursor-pointer")),
+                book_condition_dialog(dialog_button=rx.flex("Lend Book", class_name="col-span-2 w-fit mx-auto px-8 py-2 mt-4 rounded-xl bg-[#F7F9FF] border-2 border-[#5472E4] text-[#5472E4] font-semibold cursor-pointer")),
                 class_name="grid grid-cols-[minmax(5rem,max-content)_1fr] h-fit gap-4"
             ),
             class_name="grid grid-cols-[minmax(10rem,25%)_1fr] w-full gap-x-4 gap-y-2 max-h-min overflow-hidden border border-gray-300 rounded-xl p-4"

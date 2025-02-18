@@ -30,5 +30,5 @@ def book_registration_page() -> rx.Component:
                 class_name="grid-rows-[min-content_1fr] h-screen w-screen bg-[#F7F9FF]",
             ),
         ),
-        on_unmount=BookRegistrationPageState.reset_state
+        on_unmount=BookRegistrationPageState.reset_states
     )
