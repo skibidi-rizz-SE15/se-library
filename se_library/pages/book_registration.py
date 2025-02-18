@@ -21,11 +21,11 @@ def book_registration_page() -> rx.Component:
                     rx.flex(
                         book_registration_form(),
                         book_registration_details(),
-                        class_name="flex-col gap-4 p-4 mx-auto bg-[#F7F9FF] w-[max(30rem,70%)] min-h-full h-max"
+                        class_name="flex-col gap-4 p-4 mx-auto w-[max(30rem,70%)] min-h-full h-max"
                     ),
                     class_name="w-full overflow-y-auto"
                 ),
-                class_name="grid-rows-[min-content_1fr] h-screen w-screen bg-[#F7F9FF]",
+                class_name="grid-rows-[min-content_1fr] h-screen w-screen",
             ),
         ),
     )

@@ -40,7 +40,7 @@ def page() -> rx.Component:
                 searchbar(),
                 sort_option_desktop(),
                 book_library(),
-                class_name="flex flex-col h-screen w-screen bg-[#F7F9FF]",
+                class_name="flex flex-col h-screen w-screen",
             ),
         ),
     )

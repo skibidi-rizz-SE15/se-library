@@ -106,7 +106,8 @@ def navbar_desktop(class_name: str="") -> rx.Component:
         dark_mode_toggle(),
         book_menu_desktop(),
         profile_menu_desktop(),
-        class_name=f"w-full items-center justify-center drop-shadow-lg px-8 py-2 gap-6 rounded-b-md bg-[#3358D4] {class_name}"
+        class_name=f"w-full items-center justify-center drop-shadow-lg px-8 py-2 gap-6 rounded-b-md {class_name}",
+        background_color=rx.color_mode_cond(light=rx.color("indigo", 10), dark=rx.color("indigo", 10))
     )
 
 def navbar_mobile_tablet() -> rx.Component:

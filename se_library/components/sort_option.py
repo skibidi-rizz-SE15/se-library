@@ -3,7 +3,7 @@ from ..states.explore_page import ExplorePageState
 
 def genre_dropdown() -> rx.Component:
     return rx.menu.root(
-        rx.menu.trigger(rx.button(rx.text(f"{ExplorePageState.genre}"), rx.icon("chevron-right", color="#3358D4"), class_name="rounded-xl bg-[#F7F9FF] text-[#3358D4] font-semibold font-Verela text-lg")),
+        rx.menu.trigger(rx.button(rx.text(f"{ExplorePageState.genre}"), rx.icon("chevron-right"), class_name="rounded-xl font-semibold font-Verela text-lg")),
         rx.menu.content(
             rx.menu.item("All Genres", on_click=ExplorePageState.set_genre("All Genres")),
             rx.separator(),
@@ -33,20 +33,37 @@ def genre_dropdown() -> rx.Component:
 def all_button() -> rx.Component:
     return rx.cond(
         ExplorePageState.is_all_selected,
-        rx.button("All Books", class_name="rounded-xl bg-[#3358D4] font-Verela text-lg"),
-        rx.button("All Books", class_name="rounded-xl bg-[#F7F9FF] text-[#3358D4] font-Verela text-lg", on_click=ExplorePageState.handle_select_all),
+        rx.button("All Books", class_name="rounded-xl font-Verela text-lg"),
+        rx.color_mode_cond(
+            light=rx.button("All Books", class_name="rounded-xl bg-white text-[#3358D4] font-Verela text-lg", on_click=ExplorePageState.handle_select_all),
+            dark=rx.button("All Books", class_name="rounded-xl bg-[#111113] text-[#FDFDFD] font-Verela text-lg", on_click=ExplorePageState.handle_select_all)
+        )
     )
 
 def available_button() -> rx.Component:
     return rx.cond(
         ExplorePageState.is_available_selected,
-        rx.button("Available Books", class_name="rounded-xl bg-[#3358D4] font-Verela text-lg"),
-        rx.button("Available Books", class_name="rounded-xl bg-[#F7F9FF] text-[#3358D4] font-Verela text-lg", on_click=ExplorePageState.handle_select_available),
+        rx.button("Available Books", class_name="rounded-xl font-Verela text-lg"),
+        rx.color_mode_cond(
+            light=rx.button("Available Books", class_name="rounded-xl bg-white text-[#3358D4] font-Verela text-lg", on_click=ExplorePageState.handle_select_available),
+            dark=rx.button("Available Books", class_name="rounded-xl bg-[#111113] text-[#FDFDFD] font-Verela text-lg", on_click=ExplorePageState.handle_select_available)
+        )
     )
 
 def sort_by_dropdown() -> rx.Component:
     return rx.menu.root(
-        rx.menu.trigger(rx.button(rx.text(rx.text.strong("Sort By ", class_name="text-[#182449] font-Roboto font-semibold"), f"{ExplorePageState.sort_by}"), rx.icon("chevron-down", color="#3358D4"), class_name="rounded-xl bg-[#F7F9FF] text-[#3358D4] font-Verela text-lg")),
+        rx.menu.trigger(
+            rx.button(
+                rx.text(
+                    rx.text.strong("Sort By ", class_name="font-Roboto font-semibold"),
+                    f"{ExplorePageState.sort_by}",
+                ),
+                rx.icon("chevron-down"),
+                class_name="rounded-xl font-Verela text-lg",
+                color=rx.color_mode_cond(light=rx.color("indigo", 10), dark=rx.color("white")),
+                background_color=rx.color_mode_cond(light=rx.color("white"), dark=rx.color("black"))
+            )
+        ),
         rx.menu.content(
             rx.menu.item("Newest", on_click=ExplorePageState.set_sort_by("Newest")),
             rx.separator(),

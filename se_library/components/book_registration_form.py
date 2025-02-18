@@ -21,10 +21,11 @@ def book_registration_form() -> rx.Component:
             name="raw_isbn",
             class_name="w-full rounded-md border border-gray-300 p-2",
         ),
-        rx.button("Search", class_name="w-fit px-4 py-2 mt-auto"),
+        rx.button("Search", class_name="w-fit px-4 py-2 mt-auto", background_color=rx.color_mode_cond(light=rx.color("indigo", 10), dark=rx.color("indigo", 10))),
         on_submit=BookRegistrationPageState.handle_search,
         reset_on_submit=True,
-        class_name="flex flex-col gap-4 items-center h-[12rem] max-w-[25rem] bg-[#FDFDFD] shadow-xl rounded-xl p-3 mx-auto border border-gray-300 mt-4",
+        class_name="flex flex-col gap-4 items-center h-[12rem] max-w-[25rem] shadow-xl rounded-xl p-3 mx-auto mt-4",
+        background_color=rx.color_mode_cond(light="#F7F9FF", dark="#11131F")
     )
 
 def book_condition_dialog(dialog_button: rx.Component) -> rx.Component:
