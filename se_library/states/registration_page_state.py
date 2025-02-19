@@ -97,7 +97,9 @@ class BookRegistrationPageState(BookInfo):
                     title=self.title,
                     description=self.description,
                     isbn13=self.isbn13,
-                    publisher_id=new_publisher.id
+                    publisher_id=new_publisher.id,
+                    cover_image_link=self.cover_image_link,
+                    pages=self.pages
                 ))
                 for author_name in self.authors:
                     session.add(Author(
