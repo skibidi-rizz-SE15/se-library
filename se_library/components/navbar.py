@@ -89,8 +89,24 @@ def searchbar() -> rx.Component:
         class_name="items-center gap-2 justify-center",
     )
 
+class toggle_btn_mode(rx.State):
+    is_clicked: bool = False
+
+    @rx.event
+    def toggle(self):
+        self.is_clicked = not self.is_clicked
+
 def dark_mode_toggle() -> rx.Component:
-    return rx.button(rx.icon("moon", color="#FDFDFD", size=20), class_name="cursor-pointer", on_click=toggle_color_mode)
+    return rx.flex(
+        rx.cond(
+            toggle_btn_mode.is_clicked,
+            rx.button(rx.icon("moon", size=20), class_name="cursor-pointer", on_click=toggle_btn_mode.toggle, background_color=rx.color_mode_cond(light=rx.color("indigo", 10), dark=rx.color("indigo", 10))),
+            rx.button(rx.icon("sun", size=20), class_name="cursor-pointer", on_click=toggle_btn_mode.toggle, background_color=rx.color_mode_cond(light=rx.color("indigo", 10), dark=rx.color("indigo", 10))),
+        ),
+        on_click=toggle_color_mode,
+        class_name="cursor-pointer border-gray-300 rounded-lg",
+        background_color=rx.color_mode_cond(light=rx.color("indigo", 10), dark=rx.color("indigo", 10))
+    )
 
 def profile_menu_desktop() -> rx.Component:
     return rx.menu.root(
