@@ -138,13 +138,10 @@ def book_details_mobile_and_tablet() -> rx.Component:
 
 def book_registration_details() -> rx.Component:
     return rx.cond(
-        BookRegistrationPageState.book_exists,
-        rx.cond(
             BookRegistrationPageState.loading,
-            rx.flex(rx.spinner(size="3"), class_name="w-full h-[55%] justify-center items-center"),
+            rx.flex(rx.spinner(size="3"), class_name="w-full h-[55%] justify-center items-center mt-[10rem]"),
             book_details(),
         )
-    )
 
 def book_details() -> rx.Component:
     return rx.cond(
@@ -170,5 +167,9 @@ def book_details() -> rx.Component:
             ),
             class_name="grid grid-cols-[minmax(10rem,25%)_1fr] w-full gap-x-4 gap-y-2 max-h-min overflow-hidden border border-gray-300 rounded-xl p-4"
         ),
-        rx.text("ISBN not found.", class_name="flex self-center")
+        rx.cond(
+            BookRegistrationPageState.is_search,
+            rx.text("ISBN not found.", class_name="flex self-center"),
+            rx.box()
+        )
     )
