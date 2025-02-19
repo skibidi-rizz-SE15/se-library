@@ -4,9 +4,9 @@ from reflex.style import toggle_color_mode
 
 def profile_section() -> rx.Component:
     return rx.flex(
-        rx.flex(rx.icon("circle-user-round", color="black", size=50), class_name="w-full justify-center"),
+        rx.flex(rx.icon("circle-user-round", size=50), class_name="w-full justify-center"),
         rx.flex(
-            rx.text("User", class_name="text-2xl font-semibold text-[#253974] font-Outfit"),
+            rx.text("User", class_name="text-2xl font-semibold font-Outfit"),
             rx.text("Software Engineering", class_name="text-sm text-neutral-500 italic"),
             class_name="w-full h-1/2 justify-center flex-col"
         ),
@@ -29,7 +29,8 @@ def add_book_menu() -> rx.Component:
     return rx.flex(
         rx.icon("book-copy", color="#737373", size=16),
         rx.text("Add Book", class_name="text-lg text-neutral-500 font-Roboto"),
-        class_name="w-full h-fit items-center justify-center space-x-2"
+        class_name="w-full h-fit items-center justify-center space-x-2",
+        on_click=rx.redirect("/book-registration")
     )
 
 def logout_menu() -> rx.Component:
@@ -40,8 +41,26 @@ def logout_menu() -> rx.Component:
             class_name="w-full h-1/4 text-left",
             color_scheme="red",
             variant="soft",
+            on_click=BaseState.logout
         ),
         class_name="w-full h-1/4 items-center p-1"        
+    )
+
+class SwitchState(rx.State):
+    is_on: bool = False
+
+    @rx.event
+    def toggle(self):
+        self.is_on = not self.is_on
+        
+
+
+def toggle_color_mode_switch() -> rx.Component:
+    return rx.flex(
+        rx.icon("sun", color="#737373", size=16),
+        rx.switch(on_change=SwitchState.toggle, checked=SwitchState.is_on, on_click=toggle_color_mode),
+        rx.icon("moon", color="#737373", size=16),
+        class_name="w-full h-1/4 items-center justify-center space-x-2",
     )
 
 def menu_section() -> rx.Component:
@@ -59,6 +78,7 @@ def drawer_content() -> rx.Component:
         menu_section(),
         rx.separator(),
         logout_menu(),
+        toggle_color_mode_switch(),
         class_name="w-full h-full flex-col"
     )
 
@@ -112,17 +132,19 @@ def navbar_desktop(class_name: str="") -> rx.Component:
 
 def navbar_mobile_tablet() -> rx.Component:
     return rx.flex(
-        rx.text("SELibrary", class_name="text-3xl font-semibold text-[#FDFDFD] font-Outfit"),
+        rx.text("SELibrary", class_name="text-3xl font-semibold text-[#FDFDFD] font-Outfit", on_click=rx.redirect("/explore")),
         rx.drawer.root(
             rx.drawer.trigger(rx.icon("menu", color="white", size=32)),
-            rx.drawer.overlay(z_index="1"),
+            rx.drawer.overlay(z_index="10"),
             rx.drawer.portal(
                 rx.drawer.content(
                     drawer_content(),
-                    class_name="w-[65%] bg-neutral-100 h-full",
+                    class_name="w-[65%] h-full",
+                    background_color=rx.color_mode_cond(light=rx.color("sage", 6), dark=rx.color("indigo", 1))
                 ),
             ),
             direction="left",
         ),
-        class_name="w-full h-fit items-center justify-between drop-shadow-lg p-2 rounded-b-md bg-[#3358D4]"
+        class_name="w-full h-fit items-center justify-between drop-shadow-lg p-2 rounded-b-md",
+        background_color=rx.color_mode_cond(light=rx.color("indigo", 10), dark=rx.color("indigo", 10))
     )

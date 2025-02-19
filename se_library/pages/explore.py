@@ -31,7 +31,7 @@ def page() -> rx.Component:
                 rx.tablet_only(
                     book_library(min_item_width=10),
                 ),
-                class_name="w-svw h-svh flex flex-col bg-[#F7F9FF]",
+                class_name="w-svw h-svh flex flex-col",
             ),
         ),
         rx.desktop_only(

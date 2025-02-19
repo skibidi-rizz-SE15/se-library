@@ -129,10 +129,11 @@ def book_details_mobile_and_tablet() -> rx.Component:
                 rx.separator(),
                 rx.text("Description", class_name="text-xl text-gray-400 font-Varela font-semibold"),
                 rx.text(BookRegistrationPageState.description, class_name="text-sm text-gray-400 font-Varela text-justify"),
-                class_name="flex flex-col gap-4"
+                class_name="flex flex-col gap-4",
+                background_color=rx.color_mode_cond(light="#F7F9FF", dark="#11131F")
             ),
         ),
-        class_name="w-svw flex-col bg-[#FDFDFD] border border-gray-300 rounded-xl mt-2 p-2 space-y-4",
+        class_name="w-svw flex-col border-t border-gray-300 rounded-xl mt-2 p-2 space-y-4",
     )
 
 def book_registration_details() -> rx.Component:

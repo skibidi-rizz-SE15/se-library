@@ -11,7 +11,7 @@ def book_registration_page() -> rx.Component:
                 navbar_mobile_tablet(),
                 book_registration_form(),
                 book_registration_details_mobile_and_tablet(),
-                class_name="w-svw h-svh flex-col bg-[#F7F9FF]",
+                class_name="w-svw h-svh flex-col",
             ),
         ),
         rx.desktop_only(

@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 from se_library.states.base import BaseState
 
 load_dotenv()
+rx.remove_local_storage("chakra-ui-color-mode")
 
 app = rx.App(
     theme=rx.theme(
@@ -24,7 +25,7 @@ app = rx.App(
         "https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap",
         "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap",
         "https://fonts.googleapis.com/css2?family=Varela&display=swap"
-    ]
+    ],
 )
 app.add_page(homepage)
 app.add_page(login_page)
