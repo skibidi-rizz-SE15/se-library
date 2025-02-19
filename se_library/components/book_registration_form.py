@@ -104,36 +104,33 @@ def book_details_list() -> rx.Component:
 
 def book_registration_details_mobile_and_tablet() -> rx.Component:
     return rx.cond(
-        BookRegistrationPageState.book_exists,
-        book_details_mobile_and_tablet(),
-        rx.cond(
-            ~BookRegistrationPageState.is_search,
-            rx.box(),
-            rx.text("ISBN not found.", class_name="flex self-center")
+            BookRegistrationPageState.loading,
+            rx.flex(rx.spinner(size="3"), class_name="w-full h-[55%] justify-center items-center mt-[10rem]"),
+            book_details_mobile_and_tablet()
         )
-    )
 
 def book_details_mobile_and_tablet() -> rx.Component:
-    return rx.flex(
-        rx.cond(
-            BookRegistrationPageState.loading,
-            rx.flex(rx.spinner(size="3"), class_name="w-full h-full justify-center items-center"),
-            rx.flex(
-                rx.text(f"{BookRegistrationPageState.title}", class_name="font-semibold font-Varela text-sm text-center", trim="normal"),
-                rx.image(src=BookRegistrationPageState.cover_image_link, class_name="max-w-[45rem] max-h-[35rem] w-[300px] mx-auto rounded-sm shadow-md"),
-                rx.text(f"By: {BookRegistrationPageState.get_formatted_authors}", class_name="text-center text-sm font-Varela text-gray-500"),
-                book_condition_dialog(dialog_button=rx.flex("Lend Book", class_name="col-span-2 w-fit mx-auto px-8 py-2 mt-4 rounded-xl bg-[#F7F9FF] border-2 border-[#5472E4] text-[#5472E4] font-semibold cursor-pointer")),
-                rx.separator(),
-                rx.text("Details", class_name="text-xl text-gray-400 font-Varela font-semibold"),
-                book_details_list(),
-                rx.separator(),
-                rx.text("Description", class_name="text-xl text-gray-400 font-Varela font-semibold"),
-                rx.text(BookRegistrationPageState.description, class_name="text-sm text-gray-400 font-Varela text-justify"),
-                class_name="flex flex-col gap-4",
-                background_color=rx.color_mode_cond(light="#F7F9FF", dark="#11131F")
-            ),
+    return rx.cond(
+        BookRegistrationPageState.book_exists,
+        rx.flex(
+            rx.text(f"{BookRegistrationPageState.title}", class_name="font-semibold font-Varela text-sm text-center mt-2", trim="normal"),
+            rx.image(src=BookRegistrationPageState.cover_image_link, class_name="max-w-[45rem] max-h-[35rem] w-[300px] mx-auto rounded-sm shadow-md"),
+            rx.text(f"By: {BookRegistrationPageState.get_formatted_authors}", class_name="text-center text-sm font-Varela text-gray-500"),
+            book_condition_dialog(dialog_button=rx.flex("Lend Book", class_name="col-span-2 w-fit mx-auto px-8 py-2 mt-4 rounded-xl bg-[#F7F9FF] border-2 border-[#5472E4] text-[#5472E4] font-semibold cursor-pointer")),
+            rx.separator(),
+            rx.text("Details", class_name="text-xl text-gray-400 font-Varela font-semibold"),
+            book_details_list(),
+            rx.separator(),
+            rx.text("Description", class_name="text-xl text-gray-400 font-Varela font-semibold"),
+            rx.text(BookRegistrationPageState.description, class_name="text-sm text-gray-400 font-Varela text-justify"),
+            class_name="flex flex-col gap-4 mt-4 p-2",
+            background_color=rx.color_mode_cond(light="#F7F9FF", dark="#11131F")
         ),
-        class_name="w-svw flex-col border-t border-gray-300 rounded-xl mt-2 p-2 space-y-4",
+        rx.cond(
+            BookRegistrationPageState.is_search,
+            rx.text("ISBN not found.", class_name="flex self-center"),
+            rx.box()
+        )
     )
 
 def book_registration_details() -> rx.Component:
