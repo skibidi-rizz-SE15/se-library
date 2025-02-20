@@ -15,6 +15,8 @@ config = rx.Config(
                     "Outfit": ['Outfit', 'sans-serif'],
                     "Roboto": ['Roboto', 'sans-serif'],
                     "Varela": ['Varela', 'sans-serif'],
+                    "Montserrat": ['Montserrat', 'sans-serif'],
+                    
                 },
             },
         }
