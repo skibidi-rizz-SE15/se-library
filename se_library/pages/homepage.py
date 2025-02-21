@@ -384,7 +384,7 @@ def footer() -> rx.Component:
                 rx.text("© 2024 SE-Library. All rights reserved.", class_name="text-[#FDFDFD] font-Roboto text-xs"),
                 class_name="w-full h-full justify-center items-center",
             ),
-            class_name="w-full bg-[#182449] h-[2rem] items-end justify-center mt-8",
+            class_name="w-full bg-[#182449] h-[2rem] justify-center mt-8",
         ),
         rx.desktop_only(
             rx.flex(

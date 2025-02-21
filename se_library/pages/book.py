@@ -10,9 +10,15 @@ from se_library.pages.homepage import footer
 def book_page() -> rx.Component:
     return rx.flex(
         rx.mobile_and_tablet(
-            navbar_mobile_tablet(),
-            book_details_mobile_tablet(),
-            footer(),
+            rx.flex(
+                navbar_mobile_tablet(),
+                rx.flex(
+                    book_details_mobile_tablet(),
+                    footer(),
+                    class_name="flex-col w-full overflow-y-auto"
+                ),
+                class_name="flex-col w-svw h-svh"
+            )
         ),
         rx.desktop_only(
             rx.flex(
