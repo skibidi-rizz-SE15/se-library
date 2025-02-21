@@ -7,25 +7,6 @@ from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-class ConditionEnum(Enum):
-        FACTORY_NEW = "factory_new"
-        MINIMAL_WEAR = "minimal_wear"
-        FIELD_TESTED = "field_tested"
-        WELL_WORN = "well_worn"
-        BATTLE_SCARRED = "battle_scarred"
-
-class AvailabilityEnum(Enum):
-    AVAILABLE = "available"
-    UNAVAILABLE = "unavailable"
-    RESERVED = "reserved"
-
-class BorrowStatusEnum(Enum):
-    PENDING = "pending"
-    APPROVED = "approved"
-    REJECTED = "rejected"
-    BORROWED = "borrowed"
-    RETURNED = "returned"
-
 class User(rx.Model, table=True):
     name: str = Field(unique=True, nullable=False)
     email: str = Field(unique=True, index=True, nullable=False)
@@ -65,15 +46,34 @@ class Book(rx.Model, table=True):
 
 
 class BookInventory(rx.Model, table=True):
+    class ConditionEnum(Enum):
+        FACTORY_NEW = "factory_new"
+        MINIMAL_WEAR = "minimal_wear"
+        FIELD_TESTED = "field_tested"
+        WELL_WORN = "well_worn"
+        BATTLE_SCARRED = "battle_scarred"
+
+    class AvailabilityEnum(Enum):
+        AVAILABLE = "available"
+        UNAVAILABLE = "unavailable"
+        RESERVED = "reserved"
+
     owner_id: int = Field(foreign_key="user.id", nullable=False)
     book_id: int = Field(foreign_key="book.id", nullable=False)
-    condition: ConditionEnum = Field(sa_column=ConditionEnum)
-    availability: AvailabilityEnum = Field(sa_column=AvailabilityEnum)
+    condition: "BookInventory.ConditionEnum" = Field(sa_column=ConditionEnum)
+    availability: "BookInventory.AvailabilityEnum" = Field(sa_column=AvailabilityEnum)
 
 class BookTransaction(rx.Model, table=True):
+    class BorrowStatusEnum(Enum):
+        PENDING = "pending"
+        APPROVED = "approved"
+        REJECTED = "rejected"
+        BORROWED = "borrowed"
+        RETURNED = "returned"
+
     borrower_id: int = Field(foreign_key="user.id", nullable=False)
     book_inventory_id: int = Field(foreign_key="bookinventory.id", nullable=False)
-    borrow_status: BorrowStatusEnum = Field(sa_column=BorrowStatusEnum)
+    borrow_status: "BookTransaction.BorrowStatusEnum" = Field(sa_column=BorrowStatusEnum)
     duration: int
     borrow_date: datetime
     return_date: datetime

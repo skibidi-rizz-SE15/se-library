@@ -3,13 +3,25 @@ import requests
 import json
 from typing import List
 from enum import Enum
-from ..models import Book, BookInventory, Publisher, Author, BookAuthorLink, ConditionEnum, AvailabilityEnum
+from ..models import Book, BookInventory, Publisher, Author, BookAuthorLink
 from .base import BaseState
 from dotenv import load_dotenv
 import os
 import asyncio
 
 load_dotenv()
+
+class ConditionEnum(Enum):
+    FACTORY_NEW = "factory_new"
+    MINIMAL_WEAR = "minimal_wear"
+    FIELD_TESTED = "field_tested"
+    WELL_WORN = "well_worn"
+    BATTLE_SCARRED = "battle_scarred"
+
+class AvailabilityEnum(Enum):
+    AVAILABLE = "available"
+    UNAVAILABLE = "unavailable"
+    RESERVED = "reserved"
 
 class BookInfo(rx.State):
     title: str = "" # Stay
