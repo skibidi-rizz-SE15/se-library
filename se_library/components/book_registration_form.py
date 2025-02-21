@@ -57,16 +57,10 @@ def book_condition_dialog(dialog_button: rx.Component) -> rx.Component:
 def single_quantity_subform() -> rx.Component:
     return rx.flex(
         rx.text("Condition", class_name="font-semibold font-Valera text-center"),
-        rx.menu.root(
-            rx.menu.trigger(rx.button("Select Condition", class_name="w-fit border border-gray-300 p-2 rounded-md")),
-            rx.menu.content(
-                rx.menu.item(rx.text("Factory New")),
-                rx.menu.item(rx.text("Minimal Wear")),
-                rx.menu.item(rx.text("Field Tested")),
-                rx.menu.item(rx.text("Well Worn")),
-                rx.menu.item(rx.text("Battle Scarred")),
-            ),
-            class_name="w-full"
+        rx.select(
+            ["Factory New", "Minimal Wear", "Field Tested", "Well Worn", "Battle Scarred"],
+            name="condition",
+            class_name="w-full border border-gray-300 p-2 rounded-md",
         ),
         class_name="items-center space-x-2 w-full"
     )
