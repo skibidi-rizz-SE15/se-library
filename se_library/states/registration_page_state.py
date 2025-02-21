@@ -11,15 +11,16 @@ import asyncio
 
 load_dotenv()
 
+BOOK_REGISTRATION_LIMIT = 50
+
 class BookInfo(rx.State):
-    title: str = "" # Stay
-    description: str = "" # Stay
-    authors: List[str] = [] # Stay
-    publisher: str = "" # Stay
-    cover_image_link: str = "" # Stay
-    isbn: str = ""
-    isbn13: str = "" # Stay
-    pages: int = None # Stay
+    title: str = ""
+    description: str = ""
+    authors: List[str] = []
+    publisher: str = ""
+    cover_image_link: str = ""
+    isbn13: str = ""
+    pages: int = None
     condition: ConditionEnum = None
 
     @rx.var(cache=False)
@@ -27,8 +28,9 @@ class BookInfo(rx.State):
         return ", ".join(self.authors)
 
     @rx.event
-    def set_formatted_isbn(self, raw_isbn: str):
-        self.isbn = raw_isbn.strip().replace(" ", "")
+    def set_isbn13_from_input(self, raw_isbn: str):
+        # add conditions for isbn13/convert 10 to 13/invalid
+        self.isbn13 = raw_isbn.strip().replace(" ", "")
     
 class BookRegistrationPageState(BookInfo):
     loading: bool = False
@@ -39,22 +41,19 @@ class BookRegistrationPageState(BookInfo):
     @rx.event
     def set_new_condition(self, selected_condition: str):
         self.book_condition = selected_condition
-        if selected_condition == "Select Condition":
-            pass
-        else:
-            match selected_condition:
-                case "Factory New":
-                    self.condition = ConditionEnum.FACTORY_NEW
-                case "Minimal Wear":
-                    self.condition = ConditionEnum.MINIMAL_WEAR
-                case "Field Tested":
-                    self.condition = ConditionEnum.FIELD_TESTED
-                case "Well Worn":
-                    self.condition = ConditionEnum.WELL_WORN
-                case "Battle Scarred":
-                    self.condition = ConditionEnum.BATTLE_SCARRED
-                case _:
-                    pass
+        match selected_condition:
+            case "Factory New":
+                self.condition = ConditionEnum.FACTORY_NEW
+            case "Minimal Wear":
+                self.condition = ConditionEnum.MINIMAL_WEAR
+            case "Field Tested":
+                self.condition = ConditionEnum.FIELD_TESTED
+            case "Well Worn":
+                self.condition = ConditionEnum.WELL_WORN
+            case "Battle Scarred":
+                self.condition = ConditionEnum.BATTLE_SCARRED
+            case "Select Condition", _:
+                pass
 
     @rx.event
     async def handle_search(self, form_data: dict):
@@ -62,7 +61,7 @@ class BookRegistrationPageState(BookInfo):
         self.is_search = True
         yield
         await asyncio.sleep(1)
-        self.set_formatted_isbn(form_data["raw_isbn"])
+        self.set_isbn13_from_input(form_data["raw_isbn"])
         await self.set_book_info()
         if self.book_exists:
             self.loading = False
@@ -87,7 +86,6 @@ class BookRegistrationPageState(BookInfo):
         
     @rx.event
     async def handle_register_book(self, form_data: dict):
-        print(form_data)
         with rx.session() as session:
             existing_book = session.exec(
                 Book.select().where(
@@ -116,6 +114,7 @@ class BookRegistrationPageState(BookInfo):
                     session.add(Author(
                         name=author_name
                     ))
+                session.commit()
                 new_book = session.exec(
                     Book.select().where(
                         Book.isbn13 == self.isbn13
@@ -123,7 +122,7 @@ class BookRegistrationPageState(BookInfo):
                 ).first()
                 new_authors = session.exec(
                     Author.select().where(
-                        Author.name in self.authors     
+                        Author.name.in_(self.authors)     
                     )
                 ).all()
                 for new_author in new_authors:
@@ -135,13 +134,12 @@ class BookRegistrationPageState(BookInfo):
             # add instance
             base_state = await self.get_state(BaseState)
             user = base_state.user
-            has_multiple_books = form_data["has_multiple_books"]
+            has_multiple_books = form_data["has_multiple_books"] if "has_multiple_books" in form_data else None
             if has_multiple_books == "on":
                 try:
                     quantities = []
                     total = 0
                     
-                    # Check each condition field
                     for condition in ConditionEnum:
                         qty = form_data.get(f"{condition.value}", "0")
                         try:
@@ -152,11 +150,8 @@ class BookRegistrationPageState(BookInfo):
                             quantities.append((condition, qty_int))
                         except ValueError:
                             return rx.window_alert(f"Invalid quantity for {condition.value}")
-                    
-                    # Check if total exceeds 50
-                    if total > 50:
+                    if total > BOOK_REGISTRATION_LIMIT:
                         return rx.window_alert("Total quantity cannot exceed 50 books")
-                    # Add book inventory entries for each condition
                     for condition, quantity in quantities:
                         if quantity > 0:
                             session.add(BookInventory(
@@ -179,7 +174,7 @@ class BookRegistrationPageState(BookInfo):
     
     async def fetch_isbndb(self) -> None:
         try:
-            res = requests.get(f"https://api2.isbndb.com/book/{self.isbn}", headers={
+            res = requests.get(f"https://api2.isbndb.com/book/{self.isbn13}", headers={
                 "Host": "api2.isbndb.com",
                 "User-Agent": "insomnia/5.12.4",
                 "Authorization": os.getenv("ISBN_API_KEY"),
@@ -196,7 +191,6 @@ class BookRegistrationPageState(BookInfo):
                 self.publisher = book["publisher"]
                 self.cover_image_link = book["image"]
                 self.isbn13 = book["isbn13"]
-                self.isbn = book["isbn"]
                 self.pages = book["pages"]
         except Exception as e:
             print(f"Error fetching book info: {e}")
