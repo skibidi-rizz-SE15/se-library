@@ -17,10 +17,12 @@ def book_page() -> rx.Component:
         rx.desktop_only(
             rx.flex(
                 navbar_desktop(),
-                book_details_desktop(),
-                class_name="flex-col h-full w-full",
+                rx.flex(
+                    book_details_desktop(),
+                    class_name="w-full overflow-y-auto"
+                ),
+                class_name="flex-col h-screen w-screen",
+                background_color=rx.color_mode_cond(light="#F7F9FF", dark="#11131F")
             ),
         ),
-        class_name="w-screen",
-        background_color=rx.color_mode_cond(light="#F7F9FF", dark="#11131F")
     )

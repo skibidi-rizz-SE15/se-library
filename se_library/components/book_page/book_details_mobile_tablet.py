@@ -9,11 +9,7 @@ def book_details_mobile_tablet() -> rx.Component:
         rx.text(f"Practical Object-Oriented Design with UML (UK Higher Education Computing Computer Science)", class_name="font-semibold font-Varela text-sm text-center mt-2", trim="normal"),
         rx.image(src="/static/pok_uml.jpg", class_name="max-w-[45rem] max-h-[35rem] w-[300px] mx-auto rounded-sm shadow-md"),
         rx.text(f"By: Mark Priestley", class_name="text-center text-sm font-Varela text-gray-500"),
-        rx.flex(
-            borrow_dialog(dialog_btn=rx.flex("Reserve", class_name="col-span-2 w-fit mx-auto px-8 py-2 mt-4 rounded-xl bg-[#F7F9FF] border-2 border-[#5472E4] text-[#5472E4] font-semibold cursor-pointer")),
-            borrow_dialog(dialog_btn=rx.flex("Borrow", class_name="col-span-2 w-[60%] justify-center mx-auto px-8 py-2 mt-4 rounded-xl text-white font-semibold cursor-pointer", background_color=rx.Color("indigo", 10))),
-            class_name="w-full justify-between"
-        ),
+        borrow_dialog(dialog_btn=rx.flex("Borrow", class_name="col-span-2 w-[60%] justify-center mx-auto px-8 py-2 mt-4 rounded-xl text-white font-semibold cursor-pointer", background_color=rx.Color("indigo", 10))),
         rx.separator(),
         rx.text("Details", class_name="text-xl text-gray-400 font-Varela font-semibold"),
         book_details_list(),
