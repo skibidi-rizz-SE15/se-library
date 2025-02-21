@@ -44,8 +44,9 @@ def book_condition_dialog(dialog_button: rx.Component) -> rx.Component:
                     multiple_quantity_subform(),
                     single_quantity_subform(),
                 ),
-                rx.button("Confirm", class_name="border"),
-                class_name="contents"
+                rx.button("Confirm", class_name="border", type="submit"),
+                class_name="contents",
+                on_submit=BookRegistrationPageState.handle_register_book
             ),
             size="2",
             on_close_auto_focus=ConditionDialogState.reset_states,
@@ -58,13 +59,13 @@ def single_quantity_subform() -> rx.Component:
     return rx.flex(
         rx.text("Condition", class_name="font-semibold font-Valera text-center"),
         rx.menu.root(
-            rx.menu.trigger(rx.button("Select Condition", class_name="w-fit border border-gray-300 p-2 rounded-md")),
+            rx.menu.trigger(rx.button(f"{BookRegistrationPageState.book_condition}", class_name="w-fit border border-gray-300 p-2 rounded-md")),
             rx.menu.content(
-                rx.menu.item(rx.text("Factory New")),
-                rx.menu.item(rx.text("Minimal Wear")),
-                rx.menu.item(rx.text("Field Tested")),
-                rx.menu.item(rx.text("Well Worn")),
-                rx.menu.item(rx.text("Battle Scarred")),
+                rx.menu.item(rx.text("Factory New"), on_select=BookRegistrationPageState.set_new_condition("Factory New")),
+                rx.menu.item(rx.text("Minimal Wear"), on_select=BookRegistrationPageState.set_new_condition("Minimal Wear")),
+                rx.menu.item(rx.text("Field Tested"), on_select=BookRegistrationPageState.set_new_condition("Field Tested")),
+                rx.menu.item(rx.text("Well Worn"), on_select=BookRegistrationPageState.set_new_condition("Well Worn")),
+                rx.menu.item(rx.text("Battle Scarred"), on_select=BookRegistrationPageState.set_new_condition("Battle Scarred")),
             ),
             class_name="w-full"
         ),
@@ -76,15 +77,15 @@ def multiple_quantity_subform() -> rx.Component:
         rx.text("Condition", class_name="w-full font-semibold font-Valera text-center"),
         rx.text("Copies", class_name="w-full font-semibold font-Valera text-center"),
         rx.text("Factory New"),
-        rx.input(placeholder="0", type="number", class_name="w-fit"),
+        rx.input(placeholder="0", type="number", class_name="w-fit", name="factory_new"),
         rx.text("Minimal Wear"),
-        rx.input(placeholder="0", type="number", class_name="w-fit"),
+        rx.input(placeholder="0", type="number", class_name="w-fit", name="minimal_wear"),
         rx.text("Field Tested"),
-        rx.input(placeholder="0", type="number", class_name="w-fit"),
+        rx.input(placeholder="0", type="number", class_name="w-fit", name="field_tested"),
         rx.text("Well Worn"),
-        rx.input(placeholder="0", type="number", class_name="w-fit"),
+        rx.input(placeholder="0", type="number", class_name="w-fit", name="well_worn"),
         rx.text("Battle Scarred"),
-        rx.input(placeholder="0", type="number", class_name="w-fit"),
+        rx.input(placeholder="0", type="number", class_name="w-fit", name="battle_scarred"),
         class_name="grid grid-cols-[minmax(5rem,max-content)_1fr] h-fit gap-4"
     )
 

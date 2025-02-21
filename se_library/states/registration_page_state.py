@@ -34,7 +34,28 @@ class BookRegistrationPageState(BookInfo):
     loading: bool = False
     book_exists: bool = None
     is_search: bool = False
-    
+    book_condition: str = "Select Condition"
+
+    @rx.event
+    def set_new_condition(self, selected_condition: str):
+        self.book_condition = selected_condition
+        if selected_condition == "Select Condition":
+            pass
+        else:
+            match selected_condition:
+                case "Factory New":
+                    self.condition = ConditionEnum.FACTORY_NEW
+                case "Minimal Wear":
+                    self.condition = ConditionEnum.MINIMAL_WEAR
+                case "Field Tested":
+                    self.condition = ConditionEnum.FIELD_TESTED
+                case "Well Worn":
+                    self.condition = ConditionEnum.WELL_WORN
+                case "Battle Scarred":
+                    self.condition = ConditionEnum.BATTLE_SCARRED
+                case _:
+                    pass
+
     @rx.event
     async def handle_search(self, form_data: dict):
         self.loading = True
@@ -55,6 +76,7 @@ class BookRegistrationPageState(BookInfo):
             ).first()
 
             if existing_book:
+                print(existing_book.authors)
                 self.title = existing_book.title
                 self.description = existing_book.description
                 self.publisher = existing_book.publisher.name
@@ -64,7 +86,8 @@ class BookRegistrationPageState(BookInfo):
                 await self.fetch_isbndb()
         
     @rx.event
-    async def handle_register_book(self):
+    async def handle_register_book(self, form_data: dict):
+        print(form_data)
         with rx.session() as session:
             existing_book = session.exec(
                 Book.select().where(
@@ -78,7 +101,7 @@ class BookRegistrationPageState(BookInfo):
                 ))
                 new_publisher = session.exec(
                     Publisher.select().where(
-                        Publisher.name == self.name
+                        Publisher.name == self.publisher
                     )
                 ).first()
                 session.add(Book(
@@ -110,13 +133,49 @@ class BookRegistrationPageState(BookInfo):
                     ))
 
             # add instance
-            user = BaseState.user
-            session.add(BookInventory(
-                owner_id=user.id,
-                book_id=new_book.id,
-                availability=AvailabilityEnum.AVAILABLE,
-                condition=self.condition
-            ))
+            base_state = await self.get_state(BaseState)
+            user = base_state.user
+            has_multiple_books = form_data["has_multiple_books"]
+            if has_multiple_books == "on":
+                try:
+                    quantities = []
+                    total = 0
+                    
+                    # Check each condition field
+                    for condition in ConditionEnum:
+                        qty = form_data.get(f"{condition.value}", "0")
+                        try:
+                            qty_int = int(qty)
+                            if qty_int < 0:
+                                return rx.window_alert("Quantities cannot be negative")
+                            total += qty_int
+                            quantities.append((condition, qty_int))
+                        except ValueError:
+                            return rx.window_alert(f"Invalid quantity for {condition.value}")
+                    
+                    # Check if total exceeds 50
+                    if total > 50:
+                        return rx.window_alert("Total quantity cannot exceed 50 books")
+                    # Add book inventory entries for each condition
+                    for condition, quantity in quantities:
+                        if quantity > 0:
+                            session.add(BookInventory(
+                                book_id=new_book.id if not existing_book else existing_book.id,
+                                owner_id=user.id,
+                                condition=condition.value,
+                                availability=AvailabilityEnum.AVAILABLE,
+                            ))
+                            session.commit()
+                except Exception as e:
+                    print(f"Error adding book inventory: {e}")
+                    return rx.window_alert("Error adding book inventory")
+            else:
+                session.add(BookInventory(
+                    book_id=new_book.id if not existing_book else existing_book.id,
+                    user_id=user.id,
+                    condition=self.book_condition,
+                    availability=AvailabilityEnum.AVAILABLE,
+                ))
     
     async def fetch_isbndb(self) -> None:
         try:
