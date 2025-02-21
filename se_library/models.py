@@ -8,11 +8,11 @@ from passlib.context import CryptContext
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class ConditionEnum(str, Enum):
-        FACTORY_NEW = "factory_new"
-        MINIMAL_WEAR = "minimal_wear"
-        FIELD_TESTED = "field_tested"
-        WELL_WORN = "well_worn"
-        BATTLE_SCARRED = "battle_scarred"
+    FACTORY_NEW = "factory_new"
+    MINIMAL_WEAR = "minimal_wear"
+    FIELD_TESTED = "field_tested"
+    WELL_WORN = "well_worn"
+    BATTLE_SCARRED = "battle_scarred"
 
 class AvailabilityEnum(str, Enum):
     AVAILABLE = "available"

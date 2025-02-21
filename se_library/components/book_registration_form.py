@@ -44,13 +44,14 @@ def book_condition_dialog(dialog_button: rx.Component) -> rx.Component:
                     multiple_quantity_subform(),
                     single_quantity_subform(),
                 ),
-                rx.button("Confirm", class_name="border", type="submit"),
+                rx.dialog.close(
+                    rx.button("Confirm", class_name="border", type="submit", loading=BookRegistrationPageState.submit_loading),
+                ),
                 class_name="contents",
-                on_submit=BookRegistrationPageState.handle_register_book
+                on_submit=BookRegistrationPageState.handle_register_book,
+                reset_on_submit=True
             ),
             size="2",
-            on_close_auto_focus=ConditionDialogState.reset_states,
-            on_unmount=ConditionDialogState.reset_states,
             class_name="flex flex-col gap-4 w-[20rem] p-4"
         ),
     )

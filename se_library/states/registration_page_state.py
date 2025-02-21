@@ -29,31 +29,48 @@ class BookInfo(rx.State):
 
     @rx.event
     def set_isbn13_from_input(self, raw_isbn: str):
-        # add conditions for isbn13/convert 10 to 13/invalid
-        self.isbn13 = raw_isbn.strip().replace(" ", "")
+        isbn = raw_isbn.strip().replace(" ", "")
+        isbn_length = len(isbn)
+        match isbn_length:
+            case 10:
+                self.isbn13 = self.calculate_isbn13(isbn)
+            case 13:
+                self.isbn13 = isbn
+            case _:
+                self.isbn13 = ""
+
+    def calculate_isbn13(self, isbn10):
+        isbn13 = f"978{isbn10[:-1]}"
+        check_sum = 0
+        for i, char in enumerate(isbn13):
+            num = int(char)
+            check_sum += num * (3 if i % 2 != 0 else 1)
+        check_num = check_sum % 10
+        return isbn13 + str((10 - check_num) % 10)
     
 class BookRegistrationPageState(BookInfo):
     loading: bool = False
     book_exists: bool = None
     is_search: bool = False
-    book_condition: str = "Select Condition"
+    book_condition: str = None
+    submit_loading: bool = False
 
     @rx.event
     def set_new_condition(self, selected_condition: str):
         self.book_condition = selected_condition
         match selected_condition:
-            case "Factory New":
+            case ConditionEnum.FACTORY_NEW:
                 self.condition = ConditionEnum.FACTORY_NEW
-            case "Minimal Wear":
+            case ConditionEnum.MINIMAL_WEAR:
                 self.condition = ConditionEnum.MINIMAL_WEAR
-            case "Field Tested":
+            case ConditionEnum.FIELD_TESTED:
                 self.condition = ConditionEnum.FIELD_TESTED
-            case "Well Worn":
+            case ConditionEnum.WELL_WORN:
                 self.condition = ConditionEnum.WELL_WORN
-            case "Battle Scarred":
+            case ConditionEnum.BATTLE_SCARRED:
                 self.condition = ConditionEnum.BATTLE_SCARRED
-            case "Select Condition", _:
-                pass
+            case  _:
+                self.condition = None
 
     @rx.event
     async def handle_search(self, form_data: dict):
@@ -75,11 +92,12 @@ class BookRegistrationPageState(BookInfo):
             ).first()
 
             if existing_book:
-                print(existing_book.authors)
                 self.title = existing_book.title
+                self.cover_image_link = existing_book.cover_image_link
                 self.description = existing_book.description
                 self.publisher = existing_book.publisher.name
                 self.authors = [author.name for author in existing_book.authors]
+                self.pages = existing_book.pages
                 self.book_exists = True
             else:
                 await self.fetch_isbndb()
@@ -134,6 +152,7 @@ class BookRegistrationPageState(BookInfo):
             # add instance
             base_state = await self.get_state(BaseState)
             user = base_state.user
+            print(user)
             has_multiple_books = form_data["has_multiple_books"] if "has_multiple_books" in form_data else None
             if has_multiple_books == "on":
                 try:
@@ -165,12 +184,15 @@ class BookRegistrationPageState(BookInfo):
                     print(f"Error adding book inventory: {e}")
                     return rx.window_alert("Error adding book inventory")
             else:
+                print(user)
                 session.add(BookInventory(
                     book_id=new_book.id if not existing_book else existing_book.id,
-                    user_id=user.id,
-                    condition=self.book_condition,
+                    owner_id=user.id,
+                    condition=self.condition.value,
                     availability=AvailabilityEnum.AVAILABLE,
                 ))
+                session.commit()
+            return rx.toast("Book Registered Successfully")
     
     async def fetch_isbndb(self) -> None:
         try:
