@@ -13,6 +13,16 @@ def author_name(name: str) -> rx.Component:
 
 def book_details_desktop() -> rx.Component:
     return rx.grid(
+        rx.cond(
+            BookPageState.is_book_exists,
+            content(),
+            rx.text("Book not found", class_name="font-semibold font-Varela text-sm text-center", trim="normal")
+        ),
+        class_name="grid-cols-[2fr_3fr] mx-auto w-[max(35rem,70%)] h-fit gap-x-6 gap-y-4 p-4"
+    )
+
+def content() -> rx.Component:
+    return rx.fragment(
         rx.text(f"{BookPageState.title}", class_name="font-semibold col-span-2 font-Valera text-center text-2xl mb-2"),
         rx.flex(
             rx.image(src=BookPageState.cover_image_link, class_name="rounded-md shadow-lg w-full"),
@@ -51,6 +61,4 @@ def book_details_desktop() -> rx.Component:
             ),
             class_name="w-full flex-col col-span-2 space-y-4"
         ),
-
-        class_name="grid-cols-[2fr_3fr] mx-auto w-[max(35rem,70%)] h-fit gap-x-6 gap-y-4 p-4"
     )
