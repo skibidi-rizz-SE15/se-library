@@ -52,22 +52,22 @@ class BookRegistrationPageState(BookInfo):
     loading: bool = False
     book_exists: bool = None
     is_search: bool = False
-    book_condition: str = None
+    book_condition: str = "Factory New"
     submit_loading: bool = False
 
     @rx.event
     def set_new_condition(self, selected_condition: str):
         self.book_condition = selected_condition
         match selected_condition:
-            case ConditionEnum.FACTORY_NEW:
+            case "Factory New":
                 self.condition = ConditionEnum.FACTORY_NEW
-            case ConditionEnum.MINIMAL_WEAR:
+            case "Minimal Wear":
                 self.condition = ConditionEnum.MINIMAL_WEAR
-            case ConditionEnum.FIELD_TESTED:
+            case "Field Tested":
                 self.condition = ConditionEnum.FIELD_TESTED
-            case ConditionEnum.WELL_WORN:
+            case "Well Worn":
                 self.condition = ConditionEnum.WELL_WORN
-            case ConditionEnum.BATTLE_SCARRED:
+            case "Battle Scarred":
                 self.condition = ConditionEnum.BATTLE_SCARRED
             case  _:
                 self.condition = None
@@ -104,6 +104,10 @@ class BookRegistrationPageState(BookInfo):
         
     @rx.event
     async def handle_register_book(self, form_data: dict):
+        dialog_state = await self.get_state(ConditionDialogState)
+        self.submit_loading = True
+        yield
+        await asyncio.sleep(2)
         with rx.session() as session:
             existing_book = session.exec(
                 Book.select().where(
@@ -152,7 +156,6 @@ class BookRegistrationPageState(BookInfo):
             # add instance
             base_state = await self.get_state(BaseState)
             user = base_state.user
-            print(user)
             has_multiple_books = form_data["has_multiple_books"] if "has_multiple_books" in form_data else None
             if has_multiple_books == "on":
                 try:
@@ -164,13 +167,22 @@ class BookRegistrationPageState(BookInfo):
                         try:
                             qty_int = int(qty)
                             if qty_int < 0:
-                                return rx.window_alert("Quantities cannot be negative")
+                                self.submit_loading = False
+                                dialog_state.reset_states()
+                                yield rx.toast.error("Quantities cannot be negative", position="top-center")
+                                return
                             total += qty_int
                             quantities.append((condition, qty_int))
                         except ValueError:
-                            return rx.window_alert(f"Invalid quantity for {condition.value}")
+                            self.submit_loading = False
+                            dialog_state.reset_states()
+                            yield rx.toast.error(f"Invalid quantity for {condition.value}", position="top-center")
+                            return
                     if total > BOOK_REGISTRATION_LIMIT:
-                        return rx.window_alert("Total quantity cannot exceed 50 books")
+                        self.submit_loading = False
+                        dialog_state.reset_states()
+                        yield rx.toast.error("Total quantity cannot exceed 50 books", position="top-center")
+                        return
                     for condition, quantity in quantities:
                         if quantity > 0:
                             session.add(BookInventory(
@@ -182,17 +194,26 @@ class BookRegistrationPageState(BookInfo):
                             session.commit()
                 except Exception as e:
                     print(f"Error adding book inventory: {e}")
-                    return rx.window_alert("Error adding book inventory")
+                    self.submit_loading = False
+                    dialog_state.reset_states()
+                    yield rx.toast.error("Error adding book inventory", position="top-center")
             else:
-                print(user)
-                session.add(BookInventory(
-                    book_id=new_book.id if not existing_book else existing_book.id,
-                    owner_id=user.id,
-                    condition=self.condition.value,
-                    availability=AvailabilityEnum.AVAILABLE,
-                ))
-                session.commit()
-            return rx.toast("Book Registered Successfully")
+                try:
+                    session.add(BookInventory(
+                        book_id=new_book.id if not existing_book else existing_book.id,
+                        owner_id=user.id,
+                        condition=self.condition.value,
+                        availability=AvailabilityEnum.AVAILABLE,
+                    ))
+                    session.commit()
+                except Exception as e:
+                    print(f"Error adding book inventory: {e}")
+                    self.submit_loading = False
+                    dialog_state.reset_states()
+                    yield rx.toast.error("Error adding book inventory", position="top-center")
+            self.submit_loading = False
+            dialog_state.reset_states()
+            yield rx.toast.success("Book Registered Successfully", position="top-center")
     
     async def fetch_isbndb(self) -> None:
         try:
@@ -224,6 +245,7 @@ class BookRegistrationPageState(BookInfo):
         self.reset()
 
 class ConditionDialogState(rx.State):
+    is_dialog_open: bool = False
     has_multiple_books: bool = False
 
     @rx.event

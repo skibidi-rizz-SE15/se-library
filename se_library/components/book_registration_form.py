@@ -28,9 +28,8 @@ def book_registration_form() -> rx.Component:
         background_color=rx.color_mode_cond(light="#F7F9FF", dark="#11131F")
     )
 
-def book_condition_dialog(dialog_button: rx.Component) -> rx.Component:
+def book_condition_dialog() -> rx.Component:
     return rx.dialog.root(
-        rx.dialog.trigger(dialog_button),
         rx.dialog.content(
             rx.dialog.title(rx.text("Your Book Details", class_name="font-semibold font-Valera text-center text-lg")),
             rx.form(
@@ -44,9 +43,8 @@ def book_condition_dialog(dialog_button: rx.Component) -> rx.Component:
                     multiple_quantity_subform(),
                     single_quantity_subform(),
                 ),
-                rx.dialog.close(
-                    rx.button("Confirm", class_name="border", type="submit", loading=BookRegistrationPageState.submit_loading),
-                ),
+                rx.button("Confirm", class_name="border", type="submit", loading=BookRegistrationPageState.submit_loading),
+                rx.button("Cancel",color_scheme="red", class_name="border", type="button", on_click=ConditionDialogState.reset_states),
                 class_name="contents",
                 on_submit=BookRegistrationPageState.handle_register_book,
                 reset_on_submit=True
@@ -54,6 +52,7 @@ def book_condition_dialog(dialog_button: rx.Component) -> rx.Component:
             size="2",
             class_name="flex flex-col gap-4 w-[20rem] p-4"
         ),
+        open=ConditionDialogState.is_dialog_open,
     )
 
 def single_quantity_subform() -> rx.Component:
@@ -124,7 +123,7 @@ def book_details_mobile_and_tablet() -> rx.Component:
             rx.text(f"{BookRegistrationPageState.title}", class_name="font-semibold font-Varela text-sm text-center mt-2", trim="normal"),
             rx.image(src=BookRegistrationPageState.cover_image_link, class_name="max-w-[45rem] max-h-[35rem] w-[300px] mx-auto rounded-sm shadow-md"),
             rx.text(f"By: {BookRegistrationPageState.get_formatted_authors}", class_name="text-center text-sm font-Varela text-gray-500"),
-            book_condition_dialog(dialog_button=rx.flex("Lend Book", class_name="col-span-2 w-fit mx-auto px-8 py-2 mt-4 rounded-xl bg-[#F7F9FF] border-2 border-[#5472E4] text-[#5472E4] font-semibold cursor-pointer")),
+            book_condition_dialog(),
             rx.separator(),
             rx.text("Details", class_name="text-xl text-gray-400 font-Varela font-semibold"),
             book_details_list(),
@@ -167,7 +166,8 @@ def book_details() -> rx.Component:
                 rx.text(BookRegistrationPageState.pages, class_name="font-Varela text-gray-500"),
                 rx.text("Description", class_name="font-semibold font-Roboto"),
                 rx.text(BookRegistrationPageState.description, class_name="overflow-y-auto pr-1 max-h-[15rem] font-Varela text-gray-500"),
-                book_condition_dialog(dialog_button=rx.flex("Lend Book", class_name="col-span-2 w-fit mx-auto px-8 py-2 mt-4 rounded-xl bg-[#F7F9FF] border-2 border-[#5472E4] text-[#5472E4] font-semibold cursor-pointer")),
+                rx.flex("Lend Book", class_name="col-span-2 w-fit mx-auto px-8 py-2 mt-4 rounded-xl bg-[#F7F9FF] border-2 border-[#5472E4] text-[#5472E4] font-semibold cursor-pointer", on_click=ConditionDialogState.set_is_dialog_open(True)),
+                book_condition_dialog(),
                 class_name="grid grid-cols-[minmax(5rem,max-content)_1fr] h-fit gap-4"
             ),
             class_name="grid grid-cols-[minmax(10rem,25%)_1fr] w-full gap-x-4 gap-y-2 max-h-min overflow-hidden border border-gray-300 rounded-xl p-4"
