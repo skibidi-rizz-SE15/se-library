@@ -10,6 +10,7 @@ class BookPageState(rx.State):
     title: str = ""
     description: str = ""
     cover_image_link: str = ""
+    is_book_exists: bool = False
 
     @rx.event
     async def handle_on_load(self):
@@ -19,10 +20,14 @@ class BookPageState(rx.State):
             book = session.exec(
                 Book.select().where(Book.id == id)
             ).first()
-            self.authors = [author.name for author in book.authors]
-            self.publisher = book.publisher.name
-            self.pages = book.pages
-            self.isbn13 = book.isbn13
-            self.title = book.title
-            self.description = book.description
-            self.cover_image_link = book.cover_image_link
+            if book:
+                self.authors = [author.name for author in book.authors]
+                self.publisher = book.publisher.name
+                self.pages = book.pages
+                self.isbn13 = book.isbn13
+                self.title = book.title
+                self.description = book.description
+                self.cover_image_link = book.cover_image_link
+                self.is_book_exists = True
+            else:
+                self.is_book_exists = False
