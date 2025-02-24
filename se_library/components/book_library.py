@@ -1,7 +1,8 @@
 import reflex as rx
+from se_library.states.explore_page import ExplorePageState
 
 # contains book cover, name, details, bla bla bla (dont set explicit height)
-def book_slot(title: str, authors: str, quantity: int=0, image_src:str="", class_name: str="", has_quantity: bool=True) -> rx.Component:
+def book_slot(id: int,title: str, authors: str, image_src:str="", class_name: str="") -> rx.Component:
     return rx.flex(
         rx.cond(
             image_src,
@@ -10,22 +11,13 @@ def book_slot(title: str, authors: str, quantity: int=0, image_src:str="", class
         ),
         rx.text(title, class_name="font-semibold text-[1.1rem] leading-[1.2rem] font-Varela"),
         rx.text(authors, class_name="text-gray-500 font-Varela text-[0.9rem] leading-[1.2rem]"),
-        rx.text(f"{quantity} available", class_name=f"self-end text-[0.9rem] leading-[1.2rem] {'' if has_quantity else 'collapse'}"),
-        class_name=f"flex-col gap-2 {class_name}"
+        on_click=rx.redirect(f"/book/{id}"),
+        class_name=f"flex-col gap-2 {class_name} cursor-pointer"
     )
 
 def book_display(class_name: str="", min_item_width=12) -> rx.Component:
     return rx.grid(
-        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
-        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
-        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
-        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
-        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
-        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
-        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
-        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
-        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
-        book_slot(title="very extremely really long book name", authors="authorson authorman, auth von authorington", class_name="w-full"),
+        rx.foreach(ExplorePageState.books, lambda book: book_slot(book.id,book.title, book.authors, book.cover_image_link, class_name="w-full")),
         class_name=f"grid grid-cols-[repeat(auto-fill,minmax({min_item_width}rem,1fr))] gap-5 {class_name}"
     )
 
