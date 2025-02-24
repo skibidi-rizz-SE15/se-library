@@ -5,7 +5,6 @@ from .queue_status import queue_status
 from .borrowed_status import borrowed_status
 from .book_details_list import book_details_list
 from .queue_duration_status import queue_duration_status
-from se_library.models import Author
 from se_library.states.book_page_state import BookPageState
 
 def author_name(name: str) -> rx.Component:

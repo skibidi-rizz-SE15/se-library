@@ -1,8 +1,13 @@
 import reflex as rx
 from se_library.states.explore_page import ExplorePageState
+from se_library.models import Author
+from typing import List
 
 # contains book cover, name, details, bla bla bla (dont set explicit height)
-def book_slot(id: int,title: str, authors: str, image_src:str="", class_name: str="") -> rx.Component:
+def book_slot(id: int,title: str, authors: List[Author], image_src:str="", class_name: str="") -> rx.Component:
+    # convert to rx.foreach()
+    formatted_authors = ", ".join([author.name for author in authors])
+    
     return rx.flex(
         rx.cond(
             image_src,
@@ -10,7 +15,7 @@ def book_slot(id: int,title: str, authors: str, image_src:str="", class_name: st
             rx.icon("book-copy", class_name="self-center border-2 w-full h-[20rem]"),
         ),
         rx.text(title, class_name="font-semibold text-[14px] leading-[1.2rem] font-Varela"),
-        rx.text(authors, class_name="text-gray-500 font-Varela text-[0.9rem] leading-[1.2rem]"),
+        rx.text(formatted_authors, class_name="text-gray-500 font-Varela text-[0.9rem] leading-[1.2rem]"),
         on_click=rx.redirect(f"/book?id={id}"),
         class_name=f"flex-col gap-2 {class_name} cursor-pointer"
     )

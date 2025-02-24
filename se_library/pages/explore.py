@@ -17,7 +17,6 @@ def explore():
         )
     )
 
-
 def page() -> rx.Component:
     return rx.flex(
         rx.mobile_and_tablet(

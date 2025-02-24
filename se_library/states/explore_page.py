@@ -39,3 +39,6 @@ class ExplorePageState(rx.State):
             self.books = session.exec(
                 Book.select()
             ).all()
+            for book in self.books:
+                for author in book.authors:
+                    print(author.name)
