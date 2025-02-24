@@ -7,19 +7,19 @@ from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-class ConditionEnum(Enum):
-        FACTORY_NEW = "factory_new"
-        MINIMAL_WEAR = "minimal_wear"
-        FIELD_TESTED = "field_tested"
-        WELL_WORN = "well_worn"
-        BATTLE_SCARRED = "battle_scarred"
+class ConditionEnum(str, Enum):
+    FACTORY_NEW = "factory_new"
+    MINIMAL_WEAR = "minimal_wear"
+    FIELD_TESTED = "field_tested"
+    WELL_WORN = "well_worn"
+    BATTLE_SCARRED = "battle_scarred"
 
-class AvailabilityEnum(Enum):
+class AvailabilityEnum(str, Enum):
     AVAILABLE = "available"
     UNAVAILABLE = "unavailable"
     RESERVED = "reserved"
 
-class BorrowStatusEnum(Enum):
+class BorrowStatusEnum(str, Enum):
     PENDING = "pending"
     APPROVED = "approved"
     REJECTED = "rejected"
@@ -67,8 +67,8 @@ class Book(rx.Model, table=True):
 class BookInventory(rx.Model, table=True):
     owner_id: int = Field(foreign_key="user.id", nullable=False)
     book_id: int = Field(foreign_key="book.id", nullable=False)
-    condition: ConditionEnum = Field(sa_column=ConditionEnum)
-    availability: AvailabilityEnum = Field(sa_column=AvailabilityEnum)
+    condition: ConditionEnum
+    availability: AvailabilityEnum
 
 class BookTransaction(rx.Model, table=True):
     borrower_id: int = Field(foreign_key="user.id", nullable=False)

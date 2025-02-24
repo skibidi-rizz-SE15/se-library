@@ -9,6 +9,10 @@ class BaseState(rx.State):
     """The base state for the app."""
 
     user: Optional[User] = None
+    
+    @rx.var
+    def get_user(self) -> Optional[User]:
+        return self.user if self.user else None
 
     def logout(self):
         """Logout a user."""
