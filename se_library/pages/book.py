@@ -6,7 +6,7 @@ from se_library.components.book_page.book_details_desktop import book_details_de
 from se_library.components.navbar import navbar_mobile_tablet, navbar_desktop
 from se_library.pages.homepage import footer
 
-@rx.page("/book/[book_id]", on_load=BookPageState.handle_on_load)
+@rx.page("/book", on_load=BookPageState.handle_on_load)
 def book_page() -> rx.Component:
     return rx.flex(
         rx.mobile_and_tablet(

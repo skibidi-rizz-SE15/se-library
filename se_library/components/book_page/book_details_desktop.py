@@ -5,13 +5,22 @@ from .queue_status import queue_status
 from .borrowed_status import borrowed_status
 from .book_details_list import book_details_list
 from .queue_duration_status import queue_duration_status
+from se_library.models import Author
+from se_library.states.book_page_state import BookPageState
+
+def author_name(name: str) -> rx.Component:
+    return rx.text(f"{name}, ", class_name="font-Valera text-gray-500")
 
 def book_details_desktop() -> rx.Component:
     return rx.grid(
-        rx.text("Practical Object-Oriented Design with UML (UK Higher Education Computing Computer Science)", class_name="font-semibold col-span-2 font-Valera text-center text-2xl mb-2"),
+        rx.text(f"{BookPageState.title}", class_name="font-semibold col-span-2 font-Valera text-center text-2xl mb-2"),
         rx.flex(
-            rx.image(src="/static/pok_uml.jpg", class_name="rounded-md shadow-lg w-full"),
-            rx.text("By: Mark Priestley", class_name=" font-Valera text-gray-500"),
+            rx.image(src=BookPageState.cover_image_link, class_name="rounded-md shadow-lg w-full"),
+            rx.flex(
+                rx.text("By: ", class_name="font-Valera text-gray-500"),
+                rx.foreach(BookPageState.authors, author_name),
+                class_name="max-w-full space-x-1"
+            ),
             class_name="flex-col gap-1 max-w-full"
         ),
         rx.grid(
@@ -23,7 +32,7 @@ def book_details_desktop() -> rx.Component:
                 class_name="grid-cols-[1fr_1fr_1fr] w-full gap-1"
             ),
             rx.separator(),
-            book_details_list(),
+            book_details_list(isbn13=BookPageState.isbn13, publisher=BookPageState.publisher, pages=BookPageState.pages),
             borrow_dialog(
                 dialog_btn=rx.flex(
                     "Borrow", 
@@ -37,7 +46,7 @@ def book_details_desktop() -> rx.Component:
         rx.flex(
             rx.text("Description", class_name="font-Valera text-2xl text-gray-400 font-semibold"),
             rx.text(
-                "Provides an introduction to the design of object-oriented programs using UML. This book focuses on the application of UML in the development of software, and offers a tutorial to the UML notation and its application. The book is useful for undergraduates taking modules as part of a Computer Science or Software Engineering degree programme.",
+                BookPageState.description,
                 class_name="font-Valera text-gray-400 text-justify"
             ),
             class_name="w-full flex-col col-span-2 space-y-4"

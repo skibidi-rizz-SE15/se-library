@@ -11,7 +11,7 @@ def book_slot(id: int,title: str, authors: str, image_src:str="", class_name: st
         ),
         rx.text(title, class_name="font-semibold text-[1.1rem] leading-[1.2rem] font-Varela"),
         rx.text(authors, class_name="text-gray-500 font-Varela text-[0.9rem] leading-[1.2rem]"),
-        on_click=rx.redirect(f"/book/{id}"),
+        on_click=rx.redirect(f"/book?id={id}"),
         class_name=f"flex-col gap-2 {class_name} cursor-pointer"
     )
 
