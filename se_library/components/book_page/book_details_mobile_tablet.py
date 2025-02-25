@@ -20,11 +20,7 @@ def book_details_mobile_tablet() -> rx.Component:
 def content() -> rx.Component:
     return rx.fragment(
         rx.image(src=BookPageState.cover_image_link, class_name="max-w-[45rem] max-h-[35rem] w-[300px] mx-auto rounded-sm shadow-md"),
-        rx.flex(
-            rx.text(f"By: ", class_name="text-sm font-Varela text-gray-500"),
-            rx.foreach(BookPageState.authors, author_name),
-            class_name="max-w-full space-x-1 justify-center"
-        ),
+        rx.text(f"By: {BookPageState.authors}", class_name="text-sm font-Varela text-gray-500"),
         borrow_dialog(dialog_btn=rx.flex("Borrow", class_name="col-span-2 w-fit justify-center mx-auto px-8 py-2 mt-4 rounded-xl text-white font-semibold cursor-pointer", background_color=rx.Color("indigo", 10))),
         rx.separator(),
         rx.text("Details", class_name="text-xl text-gray-400 font-Varela font-semibold"),

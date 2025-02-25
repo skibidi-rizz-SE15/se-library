@@ -21,7 +21,7 @@ class BookPageState(rx.State):
                 Book.select().where(Book.isbn13 == self.isbn13)
             ).first()
             if book:
-                self.authors = [author.name for author in book.authors]
+                self.authors = ", ".join([author.name for author in book.authors])
                 self.publisher = book.publisher.name
                 self.pages = book.pages
                 self.isbn13 = book.isbn13
