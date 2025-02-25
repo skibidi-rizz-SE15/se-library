@@ -3,6 +3,14 @@ from .registration_page_state import BookRegistrationPageState
 from .base import BaseState
 from se_library.models import Book
 from typing import List
+from pydantic import BaseModel
+
+class BookDetails(BaseModel):
+    id: int
+    isbn13: str
+    title: str
+    authors: str
+    image_src: str
 
 class ExplorePageState(rx.State):
     search_input: str = ""
@@ -12,6 +20,7 @@ class ExplorePageState(rx.State):
     is_all_selected: bool = True
     is_available_selected: bool = False
     books: List[Book] = []
+    book_details: List[BookDetails] = []
 
     @rx.event
     def handle_search(self) -> None:
@@ -34,6 +43,7 @@ class ExplorePageState(rx.State):
     def handle_on_load(self):
         yield BaseState.check_login()
         yield BookRegistrationPageState.reset_states()
+        yield self.reset()
         yield self.load_books()
 
     def load_books(self):
@@ -42,5 +52,10 @@ class ExplorePageState(rx.State):
                 Book.select()
             ).all()
             for book in self.books:
-                for author in book.authors:
-                    print(author.name)
+                self.book_details.append(BookDetails(
+                    id=book.id, 
+                    isbn13=book.isbn13,
+                    title=book.title, 
+                    authors=", ".join([author.name for author in book.authors]), 
+                    image_src=book.cover_image_link,
+                ))
