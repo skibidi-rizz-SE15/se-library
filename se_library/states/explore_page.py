@@ -2,6 +2,8 @@ import reflex as rx
 from .registration_page_state import BookRegistrationPageState
 from .base import BaseState
 from se_library.models import Book
+from typing import List
+
 class ExplorePageState(rx.State):
     search_input: str = ""
     search_query: str = ""
@@ -9,7 +11,7 @@ class ExplorePageState(rx.State):
     sort_by: str = "Newest"
     is_all_selected: bool = True
     is_available_selected: bool = False
-    books: list[Book] = []
+    books: List[Book] = []
 
     @rx.event
     def handle_search(self) -> None:
@@ -32,9 +34,9 @@ class ExplorePageState(rx.State):
     def handle_on_load(self):
         yield BaseState.check_login()
         yield BookRegistrationPageState.reset_states()
-        yield self.get_books()
+        yield self.load_books()
 
-    def get_books(self):
+    def load_books(self):
         with rx.session() as session:
             self.books = session.exec(
                 Book.select()

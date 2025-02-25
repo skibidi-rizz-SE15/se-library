@@ -152,7 +152,7 @@ def book_details() -> rx.Component:
         BookRegistrationPageState.book_exists,
         rx.grid(
             rx.text("Selected Book", class_name="col-span-2 font-bold text-xl mb-4 self-center"),
-            book_slot(id=1, title=BookRegistrationPageState.title, authors=BookRegistrationPageState.authors, image_src=BookRegistrationPageState.cover_image_link, class_name="w-full"),
+            book_slot(isbn13=BookRegistrationPageState.isbn13, title=BookRegistrationPageState.title, authors=BookRegistrationPageState.authors, image_src=BookRegistrationPageState.cover_image_link, class_name="w-full"),
             rx.grid(
                 rx.text("Title", class_name="font-semibold font-Roboto"),
                 rx.text(BookRegistrationPageState.title, class_name="font-Varela text-gray-500"),
