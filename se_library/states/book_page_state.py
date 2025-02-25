@@ -15,10 +15,10 @@ class BookPageState(rx.State):
     @rx.event
     async def handle_on_load(self):
         """Should fetch database and reset state of all the other pages."""
-        id = self.router.page.params["id"]
+        self.isbn13 = self.router.page.params["isbn13"]
         with rx.session() as session:
             book = session.exec(
-                Book.select().where(Book.id == id)
+                Book.select().where(Book.isbn13 == self.isbn13)
             ).first()
             if book:
                 self.authors = [author.name for author in book.authors]
