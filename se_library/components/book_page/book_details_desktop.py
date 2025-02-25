@@ -30,7 +30,7 @@ def content() -> rx.Component:
         ),
         rx.grid(
             rx.grid(
-                stock_status(),
+                stock_status(remaining=BookPageState.remaining, actual=BookPageState.actual),
                 queue_status(),
                 borrowed_status(),
                 queue_duration_status(class_name="col-span-3 text-center"),

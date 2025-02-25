@@ -1,5 +1,5 @@
 import reflex as rx
-from se_library.models import Book
+from se_library.models import AvailabilityEnum, Book, BookInventory
 from typing import List
 
 class BookPageState(rx.State):
@@ -11,6 +11,8 @@ class BookPageState(rx.State):
     description: str = ""
     cover_image_link: str = ""
     is_book_exists: bool = False
+    remaining: int = 0
+    actual: int = 0
 
     @rx.event
     async def handle_on_load(self):
@@ -29,5 +31,16 @@ class BookPageState(rx.State):
                 self.description = book.description
                 self.cover_image_link = book.cover_image_link
                 self.is_book_exists = True
+                self.remaining = len(session.exec(
+                    BookInventory.select().where(
+                        BookInventory.book_id == book.id,
+                        BookInventory.availability == AvailabilityEnum.AVAILABLE
+                    )
+                ).all())
+                self.actual = len(session.exec(
+                    BookInventory.select().where(
+                        BookInventory.book_id == book.id
+                    )
+                ).all())
             else:
                 self.is_book_exists = False
