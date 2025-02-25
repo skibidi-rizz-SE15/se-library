@@ -48,7 +48,6 @@ def book_condition_dialog() -> rx.Component:
                 rx.button("Cancel",color_scheme="red", class_name="border", type="button", on_click=ConditionDialogState.reset_states),
                 class_name="contents",
                 on_submit=BookRegistrationPageState.handle_register_book,
-                reset_on_submit=True
             ),
             size="2",
             class_name="flex flex-col gap-4 w-[20rem] p-4"
@@ -57,16 +56,10 @@ def book_condition_dialog() -> rx.Component:
     )
 
 def single_quantity_subform() -> rx.Component:
-    button_text = rx.cond(
-        BookRegistrationPageState.book_condition,
-        rx.text(BookRegistrationPageState.book_condition),
-        rx.text("Select Condition")
-    )
-
     return rx.flex(
         rx.text("Condition", class_name="font-semibold font-Valera text-center"),
         rx.menu.root(
-            rx.menu.trigger(rx.button(button_text, class_name="w-fit border border-gray-300 p-2 rounded-md")),
+            rx.menu.trigger(rx.button(BookRegistrationPageState.get_formatted_condition, class_name="w-fit border border-gray-300 p-2 rounded-md")),
             rx.menu.content(
                 rx.menu.item(rx.text("Factory New"), on_select=BookRegistrationPageState.set_new_condition(ConditionEnum.FACTORY_NEW)),
                 rx.menu.item(rx.text("Minimal Wear"), on_select=BookRegistrationPageState.set_new_condition(ConditionEnum.MINIMAL_WEAR)),

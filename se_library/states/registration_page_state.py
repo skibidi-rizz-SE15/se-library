@@ -21,7 +21,6 @@ class BookInfo(rx.State):
     cover_image_link: str = ""
     isbn13: str = ""
     pages: int = None
-    condition: ConditionEnum = None
 
     @rx.var(cache=False)
     def get_formatted_authors(self) -> str:
@@ -55,22 +54,25 @@ class BookRegistrationPageState(BookInfo):
     book_condition: ConditionEnum = None
     submit_loading: bool = False
 
+    @rx.var(cache=False)
+    def get_formatted_condition(self) -> str:
+        match self.book_condition:
+            case ConditionEnum.FACTORY_NEW:
+                return "Factory New"
+            case ConditionEnum.MINIMAL_WEAR:
+                return "Minimal Wear"
+            case ConditionEnum.FIELD_TESTED:
+                return "Field Tested"
+            case ConditionEnum.WELL_WORN:
+                return "Well Worn"
+            case ConditionEnum.BATTLE_SCARRED:
+                return "Battle Scarred"
+            case _:
+                return "Select Condition"
+
     @rx.event
     def set_new_condition(self, selected_condition: ConditionEnum):
         self.book_condition = selected_condition
-        match selected_condition:
-            case ConditionEnum.FACTORY_NEW:
-                self.condition = ConditionEnum.FACTORY_NEW
-            case ConditionEnum.MINIMAL_WEAR:
-                self.condition = ConditionEnum.MINIMAL_WEAR
-            case ConditionEnum.FIELD_TESTED:
-                self.condition = ConditionEnum.FIELD_TESTED
-            case ConditionEnum.WELL_WORN:
-                self.condition = ConditionEnum.WELL_WORN
-            case ConditionEnum.BATTLE_SCARRED:
-                self.condition = ConditionEnum.BATTLE_SCARRED
-            case  _:
-                self.condition = None
 
     @rx.event
     async def handle_search(self, form_data: dict):
@@ -186,14 +188,12 @@ class BookRegistrationPageState(BookInfo):
                             qty_int = int(qty) if qty else 0
                             if qty_int < 0:
                                 self.submit_loading = False
-                                dialog_state.reset_states()
                                 yield rx.toast.error("Quantities cannot be negative", position="top-center")
                                 return
                             total += qty_int
                             quantities.append((condition, qty_int))
                         except ValueError:
                             self.submit_loading = False
-                            dialog_state.reset_states()
                             yield rx.toast.error(f"Invalid quantity for {condition.value}", position="top-center")
                             return
                     if total > BOOK_REGISTRATION_LIMIT:
@@ -217,27 +217,26 @@ class BookRegistrationPageState(BookInfo):
                 except Exception as e:
                     print(f"Error adding book inventory: {e}")
                     self.submit_loading = False
-                    dialog_state.reset_states()
                     yield rx.toast.error("Error adding book inventory", position="top-center")
                     return
             else:
                 try:
-                    if not self.condition:
-                        raise Exception("Condition is not")
+                    if not self.book_condition:
+                        raise Exception("Condition is not selected")
                     session.add(BookInventory(
                         book_id=new_book.id if not existing_book else existing_book.id,
                         owner_id=user.id,
-                        condition=self.condition.value,
+                        condition=self.book_condition,
                         availability=AvailabilityEnum.AVAILABLE,
                     ))
                     session.commit()
                 except Exception as e:
                     print(f"Error adding book inventory: {e}")
                     self.submit_loading = False
-                    dialog_state.reset_states()
                     yield rx.toast.error("Select the book condition!", position="top-center")
+                    return
             self.submit_loading = False
-            dialog_state.reset_states()
+            await dialog_state.reset_states()
             yield rx.toast.success("Book Registered Successfully", position="top-center")
     
     async def fetch_isbndb(self) -> None:
@@ -274,5 +273,7 @@ class ConditionDialogState(rx.State):
     has_multiple_books: bool = False
 
     @rx.event
-    def reset_states(self):
+    async def reset_states(self):
         self.reset()
+        book_registration_state = await self.get_state(BookRegistrationPageState)
+        book_registration_state.book_condition = None
