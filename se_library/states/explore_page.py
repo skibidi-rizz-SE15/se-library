@@ -2,6 +2,15 @@ import reflex as rx
 from .registration_page_state import BookRegistrationPageState
 from .base import BaseState
 from se_library.models import Book
+from typing import List
+from pydantic import BaseModel
+
+class BookDetails(BaseModel):
+    id: int
+    title: str
+    authors: str
+    image_src: str
+
 class ExplorePageState(rx.State):
     search_input: str = ""
     search_query: str = ""
@@ -9,7 +18,8 @@ class ExplorePageState(rx.State):
     sort_by: str = "Newest"
     is_all_selected: bool = True
     is_available_selected: bool = False
-    books: list[Book] = []
+    books: List[Book] = []
+    book_details: List[BookDetails] = []
 
     @rx.event
     def handle_search(self) -> None:
@@ -32,6 +42,7 @@ class ExplorePageState(rx.State):
     def handle_on_load(self):
         yield BaseState.check_login()
         yield BookRegistrationPageState.reset_states()
+        yield self.reset()
         yield self.get_books()
 
     def get_books(self):
@@ -40,5 +51,4 @@ class ExplorePageState(rx.State):
                 Book.select()
             ).all()
             for book in self.books:
-                for author in book.authors:
-                    print(author.name)
+                self.book_details.append(BookDetails(id=book.id, title=book.title, authors=", ".join([author.name for author in book.authors]), image_src=book.cover_image_link))
