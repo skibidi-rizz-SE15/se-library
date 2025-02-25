@@ -1,6 +1,7 @@
 import reflex as rx
 from ..states.registration_page_state import BookRegistrationPageState, ConditionDialogState
 from .book_library import book_slot
+from ..models import ConditionEnum
 
 class PatternFormat(rx.NoSSRComponent):
     library = "react-number-format"
@@ -56,16 +57,22 @@ def book_condition_dialog() -> rx.Component:
     )
 
 def single_quantity_subform() -> rx.Component:
+    button_text = rx.cond(
+        BookRegistrationPageState.book_condition,
+        rx.text(BookRegistrationPageState.book_condition),
+        rx.text("Select Condition")
+    )
+
     return rx.flex(
         rx.text("Condition", class_name="font-semibold font-Valera text-center"),
         rx.menu.root(
-            rx.menu.trigger(rx.button(f"{BookRegistrationPageState.book_condition}", class_name="w-fit border border-gray-300 p-2 rounded-md")),
+            rx.menu.trigger(rx.button(button_text, class_name="w-fit border border-gray-300 p-2 rounded-md")),
             rx.menu.content(
-                rx.menu.item(rx.text("Factory New"), on_select=BookRegistrationPageState.set_new_condition("Factory New")),
-                rx.menu.item(rx.text("Minimal Wear"), on_select=BookRegistrationPageState.set_new_condition("Minimal Wear")),
-                rx.menu.item(rx.text("Field Tested"), on_select=BookRegistrationPageState.set_new_condition("Field Tested")),
-                rx.menu.item(rx.text("Well Worn"), on_select=BookRegistrationPageState.set_new_condition("Well Worn")),
-                rx.menu.item(rx.text("Battle Scarred"), on_select=BookRegistrationPageState.set_new_condition("Battle Scarred")),
+                rx.menu.item(rx.text("Factory New"), on_select=BookRegistrationPageState.set_new_condition(ConditionEnum.FACTORY_NEW)),
+                rx.menu.item(rx.text("Minimal Wear"), on_select=BookRegistrationPageState.set_new_condition(ConditionEnum.MINIMAL_WEAR)),
+                rx.menu.item(rx.text("Field Tested"), on_select=BookRegistrationPageState.set_new_condition(ConditionEnum.FIELD_TESTED)),
+                rx.menu.item(rx.text("Well Worn"), on_select=BookRegistrationPageState.set_new_condition(ConditionEnum.WELL_WORN)),
+                rx.menu.item(rx.text("Battle Scarred"), on_select=BookRegistrationPageState.set_new_condition(ConditionEnum.BATTLE_SCARRED)),
             ),
             class_name="w-full"
         ),
