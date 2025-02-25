@@ -25,11 +25,7 @@ def content() -> rx.Component:
         rx.text(f"{BookPageState.title}", class_name="font-semibold col-span-2 font-Valera text-center text-2xl mb-2"),
         rx.flex(
             rx.image(src=BookPageState.cover_image_link, class_name="rounded-md shadow-lg w-full"),
-            rx.flex(
-                rx.text("By: ", class_name="font-Valera text-gray-500"),
-                rx.foreach(BookPageState.authors, author_name),
-                class_name="max-w-full space-x-1"
-            ),
+            rx.text(f"By: {BookPageState.authors}", class_name="font-Valera text-gray-500"),
             class_name="flex-col gap-1 max-w-full"
         ),
         rx.grid(
