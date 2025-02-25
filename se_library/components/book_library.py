@@ -29,6 +29,6 @@ def book_display(class_name: str="", min_item_width=12) -> rx.Component:
 def book_library(min_item_width=12) -> rx.Component:
     return rx.flex(
         book_display(min_item_width=min_item_width),
-        class_name="flex flex-col overflow-y-auto px-8 py-4 gap-2 rounded-t-xl mt-4",
+        class_name="flex flex-col overflow-y-auto px-8 py-4 gap-2 rounded-t-xl mt-4 grow",
         background_color=rx.color_mode_cond(light="#F7F9FF", dark="#11131F")
     )

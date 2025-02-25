@@ -115,28 +115,46 @@ class BookRegistrationPageState(BookInfo):
                 )
             ).first()
 
-            if not existing_book:   
-                session.add(Publisher(
-                    name=self.publisher
-                ))
-                new_publisher = session.exec(
+            if not existing_book:  
+                existing_publisher = session.exec(
                     Publisher.select().where(
                         Publisher.name == self.publisher
                     )
-                ).first()
+                ).first() 
+                publisher = None
+                if not existing_publisher:
+                    session.add(Publisher(
+                        name=self.publisher
+                    ))
+                    publisher = session.exec(
+                        Publisher.select().where(
+                            Publisher.name == self.publisher
+                        )
+                    ).first()
+                else:
+                    publisher = existing_publisher
+
                 session.add(Book(
                     title=self.title,
                     description=self.description,
                     isbn13=self.isbn13,
-                    publisher_id=new_publisher.id,
+                    publisher_id=publisher.id,
                     cover_image_link=self.cover_image_link,
                     pages=self.pages
                 ))
+
                 for author_name in self.authors:
-                    session.add(Author(
-                        name=author_name
-                    ))
+                    existing_author = session.exec(
+                        Author.select().where(
+                            Author.name == author_name
+                        )
+                    ).first()
+                    if not existing_author:
+                        session.add(Author(
+                            name=author_name
+                        ))
                 session.commit()
+                
                 new_book = session.exec(
                     Book.select().where(
                         Book.isbn13 == self.isbn13
