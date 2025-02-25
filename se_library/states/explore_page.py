@@ -1,7 +1,7 @@
 import reflex as rx
 from .registration_page_state import BookRegistrationPageState
 from .base import BaseState
-from se_library.models import Book
+from se_library.models import AvailabilityEnum, Book, BookInventory
 from typing import List
 from pydantic import BaseModel
 
@@ -11,7 +11,7 @@ class BookDetails(BaseModel):
     title: str
     authors: str
     image_src: str
-
+    quantity: int
 class ExplorePageState(rx.State):
     search_input: str = ""
     search_query: str = ""
@@ -52,10 +52,17 @@ class ExplorePageState(rx.State):
                 Book.select()
             ).all()
             for book in self.books:
+                quantity = len(session.exec(
+                    BookInventory.select().where(
+                        BookInventory.book_id == book.id,
+                        BookInventory.availability == AvailabilityEnum.AVAILABLE
+                    )
+                ).all())
                 self.book_details.append(BookDetails(
                     id=book.id, 
                     isbn13=book.isbn13,
                     title=book.title, 
                     authors=", ".join([author.name for author in book.authors]), 
                     image_src=book.cover_image_link,
+                    quantity=quantity
                 ))

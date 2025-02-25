@@ -4,9 +4,7 @@ from se_library.models import Author
 from typing import List
 
 # contains book cover, name, details, bla bla bla (dont set explicit height)
-def book_slot(isbn13: str, title: str, authors: str, image_src:str="", class_name: str="") -> rx.Component:
-    # convert to rx.foreach()
-    
+def book_slot(isbn13: str, title: str, authors: str, image_src:str="", quantity: int=0, has_quantity: bool=False, class_name: str="") -> rx.Component:
     return rx.flex(
         rx.cond(
             image_src,
@@ -15,13 +13,14 @@ def book_slot(isbn13: str, title: str, authors: str, image_src:str="", class_nam
         ),
         rx.text(title, class_name="font-semibold text-[14px] leading-[1.2rem] font-Varela"),
         rx.text(authors, class_name="text-gray-500 font-Varela text-[0.9rem] leading-[1.2rem]"),
+        rx.text(f"{quantity} available", class_name=f"self-end text-[0.9rem] leading-[1.2rem] {'' if has_quantity else 'collapse'}"),
         on_click=rx.redirect(f"/book?isbn13={isbn13}"),
         class_name=f"flex-col gap-2 {class_name} cursor-pointer"
     )
 
 def book_display(class_name: str="", min_item_width=12) -> rx.Component:
     return rx.grid(
-        rx.foreach(ExplorePageState.book_details, lambda book: book_slot(book.isbn13, book.title, book.authors, book.image_src, class_name="w-full")),
+        rx.foreach(ExplorePageState.book_details, lambda book: book_slot(book.isbn13, book.title, book.authors, book.image_src, book.quantity,has_quantity=True, class_name="w-full")),
         class_name=f"grid grid-cols-[repeat(auto-fill,minmax({min_item_width}rem,1fr))] gap-5 {class_name}"
     )
 
