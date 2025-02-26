@@ -1,7 +1,5 @@
 import reflex as rx
 from se_library.states.explore_page import ExplorePageState
-from se_library.models import Author
-from typing import List
 
 # contains book cover, name, details, bla bla bla (dont set explicit height)
 def book_slot(isbn13: str, title: str, authors: str, image_src:str="", quantity: int=0, has_quantity: bool=False, class_name: str="") -> rx.Component:
