@@ -2,7 +2,7 @@ import reflex as rx
 
 from .borrow_dialog import borrow_dialog
 from .book_details_list import book_details_list
-from se_library.states.book_page_state import BookPageState
+from se_library.states.book_page_state import BookPageState, BorrowDialogState
 from .stock_status import stock_status
 from .queue_status import queue_status
 from .borrowed_status import borrowed_status
@@ -26,7 +26,7 @@ def content() -> rx.Component:
         rx.text(BookPageState.title, class_name="text-sm font-Varela font-semibold text-center"),
         rx.image(src=BookPageState.cover_image_link, class_name="max-w-[45rem] max-h-[35rem] w-[300px] mx-auto rounded-sm shadow-md"),
         rx.text(f"By: {BookPageState.authors}", class_name="text-sm font-Varela text-gray-500 text-center"),
-        borrow_dialog(dialog_btn=rx.flex("Borrow", class_name="col-span-2 w-fit justify-center mx-auto px-8 py-2 mt-4 rounded-xl text-white font-semibold cursor-pointer", background_color=rx.Color("indigo", 10))),
+        borrow_dialog(available_condition=BookPageState.available_condition, state=BorrowDialogState, dialog_btn=rx.flex("Borrow", class_name="col-span-2 w-fit justify-center mx-auto px-8 py-2 mt-4 rounded-xl text-white font-semibold cursor-pointer", background_color=rx.Color("indigo", 10))),
         rx.grid(
             stock_status(remaining=BookPageState.remaining, actual=BookPageState.actual),
             queue_status(),

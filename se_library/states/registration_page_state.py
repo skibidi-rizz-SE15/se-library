@@ -46,7 +46,7 @@ class BookInfo(rx.State):
             check_sum += num * (3 if i % 2 != 0 else 1)
         check_num = check_sum % 10
         return isbn13 + str((10 - check_num) % 10)
-    
+
 class BookRegistrationPageState(BookInfo):
     loading: bool = False
     book_exists: bool = None

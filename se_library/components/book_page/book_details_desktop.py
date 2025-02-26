@@ -5,7 +5,7 @@ from .queue_status import queue_status
 from .borrowed_status import borrowed_status
 from .book_details_list import book_details_list
 from .queue_duration_status import queue_duration_status
-from se_library.states.book_page_state import BookPageState
+from se_library.states.book_page_state import BookPageState, BorrowDialogState
 
 def author_name(name: str) -> rx.Component:
     return rx.text(f"{name}, ", class_name="font-Valera text-gray-500")
@@ -39,10 +39,13 @@ def content() -> rx.Component:
             rx.separator(),
             book_details_list(isbn13=BookPageState.isbn13, publisher=BookPageState.publisher, pages=BookPageState.pages),
             borrow_dialog(
+                state=BorrowDialogState,
+                available_condition=BookPageState.available_condition,
                 dialog_btn=rx.flex(
                     "Borrow", 
                     class_name="justify-center px-8 py-2 h-fit w-fit mx-auto rounded-3xl text-white font-semibold cursor-pointer", 
-                    background_color=rx.Color("indigo", 10)
+                    background_color=rx.Color("indigo", 10),
+                    on_click=BorrowDialogState.set_is_open(True)
                 )
             ),
             class_name="h-fit w-full gap-8"

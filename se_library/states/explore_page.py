@@ -1,5 +1,6 @@
 import reflex as rx
 from .registration_page_state import BookRegistrationPageState
+from .book_page_state import BookPageState
 from .base import BaseState
 from se_library.models import AvailabilityEnum, Book, BookInventory
 from typing import List
@@ -43,6 +44,7 @@ class ExplorePageState(rx.State):
     def handle_on_load(self):
         yield BaseState.check_login()
         yield BookRegistrationPageState.reset_states()
+        yield BookPageState.reset_states()
         yield self.reset()
         yield self.load_books()
 
