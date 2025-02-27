@@ -50,6 +50,7 @@ class BookPreviewDetails(rx.State):
 class BookRegistrationPageState(BookPreviewDetails):
     loading: bool = False
     book_exists: bool = None
+    book_in_db: bool = None
     is_search: bool = False
     submit_loading: bool = False
 
@@ -95,8 +96,12 @@ class BookRegistrationPageState(BookPreviewDetails):
                 return "Select Genre"
 
     @rx.event
-    def set_new_condition(self, selected_condition: ConditionEnum):
+    def set_condition(self, selected_condition: ConditionEnum):
         self.book_condition = selected_condition
+
+    @rx.event
+    def set_genre(self, selected_genre: GenreEnum):
+        self.book_genre = selected_genre
 
     @rx.event
     async def handle_search(self, form_data: dict):
@@ -124,8 +129,11 @@ class BookRegistrationPageState(BookPreviewDetails):
                 self.publisher = existing_book.publisher.name
                 self.authors = [author.name for author in existing_book.authors]
                 self.pages = existing_book.pages
+                self.genre = existing_book.genre
                 self.book_exists = True
+                self.book_in_db = True
             else:
+                self.book_in_db = False
                 await self.fetch_isbndb()
         
     @rx.event
@@ -166,7 +174,8 @@ class BookRegistrationPageState(BookPreviewDetails):
                     isbn13=self.isbn13,
                     publisher_id=publisher.id,
                     cover_image_link=self.cover_image_link,
-                    pages=self.pages
+                    pages=self.pages,
+                    genre=self.genre
                 ))
 
                 for author_name in self.authors:

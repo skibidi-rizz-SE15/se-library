@@ -1,7 +1,7 @@
 import reflex as rx
 from ..states.registration_page_state import BookRegistrationPageState, ConditionDialogState
 from .book_library import book_slot
-from ..models import ConditionEnum
+from ..models import ConditionEnum, GenreEnum
 
 class PatternFormat(rx.NoSSRComponent):
     library = "react-number-format"
@@ -36,7 +36,11 @@ def book_condition_dialog() -> rx.Component:
             rx.form(
                 rx.text("Quantity", class_name="font-semibold font-Valera"),
                 rx.checkbox(rx.text("Multiple Books", class_name="font-semibold font-Valera"), name="has_multiple_books", default_checked=False, on_change=ConditionDialogState.set_has_multiple_books),
-                genre_subform_contents(),
+                rx.cond(
+                    # not book_exists
+                    ~BookRegistrationPageState.book_in_db,
+                    genre_subform_contents(),
+                ),
                 rx.cond(
                     ConditionDialogState.has_multiple_books,
                     multiple_quantity_subform_contents(),
@@ -62,11 +66,11 @@ def single_quantity_subform_contents() -> rx.Component:
         rx.menu.root(
             rx.menu.trigger(rx.button(BookRegistrationPageState.get_formatted_condition, class_name="w-fit border border-gray-300 p-2 rounded-md")),
             rx.menu.content(
-                rx.menu.item(rx.text("Factory New"), on_select=BookRegistrationPageState.set_new_condition(ConditionEnum.FACTORY_NEW)),
-                rx.menu.item(rx.text("Minimal Wear"), on_select=BookRegistrationPageState.set_new_condition(ConditionEnum.MINIMAL_WEAR)),
-                rx.menu.item(rx.text("Field Tested"), on_select=BookRegistrationPageState.set_new_condition(ConditionEnum.FIELD_TESTED)),
-                rx.menu.item(rx.text("Well Worn"), on_select=BookRegistrationPageState.set_new_condition(ConditionEnum.WELL_WORN)),
-                rx.menu.item(rx.text("Battle Scarred"), on_select=BookRegistrationPageState.set_new_condition(ConditionEnum.BATTLE_SCARRED)),
+                rx.menu.item(rx.text("Factory New"), on_select=BookRegistrationPageState.set_condition(ConditionEnum.FACTORY_NEW)),
+                rx.menu.item(rx.text("Minimal Wear"), on_select=BookRegistrationPageState.set_condition(ConditionEnum.MINIMAL_WEAR)),
+                rx.menu.item(rx.text("Field Tested"), on_select=BookRegistrationPageState.set_condition(ConditionEnum.FIELD_TESTED)),
+                rx.menu.item(rx.text("Well Worn"), on_select=BookRegistrationPageState.set_condition(ConditionEnum.WELL_WORN)),
+                rx.menu.item(rx.text("Battle Scarred"), on_select=BookRegistrationPageState.set_condition(ConditionEnum.BATTLE_SCARRED)),
             ),
             class_name="w-full"
         )
@@ -95,14 +99,14 @@ def genre_subform_contents() -> rx.Component:
         rx.menu.root(
             rx.menu.trigger(rx.button(BookRegistrationPageState.get_formatted_genre, class_name="w-fit border border-gray-300 p-2 rounded-md")),
             rx.menu.content(
-                rx.menu.item(rx.text("Programming Languages")),
-                rx.menu.item(rx.text("Design Patterns")),
-                rx.menu.item(rx.text("Software Architecture")),
-                rx.menu.item(rx.text("DevOps")),
-                rx.menu.item(rx.text("Software Testing")),
-                rx.menu.item(rx.text("Project Management")),
-                rx.menu.item(rx.text("UX/UI")),
-                rx.menu.item(rx.text("Security")),
+                rx.menu.item(rx.text("Programming Languages"), on_click=BookRegistrationPageState.set_genre(GenreEnum.PROGRAMMING_LANGUAGES)),
+                rx.menu.item(rx.text("Design Patterns"), on_click=BookRegistrationPageState.set_genre(GenreEnum.DESIGN_PATTERNS)),
+                rx.menu.item(rx.text("Software Architecture"), on_click=BookRegistrationPageState.set_genre(GenreEnum.SOFTWARE_ARCHITECTURE)),
+                rx.menu.item(rx.text("DevOps"), on_click=BookRegistrationPageState.set_genre(GenreEnum.DEVOPS)),
+                rx.menu.item(rx.text("Software Testing"), on_click=BookRegistrationPageState.set_genre(GenreEnum.SOFTWARE_TESTING)),
+                rx.menu.item(rx.text("Project Management"), on_click=BookRegistrationPageState.set_genre(GenreEnum.PROJECT_MANAGEMENT)),
+                rx.menu.item(rx.text("UX/UI"), on_click=BookRegistrationPageState.set_genre(GenreEnum.USER_EXPERIENCE)),
+                rx.menu.item(rx.text("Security"), on_click=BookRegistrationPageState.set_genre(GenreEnum.SECURITY)),
             ),
             class_name="w-full"
         ),
