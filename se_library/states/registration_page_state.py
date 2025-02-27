@@ -97,10 +97,14 @@ class BookRegistrationPageState(BookPreviewDetails):
 
     @rx.event
     def set_condition(self, selected_condition: ConditionEnum):
+        if isinstance(selected_condition, str):
+            selected_condition = ConditionEnum(selected_condition)
         self.book_condition = selected_condition
 
     @rx.event
     def set_genre(self, selected_genre: GenreEnum):
+        if isinstance(selected_genre, str):
+            selected_genre = GenreEnum(selected_genre)
         self.book_genre = selected_genre
 
     @rx.event
@@ -129,7 +133,7 @@ class BookRegistrationPageState(BookPreviewDetails):
                 self.publisher = existing_book.publisher.name
                 self.authors = [author.name for author in existing_book.authors]
                 self.pages = existing_book.pages
-                self.genre = existing_book.genre
+                self.book_genre = existing_book.genre
                 self.book_exists = True
                 self.book_in_db = True
             else:
@@ -175,7 +179,7 @@ class BookRegistrationPageState(BookPreviewDetails):
                     publisher_id=publisher.id,
                     cover_image_link=self.cover_image_link,
                     pages=self.pages,
-                    genre=self.genre
+                    genre=self.book_genre
                 ))
 
                 for author_name in self.authors:
@@ -210,7 +214,8 @@ class BookRegistrationPageState(BookPreviewDetails):
             base_state = await self.get_state(BaseState)
             user = base_state.user
             has_multiple_books = form_data["has_multiple_books"] if "has_multiple_books" in form_data else None
-            if has_multiple_books == "on":
+            # multiple books
+            if has_multiple_books:
                 try:
                     quantities = []
                     total = 0
@@ -247,11 +252,15 @@ class BookRegistrationPageState(BookPreviewDetails):
                                     availability=AvailabilityEnum.AVAILABLE,
                                 ))
                                 session.commit()
+                    yield rx.redirect("/explore")
+                    yield rx.toast.success("Books Registered Successfully", position="top-center")
+                    return
                 except Exception as e:
                     print(f"Error adding book inventory: {e}")
                     self.submit_loading = False
                     yield rx.toast.error("Error adding book inventory", position="top-center")
                     return
+            # single book
             else:
                 try:
                     if not self.book_condition:
@@ -270,7 +279,9 @@ class BookRegistrationPageState(BookPreviewDetails):
                     return
             self.submit_loading = False
             await dialog_state.reset_states()
+            yield rx.redirect("/explore")
             yield rx.toast.success("Book Registered Successfully", position="top-center")
+            return
     
     async def fetch_isbndb(self) -> None:
         try:
