@@ -9,7 +9,7 @@ class AuthState(BaseState):
 
     email: str
     password: str
-    name: str
+    username: str
 
     def login(self):
         """Log in a user."""
@@ -27,7 +27,7 @@ class AuthState(BaseState):
     def signup(self):
         """Sign up a user."""
         with rx.session() as session:
-            if not all([self.email, self.password, self.name]):
+            if not all([self.email, self.password, self.username]):
                 return rx.window_alert("Please fill in all fields.")
             
             if session.exec(select(User).where(User.email == self.email)).first():
@@ -35,7 +35,7 @@ class AuthState(BaseState):
             
             new_user = User(
                 email=self.email, 
-                name=self.name,
+                username=self.username,
                 password=User.hash_password(self.password)
             )
             session.add(new_user)

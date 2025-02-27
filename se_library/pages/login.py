@@ -9,7 +9,7 @@ class LoginForm(AuthState):
     def handle_switch_login_and_register(self):
         self.email = ""
         self.password = ""
-        self.name = ""
+        self.username = ""
         self.is_login_form = not self.is_login_form
         yield
 
@@ -24,7 +24,7 @@ def login_form() -> rx.Component:
                         ~LoginForm.is_login_form,
                         rx.fragment(
                             rx.text("Username", rx.text.span("*", color="red"), class_name="text-lg font-semibold text-[#253974]"),
-                            rx.input(class_name="w-full h-10 border-2 border-[#253974] rounded-lg p-2", value=AuthState.name, on_change=AuthState.set_name),
+                            rx.input(class_name="w-full h-10 border-2 border-[#253974] rounded-lg p-2", value=AuthState.username, on_change=AuthState.set_username),
                         ),
                     ),
                     rx.text("Email", rx.text.span("*", color="red"), class_name="text-lg font-semibold text-[#253974]"),
@@ -59,7 +59,7 @@ def login_form() -> rx.Component:
                         ~LoginForm.is_login_form,
                         rx.fragment(
                             rx.text("Username", rx.text.span("*", color="red"), class_name="text-lg font-semibold text-[#253974]"),
-                            rx.input(class_name="w-full h-10 border-2 border-[#253974] rounded-lg p-2", value=AuthState.name, on_change=AuthState.set_name),
+                            rx.input(class_name="w-full h-10 border-2 border-[#253974] rounded-lg p-2", value=AuthState.username, on_change=AuthState.set_username),
                         ), 
                     ),
                     rx.text("Email", rx.text.span("*", color="red"), class_name="text-lg font-semibold text-[#253974]"),
