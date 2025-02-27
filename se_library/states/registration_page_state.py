@@ -53,6 +53,8 @@ class BookRegistrationPageState(BookInfo):
     is_search: bool = False
     book_condition: ConditionEnum = None
     submit_loading: bool = False
+    genre: str = "Select Genre"
+    is_exist_in_db: bool = None
 
     @rx.var(cache=False)
     def get_formatted_condition(self) -> str:
@@ -101,7 +103,9 @@ class BookRegistrationPageState(BookInfo):
                 self.authors = [author.name for author in existing_book.authors]
                 self.pages = existing_book.pages
                 self.book_exists = True
+                self.is_exist_in_db = True
             else:
+                self.is_exist_in_db = False
                 await self.fetch_isbndb()
         
     @rx.event

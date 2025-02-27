@@ -40,6 +40,11 @@ def book_condition_dialog() -> rx.Component:
                     class_name="items-center space-x-2 w-full"
                 ),
                 rx.cond(
+                    BookRegistrationPageState.is_exist_in_db,
+                    None,
+                    genre_subform()
+                ),
+                rx.cond(
                     ConditionDialogState.has_multiple_books,
                     multiple_quantity_subform(),
                     single_quantity_subform(),
@@ -54,6 +59,30 @@ def book_condition_dialog() -> rx.Component:
         ),
         open=ConditionDialogState.is_dialog_open,
     )
+
+def genre_subform() -> rx.Component:
+        return rx.flex(
+            rx.text("Genre", class_name="font-semibold font-Valera text-center"),
+            rx.menu.root(
+                rx.menu.trigger(rx.button(BookRegistrationPageState.genre, class_name="w-fit border border-gray-300 p-2 rounded-md")),
+                rx.menu.content(
+                    rx.menu.item("Fiction", on_select=BookRegistrationPageState.set_genre("Fiction")),
+                    rx.menu.item("Biography", on_select=BookRegistrationPageState.set_genre("Biography")),
+                    rx.menu.item("Biography & Memoir", on_select=BookRegistrationPageState.set_genre("Biography & Memoir")),
+                    rx.menu.item("Self-Help", on_select=BookRegistrationPageState.set_genre("Self-Help")),
+                    rx.menu.item("History", on_select=BookRegistrationPageState.set_genre("History")),
+                    rx.menu.item("Science & Technology", on_select=BookRegistrationPageState.set_genre("Science & Technology")),
+                    rx.menu.item("Philosophy", on_select=BookRegistrationPageState.set_genre("Philosophy")),
+                    rx.menu.item("Business & Economics", on_select=BookRegistrationPageState.set_genre("Business & Economics")),
+                    rx.menu.item("Psychology", on_select=BookRegistrationPageState.set_genre("Psychology")),
+                    rx.menu.item("Health & Wellness", on_select=BookRegistrationPageState.set_genre("Health & Wellness")),
+                    rx.menu.item("Travel", on_select=BookRegistrationPageState.set_genre("Travel")),
+                    rx.menu.item("Other", on_select=BookRegistrationPageState.set_genre("Other")),
+                ),
+                class_name="w-full"
+            ),
+            class_name="items-center space-x-2 w-full"
+        ),
 
 def single_quantity_subform() -> rx.Component:
     return rx.flex(
