@@ -34,19 +34,20 @@ def book_condition_dialog() -> rx.Component:
         rx.dialog.content(
             rx.dialog.title(rx.text("Your Book Details", class_name="font-semibold font-Valera text-center text-lg")),
             rx.form(
-                rx.flex(
-                    rx.text("Quantity", class_name="font-semibold font-Valera text-center"),
-                    rx.checkbox(rx.text("Multiple Books", class_name="font-semibold font-Valera"), name="has_multiple_books", default_checked=False, on_change=ConditionDialogState.set_has_multiple_books),
-                    class_name="items-center space-x-2 w-full"
-                ),
+                rx.text("Quantity", class_name="font-semibold font-Valera"),
+                rx.checkbox(rx.text("Multiple Books", class_name="font-semibold font-Valera"), name="has_multiple_books", default_checked=False, on_change=ConditionDialogState.set_has_multiple_books),
+                genre_subform_contents(),
                 rx.cond(
                     ConditionDialogState.has_multiple_books,
-                    multiple_quantity_subform(),
-                    single_quantity_subform(),
+                    multiple_quantity_subform_contents(),
+                    single_quantity_subform_contents(),
                 ),
-                rx.button("Confirm", class_name="border", type="submit", loading=BookRegistrationPageState.submit_loading),
-                rx.button("Cancel",color_scheme="red", class_name="border", type="button", on_click=ConditionDialogState.reset_states),
-                class_name="contents",
+                rx.flex(
+                    rx.button("Confirm", class_name="border", type="submit", loading=BookRegistrationPageState.submit_loading),
+                    rx.button("Cancel",color_scheme="red", class_name="border", type="button", on_click=ConditionDialogState.reset_states),
+                    class_name="col-span-2 justify-center gap-4"
+                ),
+                class_name="grid grid-cols-[auto_minmax(10rem,1fr)] items-center gap-4 w-[20rem]",
                 on_submit=BookRegistrationPageState.handle_register_book,
             ),
             size="2",
@@ -55,9 +56,9 @@ def book_condition_dialog() -> rx.Component:
         open=ConditionDialogState.is_dialog_open,
     )
 
-def single_quantity_subform() -> rx.Component:
-    return rx.flex(
-        rx.text("Condition", class_name="font-semibold font-Valera text-center"),
+def single_quantity_subform_contents() -> rx.Component:
+    return rx.fragment(
+        rx.text("Condition", class_name="font-semibold font-Valera"),
         rx.menu.root(
             rx.menu.trigger(rx.button(BookRegistrationPageState.get_formatted_condition, class_name="w-fit border border-gray-300 p-2 rounded-md")),
             rx.menu.content(
@@ -68,13 +69,12 @@ def single_quantity_subform() -> rx.Component:
                 rx.menu.item(rx.text("Battle Scarred"), on_select=BookRegistrationPageState.set_new_condition(ConditionEnum.BATTLE_SCARRED)),
             ),
             class_name="w-full"
-        ),
-        class_name="items-center space-x-2 w-full"
+        )
     )
 
-def multiple_quantity_subform() -> rx.Component:
+def multiple_quantity_subform_contents() -> rx.Component:
     return  rx.grid(
-        rx.text("Condition", class_name="w-full font-semibold font-Valera text-center"),
+        rx.text("Condition", class_name="w-full font-semibold font-Valera"),
         rx.text("Copies", class_name="w-full font-semibold font-Valera text-center"),
         rx.text("Factory New"),
         rx.input(placeholder="0", type="number", class_name="w-fit", name="factory_new"),
@@ -86,7 +86,27 @@ def multiple_quantity_subform() -> rx.Component:
         rx.input(placeholder="0", type="number", class_name="w-fit", name="well_worn"),
         rx.text("Battle Scarred"),
         rx.input(placeholder="0", type="number", class_name="w-fit", name="battle_scarred"),
-        class_name="grid grid-cols-[minmax(5rem,max-content)_1fr] h-fit gap-4"
+        class_name="col-span-2 grid grid-cols-[minmax(5rem,max-content)_1fr] h-fit gap-4"
+    )
+
+def genre_subform_contents() -> rx.Component:
+    return rx.fragment(
+        rx.text("Genre", class_name="font-semibold font-Valera"),
+        rx.menu.root(
+            rx.menu.trigger(rx.button(BookRegistrationPageState.get_formatted_genre, class_name="w-fit border border-gray-300 p-2 rounded-md")),
+            rx.menu.content(
+                rx.menu.item(rx.text("Programming Languages")),
+                rx.menu.item(rx.text("Design Patterns")),
+                rx.menu.item(rx.text("Software Architecture")),
+                rx.menu.item(rx.text("DevOps")),
+                rx.menu.item(rx.text("Software Testing")),
+                rx.menu.item(rx.text("Project Management")),
+                rx.menu.item(rx.text("UX/UI")),
+                rx.menu.item(rx.text("Security")),
+            ),
+            class_name="w-full"
+        ),
+        class_name="items-center space-x-2 w-full"
     )
 
 def book_details_list() -> rx.Component:

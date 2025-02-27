@@ -3,7 +3,7 @@ import requests
 import json
 from typing import List
 from enum import Enum
-from ..models import Book, BookInventory, Publisher, Author, BookAuthorLink, ConditionEnum, AvailabilityEnum
+from ..models import Book, BookInventory, Publisher, Author, BookAuthorLink, ConditionEnum, AvailabilityEnum, GenreEnum
 from .base import BaseState
 from dotenv import load_dotenv
 import os
@@ -13,7 +13,7 @@ load_dotenv()
 
 BOOK_REGISTRATION_LIMIT = 50
 
-class BookInfo(rx.State):
+class BookPreviewDetails(rx.State):
     title: str = ""
     description: str = ""
     authors: List[str] = []
@@ -47,12 +47,14 @@ class BookInfo(rx.State):
         check_num = check_sum % 10
         return isbn13 + str((10 - check_num) % 10)
 
-class BookRegistrationPageState(BookInfo):
+class BookRegistrationPageState(BookPreviewDetails):
     loading: bool = False
     book_exists: bool = None
     is_search: bool = False
-    book_condition: ConditionEnum = None
     submit_loading: bool = False
+
+    book_condition: ConditionEnum = None
+    book_genre: GenreEnum = None
 
     @rx.var(cache=False)
     def get_formatted_condition(self) -> str:
@@ -69,6 +71,28 @@ class BookRegistrationPageState(BookInfo):
                 return "Battle Scarred"
             case _:
                 return "Select Condition"
+            
+    @rx.var(cache=False)
+    def get_formatted_genre(self) -> str:
+        match self.book_genre:
+            case GenreEnum.PROGRAMMING_LANGUAGES:
+                return "Programming Languages"
+            case GenreEnum.DESIGN_PATTERNS:
+                return "Design Patterns"
+            case GenreEnum.SOFTWARE_ARCHITECTURE:
+                return "Software Architecture"
+            case GenreEnum.DEVOPS:
+                return "DevOps"
+            case GenreEnum.SOFTWARE_TESTING:
+                return "Software Testing"
+            case GenreEnum.PROJECT_MANAGEMENT:
+                return "Project Management"
+            case GenreEnum.USER_EXPERIENCE:
+                return "UX/UI"
+            case GenreEnum.SECURITY:
+                return "Security"
+            case _:
+                return "Select Genre"
 
     @rx.event
     def set_new_condition(self, selected_condition: ConditionEnum):
