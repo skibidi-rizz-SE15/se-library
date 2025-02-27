@@ -43,10 +43,10 @@ class ExplorePageState(rx.State):
 
     def handle_on_load(self):
         yield BaseState.check_login()
-        yield BookRegistrationPageState.reset_states()
-        yield BookPageState.reset_states()
         yield self.reset()
         yield self.load_books()
+        yield BookRegistrationPageState.reset_states()
+        yield BookPageState.reset_states()
 
     def load_books(self):
         with rx.session() as session:

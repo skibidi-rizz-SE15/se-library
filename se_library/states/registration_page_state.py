@@ -226,7 +226,7 @@ class BookRegistrationPageState(BookPreviewDetails):
                             qty_int = int(qty) if qty else 0
                             if qty_int < 0:
                                 self.submit_loading = False
-                                yield rx.toast.error("Quantities cannot be negative", position="top-center")
+                                yield rx.toast.error("Quantity cannot be negative", position="top-center")
                                 return
                             total += qty_int
                             quantities.append((condition, qty_int))
@@ -245,14 +245,16 @@ class BookRegistrationPageState(BookPreviewDetails):
                     else:
                         for condition, quantity in quantities:
                             if quantity > 0:
-                                session.add(BookInventory(
-                                    book_id=new_book.id if not existing_book else existing_book.id,
-                                    owner_id=user.id,
-                                    condition=condition.value,
-                                    availability=AvailabilityEnum.AVAILABLE,
-                                ))
-                                session.commit()
-                    yield rx.redirect("/explore")
+                                for _ in range(quantity):
+                                    session.add(BookInventory(
+                                        book_id=new_book.id if not existing_book else existing_book.id,
+                                        owner_id=user.id,
+                                        condition=condition.value,
+                                        availability=AvailabilityEnum.AVAILABLE,
+                                    ))
+                                    session.commit()
+                    self.submit_loading = False
+                    await dialog_state.reset_states()
                     yield rx.toast.success("Books Registered Successfully", position="top-center")
                     return
                 except Exception as e:
@@ -279,7 +281,6 @@ class BookRegistrationPageState(BookPreviewDetails):
                     return
             self.submit_loading = False
             await dialog_state.reset_states()
-            yield rx.redirect("/explore")
             yield rx.toast.success("Book Registered Successfully", position="top-center")
             return
     

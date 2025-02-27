@@ -2,7 +2,6 @@
 
 import reflex as rx
 from typing import Optional
-
 from se_library.models import User
 
 class BaseState(rx.State):
@@ -28,4 +27,4 @@ class BaseState(rx.State):
         """Check if a user is logged in."""
         if not self.logged_in:
             return rx.redirect("/login")
-        
+            

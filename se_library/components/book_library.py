@@ -4,14 +4,17 @@ from se_library.states.explore_page import ExplorePageState
 # contains book cover, name, details, bla bla bla (dont set explicit height)
 def book_slot(isbn13: str, title: str, authors: str, image_src:str="", quantity: int=0, has_quantity: bool=False, class_name: str="") -> rx.Component:
     return rx.flex(
-        rx.cond(
-            image_src,
-            rx.image(src=image_src, alt="BOOK COVER", class_name="self-center shadow-lg max-h-[20rem] rounded-md"),
-            rx.icon("book-copy", class_name="self-center border-2 w-full h-[20rem]"),
+        rx.flex(
+            rx.cond(
+                image_src,
+                rx.image(src=image_src, alt="BOOK COVER", class_name="self-center shadow-lg max-h-[20rem] rounded-md mt-auto"),
+                rx.icon("book-copy", class_name="self-center border-2 w-full h-[20rem] mt-auto"),
+            ),
+            class_name="self-center h-[20rem]"
         ),
-        rx.text(title, class_name="font-semibold text-[14px] leading-[1.2rem] font-Varela"),
+        rx.text(title, class_name="line-clamp-3 text-ellipsis font-semibold text-[14px] leading-[1.2rem] font-Varela"),
         rx.text(authors, class_name="text-gray-500 font-Varela text-[0.9rem] leading-[1.2rem]"),
-        rx.text(f"{quantity} available", class_name=f"self-end text-[0.9rem] leading-[1.2rem] {'' if has_quantity else 'collapse'}"),
+        rx.text(f"{quantity} available", class_name=f"self-end mt-auto text-[0.9rem] leading-[1.2rem] {'' if has_quantity else 'collapse'}"),
         on_click=rx.redirect(f"/book?isbn13={isbn13}"),
         class_name=f"flex-col gap-2 {class_name} cursor-pointer"
     )
