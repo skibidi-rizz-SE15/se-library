@@ -54,6 +54,7 @@ class Publisher(rx.Model, table=True):
 
 class Book(rx.Model, table=True):
     title: str = Field(nullable=False)
+    genre: str = Field(nullable=False)
     description: str
     isbn13: str = Field(unique=True, nullable=False)
     publisher_id: int = Field(foreign_key="publisher.id")
