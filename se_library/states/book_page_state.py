@@ -134,11 +134,10 @@ class BorrowDialogState(BookPageState):
             return result(error=True, message="Please select a valid condition")
         try:
             message = Mail(
-                from_email='66011192@kmitl.ac.th',
-                to_emails='66011192@kmitl.ac.th',
+                from_email='noreply@sethreads.life', # Using this domain before mo buying us new domain
+                to_emails='[YOUR_EMAIL_FOR_TEST]',
                 subject='Sending with Twilio SendGrid is Fun',
-                html_content='<strong>and easy to do anywhere, even with Python</strong>')
-            print(SENDGRID_API_KEY)
+                html_content='<strong>TEST TEST</strong>')
             sg = SendGridAPIClient(api_key=SENDGRID_API_KEY)
             response = sg.send(message)
             print(response.status_code)
