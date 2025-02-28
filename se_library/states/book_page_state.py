@@ -2,6 +2,14 @@ import reflex as rx
 from se_library.models import AvailabilityEnum, Book, BookInventory, ConditionEnum
 from typing import List
 import asyncio
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 
 class BookPageState(rx.State):
     authors: str = ""
@@ -124,4 +132,19 @@ class BorrowDialogState(BookPageState):
     async def make_transaction(self, condition: str) -> result:
         if condition not in self.available_condition:
             return result(error=True, message="Please select a valid condition")
-        return result(error=False, message="Transaction successful")
+        try:
+            message = Mail(
+                from_email='66011192@kmitl.ac.th',
+                to_emails='66011192@kmitl.ac.th',
+                subject='Sending with Twilio SendGrid is Fun',
+                html_content='<strong>and easy to do anywhere, even with Python</strong>')
+            print(SENDGRID_API_KEY)
+            sg = SendGridAPIClient(api_key=SENDGRID_API_KEY)
+            response = sg.send(message)
+            print(response.status_code)
+            print(response.body)
+            print(response.headers)
+            return result(error=False, message="Transaction successful")
+        except Exception as e:
+            print(e)
+            return result(error=True, message=f"Error: {e}")
