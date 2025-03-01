@@ -23,11 +23,12 @@ class BookPageState(rx.State):
     title: str = ""
     description: str = ""
     cover_image_link: str = ""
-    is_book_exists: bool = False
-    remaining: int = 0
-    stock: List[BookInventory] = []
-    available_condition: List[str] = []
-    actual: int = 0
+    book_exists: bool = False
+    available_copies_amount: int = 0
+    book_copies: List[BookInventory] = []
+    available_conditions: List[str] = []
+    total_copies_amount: int = 0
+    BORROW_DURATION = 7
 
     @rx.event
     def reset_states(self):
@@ -35,7 +36,6 @@ class BookPageState(rx.State):
 
     @rx.event
     async def handle_on_load(self):
-        """Should fetch database and reset state of all the other pages."""
         self.reset()
         self.isbn13 = self.router.page.params["isbn13"]
         with rx.session() as session:
@@ -50,54 +50,56 @@ class BookPageState(rx.State):
                 self.title = book.title
                 self.description = book.description
                 self.cover_image_link = book.cover_image_link
-                self.is_book_exists = True
-                self.remaining = len(session.exec(
-                    BookInventory.select().where(
-                        BookInventory.book_id == book.id,
-                        BookInventory.availability == AvailabilityEnum.AVAILABLE
-                    )
-                ).all())
-                self.stock = session.exec(
+                self.book_exists = True
+                self.available_copies_amount = len(
+                    session.exec(
+                        BookInventory.select().where(
+                            BookInventory.book_id == book.id,
+                            BookInventory.availability == AvailabilityEnum.AVAILABLE
+                        )
+                    ).all()
+                )
+                self.book_copies = session.exec(
                     BookInventory.select().where(
                         BookInventory.book_id == book.id
                     )
                 ).all()
-                for book in self.stock:
-                    if len(self.available_condition) == len(ConditionEnum):
+                for book in self.book_copies:
+                    if len(self.available_conditions) == len(ConditionEnum):
                         break
                     match book.condition:
                         case ConditionEnum.FACTORY_NEW:
-                            if "Factory New" not in self.available_condition:
-                                self.available_condition.append("Factory New")
+                            if "Factory New" not in self.available_conditions:
+                                self.available_conditions.append("Factory New")
                             else:
                                 continue
                         case ConditionEnum.MINIMAL_WEAR:
-                            if "Minimal Wear" not in self.available_condition:
-                                self.available_condition.append("Minimal Wear")
+                            if "Minimal Wear" not in self.available_conditions:
+                                self.available_conditions.append("Minimal Wear")
                             else:
                                 continue
                         case ConditionEnum.FIELD_TESTED:
-                            if "Field Tested" not in self.available_condition:
-                                self.available_condition.append("Field Tested")
+                            if "Field Tested" not in self.available_conditions:
+                                self.available_conditions.append("Field Tested")
                             else:
                                 continue
                         case ConditionEnum.WELL_WORN:
-                            if "Well Worn" not in self.available_condition:
-                                self.available_condition.append("Well Worn")
+                            if "Well Worn" not in self.available_conditions:
+                                self.available_conditions.append("Well Worn")
                             else:
                                 continue
                         case ConditionEnum.BATTLE_SCARRED:
-                            if "Battle Scarred" not in self.available_condition:
-                                self.available_condition.append("Battle Scarred")
+                            if "Battle Scarred" not in self.available_conditions:
+                                self.available_conditions.append("Battle Scarred")
                             else:
                                 continue
                         case _:
                             continue
-                self.actual = len(self.stock)
+                self.total_copies_amount = len(self.book_copies)
             else:
-                self.is_book_exists = False
+                self.book_exists = False
 
-class result:
+class Result:
     error: bool = False
     message: str = ""
 
@@ -163,9 +165,9 @@ class BorrowDialogState(BookPageState):
             case _:
                 return None
 
-    async def make_transaction(self, condition: str) -> result:
-        if condition not in self.available_condition:
-            return result(error=True, message="Please select a valid condition")
+    async def make_transaction(self, condition: str) -> Result:
+        if condition not in self.available_conditions:
+            return Result(error=True, message="Please select a valid condition")
         try:
             with rx.session() as session:
                 base_state = await self.get_state(BaseState)
@@ -176,38 +178,38 @@ class BorrowDialogState(BookPageState):
                 res = await self.send_email(db=session, user=user)
                 if res.error:
                     raise Exception(res.message)
-                return result(error=False, message="Transaction successful")
+                return Result(error=False, message="Transaction successful")
         except Exception as e:
-            return result(error=True, message=f"Error: {e}")
+            return Result(error=True, message=f"Error: {e}")
         
     async def database_execute(self, db: Session, condition: str, user: User):
         try:
             book_details = db.exec(
                 Book.select().where(Book.isbn13 == self.isbn13)
             ).first()
-            book_to_borrow = db.exec(
+            book_to_be_borrowed = db.exec(
                 BookInventory.select().where(
                     BookInventory.book_id == book_details.id,
                     BookInventory.availability == AvailabilityEnum.AVAILABLE,
                     BookInventory.condition == self.condition_to_enum(condition)
                 )
             ).first()
-            if not book_to_borrow:
-                return result(error=True, message="Book not available")
-            book_to_borrow.availability = AvailabilityEnum.UNAVAILABLE
+            if not book_to_be_borrowed:
+                return Result(error=True, message="Book unavailable")
+            book_to_be_borrowed.availability = AvailabilityEnum.UNAVAILABLE
             transaction = BookTransaction(
                 borrower_id=user.id,
-                book_inventory_id=book_to_borrow.id,
+                book_inventory_id=book_to_be_borrowed.id,
                 borrow_status=BorrowStatusEnum.PENDING,
                 duration=7,
                 borrow_date=datetime.now(),
-                return_date=datetime.now() + timedelta(days=7)
+                return_date=datetime.now() + timedelta(days=self.BORROW_DURATION)
             )
             db.add(transaction)
             db.commit()
-            return result(error=False, message="Transaction successful")
+            return Result(error=False, message="Transaction successful")
         except Exception as e:
-            return result(error=True, message=f"{e}")
+            return Result(error=True, message=f"{e}")
         
     async def send_email(self, db: Session, user: User):
         try:
@@ -217,14 +219,14 @@ class BorrowDialogState(BookPageState):
                     BookTransaction.borrow_status == BorrowStatusEnum.PENDING
                 ).order_by(BookTransaction.id.desc())
             ).first()
-            book_to_borrow = db.exec(
+            book_to_be_borrowed = db.exec(
                 BookInventory.select().where(BookInventory.id == transaction.book_inventory_id)
             ).first()
             book_details = db.exec(
-                Book.select().where(Book.id == book_to_borrow.book_id)
+                Book.select().where(Book.id == book_to_be_borrowed.book_id)
             ).first()
             owner = db.exec(
-                User.select().where(User.id == book_to_borrow.owner_id)
+                User.select().where(User.id == book_to_be_borrowed.owner_id)
             ).first()
 
             lender_template_data = {
@@ -236,7 +238,7 @@ class BorrowDialogState(BookPageState):
                 "request_id": transaction.id,
                 "borrower_name": user.username,
                 "book_title": book_details.title,
-                "book_condition": self.enum_to_condition(book_to_borrow.condition),
+                "book_condition": self.enum_to_condition(book_to_be_borrowed.condition),
                 "submission_date": transaction.borrow_date,
                 "status": "Pending",
                 "action_url": "http://localhost:3000/profile/transactions"
@@ -251,7 +253,7 @@ class BorrowDialogState(BookPageState):
                 "request_id": transaction.id,
                 "lender_name": owner.username,
                 "book_title": book_details.title,
-                "book_condition": self.enum_to_condition(book_to_borrow.condition),
+                "book_condition": self.enum_to_condition(book_to_be_borrowed.condition),
                 "submission_date": transaction.borrow_date,
                 "status": "Pending",
             }
@@ -282,6 +284,6 @@ class BorrowDialogState(BookPageState):
             sg = SendGridAPIClient(api_key=SENDGRID_API_KEY)
             response = sg.send(lender_mail)
             response = sg.send(borrower_mail)
-            return result(error=False, message="Email sent")
+            return Result(error=False, message="Email sent")
         except Exception as e:
-            return result(error=True, message=f"{e}")
+            return Result(error=True, message=f"{e}")

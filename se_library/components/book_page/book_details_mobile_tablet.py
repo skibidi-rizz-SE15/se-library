@@ -14,7 +14,7 @@ def author_name(name: str) -> rx.Component:
 def book_details_mobile_tablet() -> rx.Component:
     return rx.flex(
         rx.cond(
-            BookPageState.is_book_exists,
+            BookPageState.book_exists,
             content(),
             rx.text("Book not found", class_name="font-semibold font-Varela text-sm text-center", trim="normal")
         ),
@@ -26,9 +26,9 @@ def content() -> rx.Component:
         rx.text(BookPageState.title, class_name="text-sm font-Varela font-semibold text-center"),
         rx.image(src=BookPageState.cover_image_link, class_name="max-w-[45rem] max-h-[35rem] w-[300px] mx-auto rounded-sm shadow-md"),
         rx.text(f"By: {BookPageState.authors}", class_name="text-sm font-Varela text-gray-500 text-center"),
-        borrow_dialog(available_condition=BookPageState.available_condition, state=BorrowDialogState, dialog_btn=rx.flex("Borrow", class_name="col-span-2 w-fit justify-center mx-auto px-8 py-2 mt-4 rounded-xl text-white font-semibold cursor-pointer", background_color=rx.Color("indigo", 10))),
+        borrow_dialog(available_conditions=BookPageState.available_conditions, state=BorrowDialogState, dialog_btn=rx.flex("Borrow", class_name="col-span-2 w-fit justify-center mx-auto px-8 py-2 mt-4 rounded-xl text-white font-semibold cursor-pointer", background_color=rx.Color("indigo", 10))),
         rx.grid(
-            stock_status(remaining=BookPageState.remaining, actual=BookPageState.actual),
+            stock_status(remaining=BookPageState.available_copies_amount, actual=BookPageState.total_copies_amount),
             queue_status(),
             borrowed_status(),
             queue_duration_status(class_name="col-span-3 text-center"),

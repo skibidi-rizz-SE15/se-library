@@ -1,6 +1,8 @@
 import reflex as rx
+from typing import List
+from se_library.states.book_page_state import BorrowDialogState
 
-def borrow_dialog(available_condition: list[str], state, dialog_btn: rx.Component, class_name:str ="") -> rx.Component:
+def borrow_dialog(available_conditions: List[str], state: BorrowDialogState, dialog_btn: rx.Component, class_name:str ="") -> rx.Component:
     return rx.dialog.root(
         rx.dialog.trigger(dialog_btn),
         rx.dialog.content(
@@ -9,7 +11,7 @@ def borrow_dialog(available_condition: list[str], state, dialog_btn: rx.Componen
                 rx.flex(
                     rx.text("Select condition", class_name="font-semibold font-Valera"),
                     rx.select(
-                        available_condition,
+                        available_conditions,
                         name="condition",
                         disabled=state.is_submitted,
                         class_name="w-[50%] p-2"

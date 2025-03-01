@@ -13,7 +13,7 @@ def author_name(name: str) -> rx.Component:
 def book_details_desktop() -> rx.Component:
     return rx.grid(
         rx.cond(
-            BookPageState.is_book_exists,
+            BookPageState.book_exists,
             content(),
             rx.text("Book not found", class_name="font-semibold font-Varela text-sm text-center", trim="normal")
         ),
@@ -30,7 +30,7 @@ def content() -> rx.Component:
         ),
         rx.grid(
             rx.grid(
-                stock_status(remaining=BookPageState.remaining, actual=BookPageState.actual),
+                stock_status(remaining=BookPageState.available_copies_amount, actual=BookPageState.total_copies_amount),
                 queue_status(),
                 borrowed_status(),
                 queue_duration_status(class_name="col-span-3 text-center"),
@@ -40,7 +40,7 @@ def content() -> rx.Component:
             book_details_list(isbn13=BookPageState.isbn13, publisher=BookPageState.publisher, pages=BookPageState.pages),
             borrow_dialog(
                 state=BorrowDialogState,
-                available_condition=BookPageState.available_condition,
+                available_conditions=BookPageState.available_conditions,
                 dialog_btn=rx.flex(
                     "Borrow", 
                     class_name="justify-center px-8 py-2 h-fit w-fit mx-auto rounded-3xl text-white font-semibold cursor-pointer", 
