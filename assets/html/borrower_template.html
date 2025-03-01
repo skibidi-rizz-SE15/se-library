@@ -135,7 +135,7 @@
     <div class="email-container">
         <div class="header">
             <!-- Replace with your actual logo URL -->
-            <img src="../favicon.ico" alt="{{ company_name|default('Your Company') }} Logo" class="logo">
+            <img src="https://ibb.co/sd2dkfBv" alt="{{ company_name|default('Your Company') }} Logo" class="logo">
             <h2>Borrow Request Notification</h2>
         </div>
         
@@ -152,7 +152,7 @@
 
             {% if approved %}
             <h2>Your Smart Locker QR Code:</h2>
-            <img src={{ url }} /> // Incorrect syntax
+            <img src="{{ url }}" /> // Incorrect syntax
             {% endif %}
 
             <h3>Borrow Request Details:</h3>
@@ -175,12 +175,12 @@
                 </tr>
                 <tr>
                     <th>Borrow Request Submitted</th>
-                    <td>{{ submission_date|date_format }}</td>
+                    <td>{{ submission_date }}</td>
                 </tr>
                 {% if picked_up %}
                 <tr>
                     <th>Picked Up Date</th>
-                    <td>{{ picked_up_date|date_format }}</td>
+                    <td>{{ picked_up_date }}</td>
                 </tr>
                 {% endif %}
                 <tr>
@@ -189,13 +189,6 @@
                 </tr>
             </table>
             
-            {% if borrowing_request %}
-            <p>Please review this request at your earliest convenience. You can access the full details and respond to this request by clicking the button below:</p>
-            
-            <a href="{{ action_url }}" class="button">Approve The Request</a>
-            
-            <p class="note">Note: This request will expire in 3 days if no action is taken.</p>
-            {% endif %}
         </div>
         
         <div class="footer">
