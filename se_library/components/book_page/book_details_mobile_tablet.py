@@ -8,9 +8,6 @@ from .queue_status import queue_status
 from .borrowed_status import borrowed_status
 from .queue_duration_status import queue_duration_status
 
-def author_name(name: str) -> rx.Component:
-    return rx.text(f"{name}, ", class_name="font-Valera text-gray-500 text-sm")
-
 def book_details_mobile_tablet() -> rx.Component:
     return rx.flex(
         rx.cond(

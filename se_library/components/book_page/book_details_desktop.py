@@ -7,9 +7,6 @@ from .book_details_list import book_details_list
 from .queue_duration_status import queue_duration_status
 from se_library.states.book_page_state import BookPageState, BorrowDialogState
 
-def author_name(name: str) -> rx.Component:
-    return rx.text(f"{name}, ", class_name="font-Valera text-gray-500")
-
 def book_details_desktop() -> rx.Component:
     return rx.grid(
         rx.cond(
