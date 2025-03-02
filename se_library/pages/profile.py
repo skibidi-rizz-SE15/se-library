@@ -16,8 +16,8 @@ def profile() -> rx.Component:
         rx.desktop_only(
             rx.flex(
                 navbar_desktop(),
-                profile_dashboard(state=ProfileState),
-                class_name="flex flex-col h-screen w-screen bg-neutral-300",
+                profile_dashboard(),
+                class_name="flex flex-col h-screen w-screen",
             ),
         ),
     )

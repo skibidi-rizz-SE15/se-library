@@ -88,6 +88,9 @@ class BookInventory(rx.Model, table=True):
         sa_column=Column(SqlalchemyEnum(AvailabilityEnum, name="availability_enum", create_constraint=True))
     )
 
+    owner: Optional["User"] = Relationship()
+    book: Optional["Book"] = Relationship()
+
 class BookTransaction(rx.Model, table=True):
     borrower_id: int = Field(foreign_key="user.id", nullable=False)
     book_inventory_id: int = Field(foreign_key="bookinventory.id", nullable=False)
@@ -101,3 +104,6 @@ class BookTransaction(rx.Model, table=True):
     return_date: datetime = Field(
         sa_column=Column(DateTime(timezone=True), nullable=False)
     )
+
+    book_inventory: Optional["BookInventory"] = Relationship()
+    borrower: Optional["User"] = Relationship()
