@@ -8,29 +8,30 @@ def borrowed_books_grid() -> rx.Component:
             borrow_item
         ),
         # borrow_item(ProfileState.borrowed_transactions[0].book_inventory_details.book_details, ProfileState.borrowed_transactions[0].borrow_date),
-        class_name="grid-cols-[repeat(auto-fill,clamp(15rem,1fr,20rem))] p-4"
+        class_name="grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-4 p-4"
     )
 
 def borrow_item(transaction: TransactionDetails) -> rx.Component:
     print(transaction)
     return rx.grid(
         book_image(image=transaction.book_inventory_details.book_details.cover_image_link),
-        book_details(book=transaction.book_inventory_details.book_details, pickup_date=transaction.borrow_date),
-        class_name="grid-cols-[2fr_3fr] mx-auto h-fit p-4"
+        book_details(book=transaction.book_inventory_details.book_details, available_on=transaction.borrow_date, return_within=transaction.return_date),
+        class_name="grid-cols-[2fr_3fr] mx-auto h-fit gap-4"
     )
 
 def book_image(image: str) -> rx.Component:
     return rx.image(
         src=f"{image}",
-        class_name="-row-end-1 rounded-md shadow-lg w-full"
+        class_name="rounded-md shadow-lg w-full"
     )
 
-def book_details(book: BookDetails, pickup_date: str) -> rx.Component:
-    return rx.fragment(
-        rx.text(f"{book.title}", class_name="font-semibold text-base font-Valera"),
-        rx.text(f"By: {book.authors}", class_name="text-gray-500"),
-        rx.text(f"Pickup Date: {pickup_date}", class_name="text-gray-500"),
-        class_name="flex-col gap-2 "
+def book_details(book: BookDetails, available_on: str, return_within: str) -> rx.Component:
+    return rx.flex(
+        rx.text(f"{book.title}", title=book.title, class_name="font-semibold text-[0.9rem] text-ellipsis line-clamp-3 font-Valera"),
+        rx.text(f"By: {book.authors}", class_name="text-gray-500 text-[0.8rem]"),
+        rx.text(f"Available on {available_on}", class_name="text-gray-500 text-[0.8rem] mt-4 font-semibold"),
+        rx.text(f"Return within {return_within}", class_name="text-gray-500 text-[0.8rem] font-semibold"),
+        class_name="flex-col leading-5 gap-2"
     )
 
 def lent_books_contents() -> rx.Component:
@@ -78,6 +79,6 @@ def profile_dashboard() -> rx.Component:
             default_value="borrow_list",
             class_name="w-full"
         ),
-        class_name="flex-col w-full h-full max-w-4xl mx-auto p-4",
-        background_color=rx.color_mode_cond(light=rx.color("indigo", 2), dark=rx.color("indigo", 1))
+        background_color=rx.color_mode_cond(light=rx.color("indigo", 2), dark=rx.color("indigo", 1)),
+        class_name="h-full flex-col w-full max-w-4xl mx-auto p-4"
     )

@@ -16,7 +16,10 @@ def profile() -> rx.Component:
         rx.desktop_only(
             rx.flex(
                 navbar_desktop(),
-                profile_dashboard(),
+                rx.flex(
+                    profile_dashboard(),
+                    class_name="overflow-y-auto grow"
+                ),
                 class_name="flex flex-col h-screen w-screen",
             ),
         ),

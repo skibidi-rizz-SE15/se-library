@@ -12,7 +12,7 @@ def book_slot(isbn13: str, title: str, authors: str, image_src:str="", quantity:
             ),
             class_name="self-center h-[20rem]"
         ),
-        rx.text(title, class_name="line-clamp-3 text-ellipsis font-semibold text-[14px] leading-[1.2rem] font-Varela"),
+        rx.text(title, title=title, class_name="line-clamp-3 text-ellipsis font-semibold text-[14px] leading-[1.2rem] font-Varela"),
         rx.text(authors, class_name="text-gray-500 font-Varela text-[0.9rem] leading-[1.2rem]"),
         rx.text(f"{quantity} available", class_name=f"self-end mt-auto text-[0.9rem] leading-[1.2rem] {'' if has_quantity else 'collapse'}"),
         on_click=rx.redirect(f"/book?isbn13={isbn13}"),
