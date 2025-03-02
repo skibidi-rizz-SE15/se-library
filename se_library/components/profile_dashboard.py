@@ -12,11 +12,11 @@ def lent_books_content() -> rx.Component:
         class_name="p-4"
     )
 
-def profile_dashboard() -> rx.Component:
+def profile_dashboard(state) -> rx.Component:
     return rx.flex(
         rx.flex(
             rx.icon("circle-user-round", size=80, class_name="text-gray-700"),
-            rx.text("User Name", class_name="text-2xl font-semibold text-[#253974]"),
+            rx.text(f"{state.user.username}", class_name="text-2xl font-semibold text-[#253974]"),
             class_name="w-full items-center space-x-4 p-6 bg-white shadow rounded-md"
         ),
         rx.tabs.root(
