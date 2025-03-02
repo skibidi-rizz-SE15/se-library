@@ -1,3 +1,4 @@
+.states
 *.db
 .web
 assets/external/

@@ -1,6 +1,6 @@
 from . import models
 from .pages import explore, homepage, login
-from .state import auth
+from .states import auth
 
 __all__ = [
     "homepage"

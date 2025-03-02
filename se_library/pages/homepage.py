@@ -97,14 +97,13 @@ def navbar() -> rx.Component:
                             class_name="text-black font-Robot cursor-pointer",
                             on_click=rx.scroll_to("contact")),
                     rx.button("Login",
-                            class_name="text-white border border-black rounded-md px-2 py-1 font-Roboto cursor-pointer",
+                            class_name="text-white border border-black rounded-md px-6 py-4 ml-10 font-Roboto cursor-pointer",
                             color_scheme="indigo",
                             on_click=rx.redirect("/login")),
-                    class_name="justify-between w-full items-center px-4",
+                    class_name="gap-10 w-full items-center px-4",
                 ),
-                class_name="w-2/5"
             ),
-        class_name="justify-between w-10/12 items-center",
+            class_name="justify-between w-10/12 items-center",
         ),
         class_name="justify-center w-full items-center py-2 mt-4",
     )
@@ -141,7 +140,7 @@ def hero():
             rx.desktop_only(
                 rx.flex(
                     rx.flex(
-                        rx.text("Discover and Exchange Books", class_name="text-8xl font-Outfit font-semibold text-[#182449] w-4/5"),
+                        rx.text("Discover and Exchange Books", class_name="break-normal text-8xl font-Outfit font-semibold text-[#182449] w-4/5"),
                         rx.text("A seamless way to discover, borrow and exchange books", class_name="text-2xl font-Roboto text-[#182449] w-4/5 mt-4"),
                         rx.flex(
                             rx.button("Borrow", class_name="text-white text-lg rounded-full px-4 py-2 font-Roboto cursor-pointer w-2/5 h-[3rem] bg-[#1F2D5C] hover:bg-[#25366E]"),
@@ -385,7 +384,7 @@ def footer() -> rx.Component:
                 rx.text("© 2024 SE-Library. All rights reserved.", class_name="text-[#FDFDFD] font-Roboto text-xs"),
                 class_name="w-full h-full justify-center items-center",
             ),
-            class_name="w-full bg-[#182449] h-[2rem] items-end justify-center mt-8",
+            class_name="w-full bg-[#182449] h-[2rem] justify-center mt-8",
         ),
         rx.desktop_only(
             rx.flex(
