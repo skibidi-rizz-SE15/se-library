@@ -1,31 +1,32 @@
 import reflex as rx
-from se_library.states.profile_state import ProfileState
-from se_library.models import Book
+from se_library.states.profile_state import ProfileState, BookDetails, TransactionDetails
 
 def borrowed_books_grid() -> rx.Component:
     return rx.grid(
-        # rx.foreach(
-        #     ProfileState.borrowed_books,
-        #     lambda book: borrow_item(book, "2022-10-10")
-        # ),
-        class_name="p-4"
+        rx.foreach(
+            ProfileState.borrowed_transactions,
+            borrow_item
+        ),
+        # borrow_item(ProfileState.borrowed_transactions[0].book_inventory_details.book_details, ProfileState.borrowed_transactions[0].borrow_date),
+        class_name="grid-cols-[repeat(auto-fill,clamp(15rem,1fr,20rem))] p-4"
     )
 
-def borrow_item(book: Book, pickup_date: str) -> rx.Component:
+def borrow_item(transaction: TransactionDetails) -> rx.Component:
+    print(transaction)
     return rx.grid(
-        book_image(image=book.cover_image_link),
-        book_details(book=book, pickup_date=pickup_date),
-        class_name="grid_cols_[2fr_3fr] mx-auto h-fit p-4"
+        book_image(image=transaction.book_inventory_details.book_details.cover_image_link),
+        book_details(book=transaction.book_inventory_details.book_details, pickup_date=transaction.borrow_date),
+        class_name="grid-cols-[2fr_3fr] mx-auto h-fit p-4"
     )
 
 def book_image(image: str) -> rx.Component:
     return rx.image(
         src=f"{image}",
-        class_name="rounded-md shadow-lg w-full"
+        class_name="-row-end-1 rounded-md shadow-lg w-full"
     )
 
-def book_details(book: Book, pickup_date: str) -> rx.Component:
-    return rx.flex(
+def book_details(book: BookDetails, pickup_date: str) -> rx.Component:
+    return rx.fragment(
         rx.text(f"{book.title}", class_name="font-semibold text-base font-Valera"),
         rx.text(f"By: {book.authors}", class_name="text-gray-500"),
         rx.text(f"Pickup Date: {pickup_date}", class_name="text-gray-500"),
