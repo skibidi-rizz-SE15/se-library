@@ -7,28 +7,35 @@ def borrowed_books_grid() -> rx.Component:
             ProfileState.borrowed_transactions,
             borrow_item
         ),
-        # borrow_item(ProfileState.borrowed_transactions[0].book_inventory_details.book_details, ProfileState.borrowed_transactions[0].borrow_date),
         class_name="grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-4 p-4"
     )
 
 def borrow_item(transaction: TransactionDetails) -> rx.Component:
     print(transaction)
     return rx.grid(
-        book_image(image=transaction.book_inventory_details.book_details.cover_image_link),
-        book_details(book=transaction.book_inventory_details.book_details, available_on=transaction.borrow_date, return_within=transaction.return_date),
+        book_image(image=transaction.book_inventory_details.book_details.cover_image_link, class_name="w-full"),
+        book_details(
+            book=transaction.book_inventory_details.book_details, 
+            available_on=transaction.borrow_date, 
+            return_within=transaction.return_date,
+            condition=transaction.book_inventory_details.condition,
+            status=transaction.borrow_status
+        ),
         class_name="grid-cols-[2fr_3fr] mx-auto h-fit gap-4"
     )
 
-def book_image(image: str) -> rx.Component:
+def book_image(image: str, class_name: str="") -> rx.Component:
     return rx.image(
         src=f"{image}",
-        class_name="rounded-md shadow-lg w-full"
+        class_name=f"rounded-md shadow-lg {class_name}"
     )
 
-def book_details(book: BookDetails, available_on: str, return_within: str) -> rx.Component:
+def book_details(book: BookDetails, available_on: str, return_within: str, condition: str, status: str) -> rx.Component:
     return rx.flex(
         rx.text(f"{book.title}", title=book.title, class_name="font-semibold text-[0.9rem] text-ellipsis line-clamp-3 font-Valera"),
         rx.text(f"By: {book.authors}", class_name="text-gray-500 text-[0.8rem]"),
+        rx.text(f"Condition: {condition}", class_name="text-gray-500 text-[0.8rem]"),
+        rx.text(f"Status: {status}", class_name="text-gray-500 text-[0.8rem]"),
         rx.text(f"Available on {available_on}", class_name="text-gray-500 text-[0.8rem] mt-4 font-semibold"),
         rx.text(f"Return within {return_within}", class_name="text-gray-500 text-[0.8rem] font-semibold"),
         class_name="flex-col leading-5 gap-2"
@@ -45,9 +52,30 @@ def lent_item() -> rx.Component:
 
     )
 
-def borrow_approval_contents() -> rx.Component:
-    return rx.fragment(
-        
+def borrow_approval_content() -> rx.Component:
+    return rx.grid(
+        rx.foreach(
+            ProfileState.pending_approvals,
+            borrow_approval_item
+        ),
+        class_name="gap-4 p-4"
+    )
+
+def borrow_approval_item(transaction: TransactionDetails) -> rx.Component:
+    book = transaction.book_inventory_details.book_details
+    condition = transaction.book_inventory_details.condition
+    img_src = transaction.book_inventory_details.book_details.cover_image_link
+    approval_rate = transaction.approval_rate
+
+    return rx.flex(
+        book_image(img_src, class_name="h-[5rem] w-auto"),
+        rx.text(f"{book.title}", title=book.title, class_name="font-semibold text-[0.9rem] text-ellipsis line-clamp-3 font-Valera"),
+        rx.text(f"Condition: {condition}", class_name="text-gray-500 text-[0.8rem]"),
+        rx.text(f"Borrowed by {transaction.borrower}", class_name="text-gray-500 text-[0.8rem] font-semibold"),
+        rx.text(f"{approval_rate * 100}% approval rate", class_name="text-gray-500 text-[0.8rem]"),
+        rx.button("Approve"),
+        rx.button("Reject"),
+        class_name="leading-5 items-center gap-2"
     )
 
 def profile_dashboard() -> rx.Component:
@@ -73,7 +101,7 @@ def profile_dashboard() -> rx.Component:
                 value="lent_books"
             ),
             rx.tabs.content(
-                lent_books_contents(),
+                borrow_approval_content(),
                 value="borrow_approval"
             ),
             default_value="borrow_list",
