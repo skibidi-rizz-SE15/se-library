@@ -109,15 +109,28 @@ def borrow_approval_item(transaction: TransactionDetails) -> rx.Component:
     img_src = transaction.book_inventory_details.book_details.cover_image_link
     approval_rate = transaction.approval_rate
 
-    return rx.flex(
+    return rx.grid(
         book_image(img_src, class_name="h-[5rem] w-auto"),
-        rx.text(f"{book.title}", title=book.title, class_name="font-semibold text-[0.9rem] text-ellipsis line-clamp-3 font-Valera"),
-        rx.text(f"Condition: {condition}", class_name="text-gray-500 text-[0.8rem]"),
-        rx.text(f"Borrowed by {transaction.borrower}", class_name="text-gray-500 text-[0.8rem] font-semibold"),
-        rx.text(f"{approval_rate * 100}% approval rate", class_name="text-gray-500 text-[0.8rem]"),
-        rx.button("Approve"),
-        rx.button("Reject"),
-        class_name="leading-5 items-center gap-2"
+        rx.flex(
+            rx.text(f"{book.title}", title=book.title, class_name="font-semibold text-[0.9rem] text-ellipsis line-clamp-2 font-Valera"),
+            rx.text(f"Condition: {condition}", class_name="text-gray-500 text-[0.8rem]"),
+            class_name="flex-col self-start gap-2"
+        ),
+        rx.flex(
+            rx.text(f"Borrowed by {transaction.borrower}", class_name="text-gray-500 text-[0.8rem] font-semibold"),
+            rx.cond(
+                approval_rate >= 0,
+                rx.text(f"{(approval_rate * 100):.2f}% approval rate", class_name="text-gray-500 text-[0.8rem]"),
+                rx.text("No prior borrows", class_name="text-gray-500 text-[0.8rem]"),
+            ),
+            class_name="gap-2"
+        ),
+        rx.flex(
+            rx.button("Approve"),
+            rx.button("Reject"),
+            class_name="gap-4"
+        ),
+        class_name="leading-5 grid-cols-[max-content_1fr_1fr_min-content] items-center gap-2"
     )
 
 def profile_dashboard() -> rx.Component:
@@ -147,7 +160,7 @@ def profile_dashboard() -> rx.Component:
                 value="borrow_approval"
             ),
             default_value="borrow_list",
-            class_name="  w-full"
+            class_name="w-full"
         ),
         background_color=rx.color_mode_cond(light=rx.color("indigo", 2), dark=rx.color("indigo", 1)),
         class_name="h-max min-h-full flex-col w-full max-w-4xl mx-auto p-4"
