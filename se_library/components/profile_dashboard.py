@@ -22,7 +22,7 @@ def borrow_item(transaction: TransactionDetails) -> rx.Component:
             condition=transaction.book_inventory_details.condition,
             status=transaction.borrow_status
         ),
-        class_name="grid-cols-[2fr_3fr] mx-auto h-fit gap-4"
+        class_name="grid-cols-[2fr_3fr] items-start h-fit gap-4"
     )
 
 def book_image(image: str, class_name: str="") -> rx.Component:
@@ -73,7 +73,7 @@ def lent_item(transaction: Tuple[BookDetails, Dict[ConditionEnum, int]]) -> rx.C
             rx.text(f"BS: {bs_quantity}", class_name=f"text-gray-500 text-[0.8rem] "),
             class_name="flex-col leading-5 gap-2"
         ),
-        class_name="grid-cols-[2fr_3fr] mx-auto h-fit gap-4"
+        class_name="grid-cols-[2fr_3fr] items-start mx-auto h-fit gap-4"
     )
 
 def borrow_approval_content() -> rx.Component:
@@ -129,8 +129,8 @@ def profile_dashboard() -> rx.Component:
                 value="borrow_approval"
             ),
             default_value="borrow_list",
-            class_name="w-full"
+            class_name="  w-full"
         ),
         background_color=rx.color_mode_cond(light=rx.color("indigo", 2), dark=rx.color("indigo", 1)),
-        class_name="h-full flex-col w-full max-w-4xl mx-auto p-4"
+        class_name="h-max min-h-full flex-col w-full max-w-4xl mx-auto p-4"
     )
