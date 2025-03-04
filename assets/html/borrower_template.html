@@ -145,14 +145,9 @@
             {% if borrow_request %}
             <p>We are writing to inform you that you've requested a new borrow for <strong>{{ lender_name }}</strong>.</p>
             {% elif request_status %}
-            <p>We are writing to inform you that your request has been {{ 'approved' if approved else 'rejected'}}  by <strong>{{ borrower_name }}</strong>.</p>
-            {% elif picked_up %}
-            <p>We are writing to inform you that you've pick-up your requested book.</p>
-            {% endif %}
-
-            {% if approved %}
-            <h2>Your Smart Locker QR Code:</h2>
-            <img src="{{ url }}" /> // Incorrect syntax
+            <p>We are writing to inform you that your request has been {{ 'approved' if approved else 'rejected'}}  by <strong>{{ lender_name }}</strong>.</p>
+            {% elif pick_up %}
+            <p>We are writing to inform you that your requested book is ready to pick-up.</p>
             {% endif %}
 
             <h3>Borrow Request Details:</h3>
@@ -173,21 +168,30 @@
                     <th>Condition</th>
                     <td>{{ book_condition }}</td>
                 </tr>
+                {% if borrow_request %}
                 <tr>
                     <th>Borrow Request Submitted</th>
                     <td>{{ submission_date }}</td>
                 </tr>
-                {% if picked_up %}
+                {% elif request_status or pick_up %}
                 <tr>
-                    <th>Picked Up Date</th>
-                    <td>{{ picked_up_date }}</td>
+                    <th>Return Date</th>
+                    <td>{{'TBA' if request_status else {{ return_date }}}}</td>
                 </tr>
-                {% endif %}
                 <tr>
                     <th>Status</th>
-                    <td><span style="color: #e67e22; font-weight: bold;">{{ status|default('Pending Review') }}</span></td>
+                    <td><span style="color: {{ color }}; font-weight: bold;">{{ status }}</span></td>
                 </tr>
             </table>
+
+            {% if pick_up %}
+            <h2>Please use below QRCode to scan at the smart locker id: {{ locker_id }}</h2>
+            <img src="{{ qr_image }}" alt="QRCODE" />
+            
+            <p>When you already have returned the book inside the locker, please let us know by clicking below button:</p>
+            
+            <a href="{{ action_url }}" class="button">Confirm Returned</a>
+            {% endif %}
             
         </div>
         

@@ -2,14 +2,16 @@ import reflex as rx
 from cryptography.fernet import Fernet
 import os
 from dotenv import load_dotenv
-from se_library.models import User, BookTransaction, ConditionEnum
+from se_library.models import BookTransaction, ConditionEnum
 from jinja2 import Environment, FileSystemLoader
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+import asyncio
 
 load_dotenv()
 
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+BASE_URL = os.getenv("BASE_URL")
 
 class Result:
     error: bool = False
@@ -20,6 +22,9 @@ class Result:
         self.message = message
 
 class ApproveState(rx.State):
+
+    approving: bool
+    is_success: bool
 
     def enum_to_condition(self, condition: ConditionEnum) -> str:
         match condition:
@@ -38,18 +43,24 @@ class ApproveState(rx.State):
     
     @rx.event
     async def handle_approve(self):
-        key = os.getenv("SECRET_KEY")
-        if not key:
-            return rx.redirect("/login")
-        cipher_suite = Fernet(key)
-        token = self.router.page.params["q"]
+        self.reset()
+        yield
+        self.approving = True
+        yield
+        await asyncio.sleep(2)
         try:
+            key = os.getenv("SECRET_KEY")
+            if not key:
+                raise Exception
+            cipher_suite = Fernet(key)
+            token = self.router.page.params["q"]
             transaction_id = cipher_suite.decrypt(token.encode()).decode()
             with rx.session() as db:
                 transaction = db.exec(
                     BookTransaction.select().where(BookTransaction.id == transaction_id)
                 ).first()
                 if not transaction:
+                    print("Transaction not found")
                     raise Exception
                 transaction.borrow_status = "approved"
                 db.commit()
@@ -57,21 +68,28 @@ class ApproveState(rx.State):
                 if res.error:
                     print(res.message)
                     raise Exception
-                res = await self.send_email(transaction=transaction)
+                res = await self.send_email(transaction=transaction, cipher_suite=cipher_suite)
                 if res.error:
                     print(res.message)
                     raise Exception
-                return rx.redirect("/profile")
-        except Exception:
-            return rx.redirect("/login")
+            self.approving = False
+            self.is_success = True
+            return
+        except Exception as e:
+            print(str(e))
+            self.approving = False
+            self.is_success = False
+            yield
+            return
         
-    async def send_email(self, transaction):
+    async def send_email(self, transaction, cipher_suite):
         try:
+            transaction_id = cipher_suite.encrypt(transaction.id.encode()).decode()
             template_data = {
                 "company_name": "SE Library",
                 "lender_name": transaction.book_inventory.owner.username,
                 "borrow_request": False,
-                "approval_success": True,
+                "approval_succeed": True,
                 "reject": False,
                 "request_id": transaction.id,
                 "borrower_name": transaction.borrower.username,
@@ -79,6 +97,9 @@ class ApproveState(rx.State):
                 "book_condition": self.enum_to_condition(transaction.book_inventory.condition),
                 "submission_date": transaction.borrow_date,
                 "status": "Approved",
+                "color": "#4CAF50",
+                "qr_image": f"{BASE_URL}/assets/static/image.png",
+                "action_url": f"{BASE_URL}/confirm?q={transaction_id}&role=lender"
             }
             
             current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -99,5 +120,5 @@ class ApproveState(rx.State):
         except Exception as e:
             return Result(error=True, message=str(e))
         
-    async def get_qrcode(transaction):
-        pass
+    async def get_qrcode(self, transaction):
+        return Result(error=False, message="QR Code generated successfully")

@@ -1,22 +1,21 @@
 import reflex as rx
-from se_library.states.action_pages.approve_state import ApproveState
+from se_library.states.action_pages.confirm_state import ConfirmState
 
-@rx.page("/approve", on_load=ApproveState.handle_approve)
-def approve_page():
+@rx.page("/confirm", on_load=ConfirmState.handle_confirming)
+def confirm_page() -> rx.Component:
     return rx.fragment(
         rx.cond(
-            ApproveState.approving,
+            ConfirmState.confirming,
             rx.flex(
                 loading_scene(),
                 class_name="w-screen h-screen"
             ),
             rx.flex(
                 rx.cond(
-                    ApproveState.is_success,
+                    ConfirmState.is_success,
                     message_box(True),
                     message_box(False),
-                ),
-                class_name="w-screen h-screen"
+                )
             )
         )
     )
@@ -35,7 +34,11 @@ def message_box(result: bool):
             rx.flex(
                 rx.icon("check", color="green", size=64),
                 rx.text("Success!", class_name="text-[2rem] font-bold font-sans"),
-                rx.text("You have been successfully approved the borrow request. Thank you for your action", class_name="text-base text-center"),
+                rx.cond(
+                    ConfirmState.is_borrower,
+                    rx.text("You have been confirmed the return of the book. Thank you for your action", class_name="text-base text-center"),
+                    rx.text("You have been confirmed the book is ready. Thank you for your action", class_name="text-base text-center"),
+                ),
                 rx.button("Back to Homepage", class_name="bg-blue-500 text-white py-6 px-4 rounded-md mt-4 text-lg font-bold"),
                 class_name="w-full h-full justify-center items-center flex-col space-y-4",
             ),

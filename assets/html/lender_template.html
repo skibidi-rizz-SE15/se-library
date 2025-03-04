@@ -146,8 +146,8 @@
             <p>We are writing to inform you that a new borrowing request has been submitted by <strong>{{ borrower_name }}</strong>.</p>
             {% elif approval_succeed %}
             <p>We are writing to inform you that you have approve borrowing request that has been submitted by <strong>{{ borrower_name }}</strong>.</p>
-            {% elif reject %}
-            <p>We are writing to inform you that you have reject borrowing request that has been submitted by <strong>{{ borrower_name }}</strong>.</p>
+            {% elif pick_up %}
+            <p>We are writing to inform you that <strong>{{ borrower_name }}</strong> has returned the book.</p>
             {% endif %}
 
             <h3>Borrow Request Details:</h3>
@@ -174,14 +174,25 @@
                 </tr>
                 <tr>
                     <th>Status</th>
-                    <td><span style="color: #e67e22; font-weight: bold;">{{ status|default('Pending Review') }}</span></td>
+                    <td><span style="color: {{ color }}; font-weight: bold;">{{ status }}</span></td>
                 </tr>
             </table>
+
+            {% if approval_succeed or pick_up %}
+            <p>Please use below QRCode to scan at the smart locker id: {{ locker_id }}</p>
+            <img src="{{ qr_image }}" alt="QRCODE" width="350" height="350" />
+            {% endif %}
             
             {% if borrow_request %}
-            <p>Please review this request at your earliest convenience. You can access the full details and respond to this request by clicking the button below:</p>
+            <p>Please review this request at your earliest convenience. You can approve this request by clicking the button below:</p>
             
             <a href="{{ action_url }}" class="button">Approve The Request</a>
+            
+            <p class="note">Note: This request will expire in 3 days if no action is taken.</p>
+            {% elif approval_succeed %}
+            <p style="margin-top: 32px;">When you already have put the book inside the locker, please let us know by clicking below button:</p>
+            
+            <a href="{{ action_url }}" class="button">The book is ready</a>
             
             <p class="note">Note: This request will expire in 3 days if no action is taken.</p>
             {% endif %}
