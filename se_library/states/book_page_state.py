@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from se_library.states.base import BaseState
 from datetime import datetime, timedelta
 from jinja2 import Environment, FileSystemLoader
+from cryptography.fernet import Fernet
 
 load_dotenv()
 
@@ -229,6 +230,9 @@ class BorrowDialogState(BookPageState):
                 User.select().where(User.id == book_to_be_borrowed.owner_id)
             ).first()
 
+            key = os.getenv("SECRET_KEY")
+            cipher_suite = Fernet(key)
+            token = cipher_suite.encrypt(str(transaction.id).encode()).decode()
             lender_template_data = {
                 "company_name": "SE Library",
                 "lender_name": owner.username,
@@ -241,7 +245,7 @@ class BorrowDialogState(BookPageState):
                 "book_condition": self.enum_to_condition(book_to_be_borrowed.condition),
                 "submission_date": transaction.borrow_date,
                 "status": "Pending",
-                "action_url": "http://localhost:3000/profile/transactions"
+                "action_url": f"{os.getenv('BASE_URL')}/approve?q={token}"
             }
             borrower_template_data = {
                 "company_name": "SE Library",
