@@ -1,4 +1,6 @@
+from typing import Dict, Tuple
 import reflex as rx
+from se_library.models import ConditionEnum
 from se_library.states.profile_state import ProfileState, BookDetails, TransactionDetails
 
 def borrowed_books_grid() -> rx.Component:
@@ -11,7 +13,6 @@ def borrowed_books_grid() -> rx.Component:
     )
 
 def borrow_item(transaction: TransactionDetails) -> rx.Component:
-    print(transaction)
     return rx.grid(
         book_image(image=transaction.book_inventory_details.book_details.cover_image_link, class_name="w-full"),
         book_details(
@@ -41,15 +42,38 @@ def book_details(book: BookDetails, available_on: str, return_within: str, condi
         class_name="flex-col leading-5 gap-2"
     )
 
-def lent_books_contents() -> rx.Component:
-    return rx.fragment(
-        rx.text("Lent books will be shown here.", class_name="text-gray-600 p-4"),
-        class_name="p-4"
+def lent_books_grid() -> rx.Component:
+    return rx.grid(
+        rx.foreach(
+            ProfileState.lent_transactions,
+            lent_item
+        ),
+        class_name="grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-4 p-4"
     )
 
-def lent_item() -> rx.Component:
-    return rx.flex(
+def lent_item(transaction: Tuple[BookDetails, Dict[ConditionEnum, int]]) -> rx.Component:
+    book_details = transaction[0]
+    condition_quantities = transaction[1]
+    fn_quantity = condition_quantities[ConditionEnum.FACTORY_NEW]
+    mw_quantity = condition_quantities[ConditionEnum.MINIMAL_WEAR]
+    ft_quantity = condition_quantities[ConditionEnum.FIELD_TESTED]
+    ww_quantity = condition_quantities[ConditionEnum.WELL_WORN]
+    bs_quantity = condition_quantities[ConditionEnum.BATTLE_SCARRED]
 
+    return rx.grid(
+        book_image(image=book_details.cover_image_link, class_name="w-full"),
+        rx.flex(
+            rx.text(f"{book_details.title}", title=book_details.title, class_name="font-semibold text-[0.9rem] text-ellipsis line-clamp-3 font-Valera"),
+            rx.text(f"By: {book_details.authors}", class_name="text-gray-500 text-[0.8rem]"),
+            rx.text(f"Conditions", class_name="text-gray-500 text-[0.8rem]"),
+            rx.text(f"FN: {fn_quantity}", class_name=f"text-gray-500 text-[0.8rem] "),
+            rx.text(f"MW: {mw_quantity}", class_name=f"text-gray-500 text-[0.8rem] "),
+            rx.text(f"FT: {ft_quantity}", class_name=f"text-gray-500 text-[0.8rem]"),
+            rx.text(f"WW: {ww_quantity}", class_name=f"text-gray-500 text-[0.8rem] "),
+            rx.text(f"BS: {bs_quantity}", class_name=f"text-gray-500 text-[0.8rem] "),
+            class_name="flex-col leading-5 gap-2"
+        ),
+        class_name="grid-cols-[2fr_3fr] mx-auto h-fit gap-4"
     )
 
 def borrow_approval_content() -> rx.Component:
@@ -97,7 +121,7 @@ def profile_dashboard() -> rx.Component:
                 value="borrow_list"
             ),
             rx.tabs.content(
-                lent_books_contents(),
+                lent_books_grid(),
                 value="lent_books"
             ),
             rx.tabs.content(

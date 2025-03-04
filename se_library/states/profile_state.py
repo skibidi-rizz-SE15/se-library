@@ -4,7 +4,7 @@ from se_library.states.base import BaseState
 from pydantic import BaseModel
 from sqlalchemy import or_
 from sqlmodel import select, func
-from typing import List
+from typing import List, Dict, Tuple
 
 class BookDetails(BaseModel):
     title: str
@@ -32,7 +32,7 @@ class ProfileState(rx.State):
     user: User = None
     borrowed_transactions: List[TransactionDetails] = []
     pending_approvals: List[TransactionDetails] = []
-    lent_transactions: List[TransactionDetails] = []
+    lent_transactions: List[Tuple[BookDetails, Dict[ConditionEnum, int]]] = []
 
     def get_formatted_authors(self, authors) -> str:
         return ", ".join(author.name for author in authors)
@@ -86,6 +86,7 @@ class ProfileState(rx.State):
         yield self.reset()
         await self.load_user()
         self.load_pending_approvals()
+        self.load_lent_transactions()
         yield self.load_borrowed_transactions()
 
     async def load_user(self):
@@ -130,7 +131,39 @@ class ProfileState(rx.State):
                 self.borrowed_transactions.append(transaction_details)
             
     def load_lent_transactions(self):
-        pass
+        self.lent_transactions = []
+        with rx.session() as db:
+            lent_books = db.exec(
+                select(Book).join(BookInventory).where(
+                    BookInventory.owner_id == self.user.id
+                ).group_by(
+                    Book.id
+                )
+            ).all()
+
+            for lent_book in lent_books:
+                conditions = db.exec(
+                    select(BookInventory.condition).where(
+                        BookInventory.book_id == lent_book.id
+                    )
+                ).all()
+
+                condition_quantities = {
+                    ConditionEnum.FACTORY_NEW: 0,
+                    ConditionEnum.MINIMAL_WEAR: 0,
+                    ConditionEnum.FIELD_TESTED: 0,
+                    ConditionEnum.WELL_WORN: 0,
+                    ConditionEnum.BATTLE_SCARRED: 0,
+                }
+                for condition in conditions:
+                    condition_quantities[condition] += 1
+
+                lent_book_details = BookDetails(
+                    title=lent_book.title,
+                    authors=self.get_formatted_authors(lent_book.authors),
+                    cover_image_link=lent_book.cover_image_link
+                )
+                self.lent_transactions.append((lent_book_details, condition_quantities))
 
     def load_pending_approvals(self):
         self.pending_approvals = []
