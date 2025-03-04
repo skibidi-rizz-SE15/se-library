@@ -59,18 +59,36 @@ def lent_item(transaction: Tuple[BookDetails, Dict[ConditionEnum, int]]) -> rx.C
     ft_quantity = condition_quantities[ConditionEnum.FIELD_TESTED]
     ww_quantity = condition_quantities[ConditionEnum.WELL_WORN]
     bs_quantity = condition_quantities[ConditionEnum.BATTLE_SCARRED]
+    total_quantity = fn_quantity + mw_quantity + ft_quantity + ww_quantity + bs_quantity
 
     return rx.grid(
         book_image(image=book_details.cover_image_link, class_name="w-full"),
         rx.flex(
             rx.text(f"{book_details.title}", title=book_details.title, class_name="font-semibold text-[0.9rem] text-ellipsis line-clamp-3 font-Valera"),
             rx.text(f"By: {book_details.authors}", class_name="text-gray-500 text-[0.8rem]"),
-            rx.text(f"Conditions", class_name="text-gray-500 text-[0.8rem]"),
-            rx.text(f"FN: {fn_quantity}", class_name=f"text-gray-500 text-[0.8rem] "),
-            rx.text(f"MW: {mw_quantity}", class_name=f"text-gray-500 text-[0.8rem] "),
-            rx.text(f"FT: {ft_quantity}", class_name=f"text-gray-500 text-[0.8rem]"),
-            rx.text(f"WW: {ww_quantity}", class_name=f"text-gray-500 text-[0.8rem] "),
-            rx.text(f"BS: {bs_quantity}", class_name=f"text-gray-500 text-[0.8rem] "),
+            rx.flex(
+                rx.text(f"Total: {total_quantity} copies", class_name="text-gray-500 text-[0.8rem]"),
+                rx.text("?", class_name="cursor-pointer peer px-2 rounded-full text-white bg-blue-400 hover:bg-blue-300"),
+                rx.grid(
+                    rx.text("Factory New:"),
+                    rx.text(fn_quantity),
+                    rx.text("Minimal Wear:"),
+                    rx.text(mw_quantity),
+                    rx.text("Field Tested:"),
+                    rx.text(ft_quantity),
+                    rx.text("Well Worn:"),
+                    rx.text(ww_quantity),
+                    rx.text("Battle Scarred:"),
+                    rx.text(bs_quantity),
+                    class_name=(
+                        "absolute right-0 bottom-full "
+                        "grid grid-cols-[max-content_1fr] items-center gap-2 "
+                        "bg-black text-[#FFFFFF] border text-[0.8rem] p-2 rounded-lg "
+                        "opacity-0 peer-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+                    )
+                ),
+                class_name="relative items-center gap-2 w-fit"
+            ),
             class_name="flex-col leading-5 gap-2"
         ),
         class_name="grid-cols-[2fr_3fr] items-start mx-auto h-fit gap-4"
