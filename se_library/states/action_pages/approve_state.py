@@ -2,7 +2,7 @@ import reflex as rx
 from cryptography.fernet import Fernet
 import os
 from dotenv import load_dotenv
-from se_library.models import BookTransaction, ConditionEnum
+from se_library.models import BookTransaction, ConditionEnum, BorrowStatusEnum
 from jinja2 import Environment, FileSystemLoader
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
@@ -40,7 +40,7 @@ class ApproveState(rx.State):
                 return "Battle Scarred"
             case _:
                 return None
-    
+
     @rx.event
     async def handle_approve(self):
         self.reset()
@@ -62,7 +62,7 @@ class ApproveState(rx.State):
                 if not transaction:
                     print("Transaction not found")
                     raise Exception
-                transaction.borrow_status = "approved"
+                transaction.borrow_status = BorrowStatusEnum.APPROVED
                 db.commit()
                 res = await self.get_qrcode(transaction=transaction)
                 if res.error:
@@ -81,10 +81,10 @@ class ApproveState(rx.State):
             self.is_success = False
             yield
             return
-        
+
     async def send_email(self, transaction, cipher_suite):
         try:
-            transaction_id = cipher_suite.encrypt(transaction.id.encode()).decode()
+            transaction_id = cipher_suite.encrypt(str(transaction.id).encode()).decode()
             template_data = {
                 "company_name": "SE Library",
                 "lender_name": transaction.book_inventory.owner.username,
@@ -101,7 +101,7 @@ class ApproveState(rx.State):
                 "qr_image": f"{BASE_URL}/assets/static/image.png",
                 "action_url": f"{BASE_URL}/confirm?q={transaction_id}&role=lender"
             }
-            
+
             current_dir = os.path.dirname(os.path.abspath(__file__))
             templates_dir = os.path.abspath(os.path.join(current_dir, '..', '..', "..", "assets", "html"))
             env = Environment(loader=FileSystemLoader(templates_dir))
@@ -119,6 +119,6 @@ class ApproveState(rx.State):
             return Result(error=False, message="Email sent successfully")
         except Exception as e:
             return Result(error=True, message=str(e))
-        
+
     async def get_qrcode(self, transaction):
         return Result(error=False, message="QR Code generated successfully")

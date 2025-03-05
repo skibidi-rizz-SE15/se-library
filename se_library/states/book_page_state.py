@@ -15,6 +15,7 @@ from cryptography.fernet import Fernet
 load_dotenv()
 
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+BASE_URL = os.getenv("BASE_URL")
 
 class BookPageState(rx.State):
     authors: str = ""
@@ -113,7 +114,7 @@ class BorrowDialogState(BookPageState):
     is_submitted: bool = False
     is_error: bool = False
     error_message: str = ""
-    
+
     @rx.event
     def reset_states(self):
         self.reset()
@@ -150,7 +151,7 @@ class BorrowDialogState(BookPageState):
                 return ConditionEnum.BATTLE_SCARRED
             case _:
                 return None
-            
+
     def enum_to_condition(self, condition: ConditionEnum) -> str:
         match condition:
             case ConditionEnum.FACTORY_NEW:
@@ -182,7 +183,7 @@ class BorrowDialogState(BookPageState):
                 return Result(error=False, message="Transaction successful")
         except Exception as e:
             return Result(error=True, message=f"Error: {e}")
-        
+
     async def database_execute(self, db: Session, condition: str, user: User):
         try:
             book_details = db.exec(
@@ -211,7 +212,7 @@ class BorrowDialogState(BookPageState):
             return Result(error=False, message="Transaction successful")
         except Exception as e:
             return Result(error=True, message=f"{e}")
-        
+
     async def send_email(self, db: Session, user: User):
         try:
             transaction = db.exec(
@@ -245,7 +246,8 @@ class BorrowDialogState(BookPageState):
                 "book_condition": self.enum_to_condition(book_to_be_borrowed.condition),
                 "submission_date": transaction.borrow_date,
                 "status": "Pending",
-                "action_url": f"{os.getenv('BASE_URL')}/approve?q={token}"
+                "color": "#F7C948",
+                "action_url": f"{BASE_URL}/approve?q={token}"
             }
             borrower_template_data = {
                 "company_name": "SE Library",
@@ -260,11 +262,12 @@ class BorrowDialogState(BookPageState):
                 "book_condition": self.enum_to_condition(book_to_be_borrowed.condition),
                 "submission_date": transaction.borrow_date,
                 "status": "Pending",
+                "color": "#F7C948"
             }
 
             current_dir = os.path.dirname(os.path.join(os.path.abspath(__file__)))
             templates_dir = os.path.abspath(os.path.join(current_dir, '..', '..', "assets", "html"))
-            
+
             env = Environment(loader=FileSystemLoader(templates_dir))
             lender_template = env.get_template("lender_template.html")
             borrower_template = env.get_template("borrower_template.html")

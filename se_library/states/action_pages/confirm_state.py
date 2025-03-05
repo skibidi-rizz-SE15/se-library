@@ -1,5 +1,5 @@
 import reflex as rx
-from se_library.models import BookTransaction, ConditionEnum
+from se_library.models import BookTransaction, ConditionEnum, BorrowStatusEnum, AvailabilityEnum
 import asyncio
 from cryptography.fernet import Fernet
 import os
@@ -67,7 +67,7 @@ class ConfirmState(rx.State):
             self.is_success = False
         self.confirming = False
         return
-    
+
     async def confirming_return(self):
         key = os.getenv("SECRET_KEY")
         if not key:
@@ -83,13 +83,14 @@ class ConfirmState(rx.State):
                 return Result(error=True, message="Transaction not found")
             if transaction.borrow_status != "borrowed":
                 return Result(error=True, message="Transaction not in borrowed status")
-            transaction.borrow_status = "returned"
+            transaction.borrow_status = BorrowStatusEnum.RETURNED
+            transaction.book_inventory.availability = AvailabilityEnum.AVAILABLE
             db.commit()
             res = await self.send_email_to_lender(transaction=transaction)
             if res.error:
                 return res
         return Result(error=False, message="")
-    
+
     async def send_email_to_lender(self, transaction):
         try:
             template_data = {
@@ -125,7 +126,7 @@ class ConfirmState(rx.State):
             return Result(error=False, message="")
         except Exception as e:
             return Result(error=True, message=str(e))
-        
+
     async def confirming_ready(self):
         key = os.getenv("SECRET_KEY")
         if not key:
@@ -141,18 +142,19 @@ class ConfirmState(rx.State):
                 return Result(error=True, message="Transaction not found")
             if transaction.borrow_status != "approved":
                 return Result(error=True, message="Transaction not in approved status")
-            transaction.borrow_status = "borrowed"
+            transaction.borrow_status = BorrowStatusEnum.BORROWED
             db.commit()
             res = await self.send_email_to_borrower(transaction=transaction, cipher_suite=cipher_suite)
             if res.error:
                 return res
         return Result(error=False, message="")
-    
+
     async def send_email_to_borrower(self, transaction, cipher_suite):
         try:
-            transaction_id = cipher_suite.encrypt(transaction.id.encode()).decode()
+            transaction_id = cipher_suite.encrypt(str(transaction.id).encode()).decode()
             template_data = {
                 "company_name": "SE Library",
+                "borrower_name": transaction.borrower.username,
                 "lender_name": transaction.book_inventory.owner.username,
                 "borrow_request": False,
                 "request_status": False,
@@ -162,7 +164,7 @@ class ConfirmState(rx.State):
                 "book_title": transaction.book_inventory.book.title,
                 "book_condition": self.enum_to_condition(transaction.book_inventory.condition),
                 "return_date": transaction.borrow_date,
-                "status": "Approved",
+                "status": "Borrowed",
                 "color": "#4CAF50",
                 "qr_image": f"{BASE_URL}/assets/static/image.png",
                 "action_url": f"{BASE_URL}/confirm?q={transaction_id}&role=borrower"
