@@ -1,38 +1,42 @@
 import reflex as rx
+
+from se_library.models import GenreEnum
 from ..states.explore_page import ExplorePageState
 
 def genre_dropdown() -> rx.Component:
+    button_title = rx.cond(
+        ExplorePageState.genre,
+        rx.text(f"{ExplorePageState.get_formatted_genre}"),
+        rx.text("All Genres")
+    )
+
     return rx.menu.root(
-        rx.menu.trigger(rx.button(rx.text(f"{ExplorePageState.genre}"), rx.icon("chevron-right"), class_name="rounded-xl font-semibold font-Verela text-lg")),
+        rx.menu.trigger(rx.button(button_title, rx.icon("chevron-right"), class_name="rounded-xl font-semibold font-Verela text-lg")),
         rx.menu.content(
-            rx.menu.item("All Genres", on_click=ExplorePageState.set_genre("All Genres")),
+            rx.menu.item("All Genres", on_click=ExplorePageState.set_genre(None)),
             rx.separator(),
-            rx.menu.item("Fiction", on_click=ExplorePageState.set_genre("Fiction")),
+            rx.menu.item("Programming Languages", on_click=ExplorePageState.set_genre(GenreEnum.PROGRAMMING_LANGUAGES)),
             rx.separator(),
-            rx.menu.item("Non-fiction", on_click=ExplorePageState.set_genre("Non-fiction")),
+            rx.menu.item("Design Patterns", on_click=ExplorePageState.set_genre(GenreEnum.DESIGN_PATTERNS)),
             rx.separator(),
-            rx.menu.item("Mystery/Thriller", on_click=ExplorePageState.set_genre("Mystery/Thriller")),
+            rx.menu.item("Software Architecture", on_click=ExplorePageState.set_genre(GenreEnum.SOFTWARE_ARCHITECTURE)),
             rx.separator(),
-            rx.menu.item("Fantasy", on_click=ExplorePageState.set_genre("Fantasy")),
+            rx.menu.item("DevOps", on_click=ExplorePageState.set_genre(GenreEnum.DEVOPS)),
             rx.separator(),
-            rx.menu.item("Science Fiction (Sci-Fi)", on_click=ExplorePageState.set_genre("Science Fiction (Sci-Fi)")),
+            rx.menu.item("Software Testing", on_click=ExplorePageState.set_genre(GenreEnum.SOFTWARE_TESTING)),
             rx.separator(),
-            rx.menu.item("Romance", on_click=ExplorePageState.set_genre("Romance")),
+            rx.menu.item("Project Management", on_click=ExplorePageState.set_genre(GenreEnum.PROJECT_MANAGEMENT)),
             rx.separator(),
-            rx.menu.item("Historical Fiction", on_click=ExplorePageState.set_genre("Historical Fiction")),
+            rx.menu.item("UX/UI", on_click=ExplorePageState.set_genre(GenreEnum.USER_EXPERIENCE)),
             rx.separator(),
-            rx.menu.item("Biography/Autobiography", on_click=ExplorePageState.set_genre("Biography/Autobiography")),
-            rx.separator(),
-            rx.menu.item("Self-Help/Personal Development", on_click=ExplorePageState.set_genre("Self-Help/Personal Development")),
-            rx.separator(),
-            rx.menu.item("Horror", on_click=ExplorePageState.set_genre("Horror")),
+            rx.menu.item("Security", on_click=ExplorePageState.set_genre(GenreEnum.SECURITY)),
             class_name="rounded-xl"
         )
     )
 
 def all_button() -> rx.Component:
     return rx.cond(
-        ExplorePageState.is_all_selected,
+        ExplorePageState.is_all_books,
         rx.button("All Books", class_name="rounded-xl font-Verela text-lg"),
         rx.color_mode_cond(
             light=rx.button("All Books", class_name="rounded-xl bg-white text-[#3358D4] font-Verela text-lg", on_click=ExplorePageState.handle_select_all),
@@ -42,7 +46,7 @@ def all_button() -> rx.Component:
 
 def available_button() -> rx.Component:
     return rx.cond(
-        ExplorePageState.is_available_selected,
+        ExplorePageState.is_available_books,
         rx.button("Available Books", class_name="rounded-xl font-Verela text-lg"),
         rx.color_mode_cond(
             light=rx.button("Available Books", class_name="rounded-xl bg-white text-[#3358D4] font-Verela text-lg", on_click=ExplorePageState.handle_select_available),
@@ -69,15 +73,11 @@ def sort_by_dropdown() -> rx.Component:
             rx.separator(),
             rx.menu.item("Oldest", on_click=ExplorePageState.set_sort_by("Oldest")),
             rx.separator(),
-            rx.menu.item("Publication Year First", on_click=ExplorePageState.set_sort_by("Publication Year First")),
+            rx.menu.item("Highest Quantity", on_click=ExplorePageState.set_sort_by("Highest Quantity")),
             rx.separator(),
-            rx.menu.item("Publication Year Last", on_click=ExplorePageState.set_sort_by("Publication Year Last")),
+            rx.menu.item("Lowest Quantity", on_click=ExplorePageState.set_sort_by("Lowest Quantity")),
             rx.separator(),
             rx.menu.item("Title", on_click=ExplorePageState.set_sort_by("Title")),
-            rx.separator(),
-            rx.menu.item("Author", on_click=ExplorePageState.set_sort_by("Author")),
-            rx.separator(),
-            rx.menu.item("Popularity", on_click=ExplorePageState.set_sort_by("Popularity")),
             class_name="rounded-xl"
         ),
         class_name="self-end"

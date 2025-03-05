@@ -2,7 +2,7 @@ import reflex as rx
 from .registration_page_state import BookRegistrationPageState
 from .book_page_state import BookPageState
 from .base import BaseState
-from se_library.models import AvailabilityEnum, Book, BookInventory
+from se_library.models import AvailabilityEnum, Book, BookInventory, GenreEnum
 from typing import List
 from pydantic import BaseModel
 
@@ -16,12 +16,34 @@ class BookDetails(BaseModel):
 class ExplorePageState(rx.State):
     search_input: str = ""
     search_query: str = ""
-    genre: str = "All Genres"
+    genre: str = None
     sort_by: str = "Newest"
-    is_all_selected: bool = True
-    is_available_selected: bool = False
+    is_all_books: bool = True
+    is_available_books: bool = False
     books: List[Book] = []
     book_details: List[BookDetails] = []
+
+    @rx.var(cache=False)
+    def get_formatted_genre(self) -> str:
+        match self.genre:
+            case GenreEnum.PROGRAMMING_LANGUAGES:
+                return "Programming Languages"
+            case GenreEnum.DESIGN_PATTERNS:
+                return "Design Patterns"
+            case GenreEnum.SOFTWARE_ARCHITECTURE:
+                return "Software Architecture"
+            case GenreEnum.DEVOPS:
+                return "DevOps"
+            case GenreEnum.SOFTWARE_TESTING:
+                return "Software Testing"
+            case GenreEnum.PROJECT_MANAGEMENT:
+                return "Project Management"
+            case GenreEnum.USER_EXPERIENCE:
+                return "UX/UI"
+            case GenreEnum.SECURITY:
+                return "Security"
+            case _:
+                return "All Genres"
 
     @rx.event
     def handle_search(self) -> None:
@@ -29,13 +51,13 @@ class ExplorePageState(rx.State):
 
     @rx.event
     def handle_select_all(self) -> None:
-        self.is_all_selected = True
-        self.is_available_selected = False
+        self.is_all_books = True
+        self.is_available_books = False
 
     @rx.event
     def handle_select_available(self) -> None:
-        self.is_all_selected = False
-        self.is_available_selected = True
+        self.is_all_books = False
+        self.is_available_books = True
 
     @rx.event
     def handle_change_genre(self, genre: str) -> None:
