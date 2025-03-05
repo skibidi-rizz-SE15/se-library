@@ -38,11 +38,12 @@ def content() -> rx.Component:
             borrow_dialog(
                 state=BorrowDialogState,
                 available_conditions=BookPageState.available_conditions,
-                dialog_btn=rx.flex(
-                    "Borrow", 
-                    class_name="justify-center px-8 py-2 h-fit w-fit mx-auto rounded-3xl text-white font-semibold cursor-pointer", 
-                    background_color=rx.Color("indigo", 10),
-                    on_click=BorrowDialogState.set_is_open(True)
+                dialog_btn=rx.button(
+                        "Borrow", 
+                        class_name="flex justify-center px-8 py-2 disabled:bg-slate-400 h-fit w-fit mx-auto rounded-3xl text-white font-semibold cursor-pointer", 
+                        disabled=BookPageState.is_out_of_stock,
+                        background_color=rx.Color("indigo", 10),
+                        on_click=BorrowDialogState.set_is_open(True)
                 )
             ),
             class_name="h-fit w-full gap-8"

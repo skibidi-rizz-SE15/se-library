@@ -32,6 +32,10 @@ class BookPageState(rx.State):
     total_copies_amount: int = 0
     BORROW_DURATION = 7
 
+    @rx.var
+    def is_out_of_stock(self) -> bool:
+        return self.available_copies_amount == 0
+
     @rx.event
     def reset_states(self):
         self.reset()
