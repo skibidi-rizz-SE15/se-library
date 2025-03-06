@@ -69,12 +69,12 @@ class ApproveState(rx.State):
                     print("Transaction not pending")
                     raise Exception
                 transaction.borrow_status = BorrowStatusEnum.APPROVED
-                # db.commit()
-                # res = await self.get_qrcode(transaction=transaction)
+                db.commit()
+                res = await self.get_qrcode(transaction=transaction, db=db)
                 if res.error:
                     print(res.message)
                     raise Exception
-                # res = await self.send_email(transaction=transaction, cipher_suite=cipher_suite)
+                res = await self.send_email(transaction=transaction, cipher_suite=cipher_suite)
                 if res.error:
                     print(res.message)
                     raise Exception
@@ -104,7 +104,7 @@ class ApproveState(rx.State):
                 "submission_date": transaction.borrow_date,
                 "status": "Approved",
                 "color": "#4CAF50",
-                "qr_image": f"{BASE_URL}/assets/static/image.png",
+                "qr_image": transaction.qr_code_image_link,
                 "action_url": f"{BASE_URL}/confirm?q={transaction_id}&role=lender"
             }
 
@@ -126,7 +126,7 @@ class ApproveState(rx.State):
         except Exception as e:
             return Result(error=True, message=str(e))
 
-    async def get_qrcode(self, transaction):
+    async def get_qrcode(self, transaction, db):
         """Should implement for requesting for QR code generation"""
         await asyncio.sleep(2)
         fake_base64 = None
@@ -138,13 +138,15 @@ class ApproveState(rx.State):
                 payload = {
                     "key": IMGBB_API_KEY,
                     "image": fake_base64,
-                    "expiration": 60,
+                    "expiration": 500,
                     "name": "qrcode.png",
                 }
                 # Call the API to upload the image
                 res = requests.post("https://api.imgbb.com/1/upload", data=payload)
                 data = res.json().get("data")
                 image_url = data.get("image").get("url")
+                transaction.qr_code_image_link = image_url
+                db.commit()
             return Result(error=False, message="QR Code generated successfully")
         except Exception as e:
             print(str(e))

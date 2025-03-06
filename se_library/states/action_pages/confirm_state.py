@@ -105,7 +105,8 @@ class ConfirmState(rx.State):
                 "book_condition": self.enum_to_condition(transaction.book_inventory.condition),
                 "submission_date": transaction.borrow_date,
                 "status": "Returned",
-                "color": "#9E9E9E"
+                "color": "#9E9E9E",
+                "qr_image": transaction.qr_code_image_link
             }
 
             current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -166,7 +167,7 @@ class ConfirmState(rx.State):
                 "return_date": transaction.borrow_date,
                 "status": "Borrowed",
                 "color": "#4CAF50",
-                "qr_image": f"{BASE_URL}/assets/static/image.png",
+                "qr_image": transaction.qr_code_image_link,
                 "action_url": f"{BASE_URL}/confirm?q={transaction_id}&role=borrower"
             }
 
