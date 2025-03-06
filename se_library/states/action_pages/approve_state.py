@@ -7,11 +7,14 @@ from jinja2 import Environment, FileSystemLoader
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import asyncio
+import base64
+import requests
 
 load_dotenv()
 
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 BASE_URL = os.getenv("BASE_URL")
+IMGBB_API_KEY = os.getenv("IMGBB_API_KEY")
 
 class Result:
     error: bool = False
@@ -62,13 +65,16 @@ class ApproveState(rx.State):
                 if not transaction:
                     print("Transaction not found")
                     raise Exception
+                if transaction.borrow_status != BorrowStatusEnum.PENDING:
+                    print("Transaction not pending")
+                    raise Exception
                 transaction.borrow_status = BorrowStatusEnum.APPROVED
-                db.commit()
-                res = await self.get_qrcode(transaction=transaction)
+                # db.commit()
+                # res = await self.get_qrcode(transaction=transaction)
                 if res.error:
                     print(res.message)
                     raise Exception
-                res = await self.send_email(transaction=transaction, cipher_suite=cipher_suite)
+                # res = await self.send_email(transaction=transaction, cipher_suite=cipher_suite)
                 if res.error:
                     print(res.message)
                     raise Exception
@@ -121,4 +127,25 @@ class ApproveState(rx.State):
             return Result(error=True, message=str(e))
 
     async def get_qrcode(self, transaction):
-        return Result(error=False, message="QR Code generated successfully")
+        """Should implement for requesting for QR code generation"""
+        await asyncio.sleep(2)
+        fake_base64 = None
+        try:
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            image_dir = os.path.abspath(os.path.join(current_dir, '..', '..', "..", "assets", "static", "image.png"))
+            with open(image_dir, 'rb') as image_file:
+                fake_base64 = base64.b64encode(image_file.read()).decode('utf-8')
+                payload = {
+                    "key": IMGBB_API_KEY,
+                    "image": fake_base64,
+                    "expiration": 60,
+                    "name": "qrcode.png",
+                }
+                # Call the API to upload the image
+                res = requests.post("https://api.imgbb.com/1/upload", data=payload)
+                data = res.json().get("data")
+                image_url = data.get("image").get("url")
+            return Result(error=False, message="QR Code generated successfully")
+        except Exception as e:
+            print(str(e))
+            return Result(error=False, message=str(e))

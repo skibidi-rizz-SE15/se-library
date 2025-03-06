@@ -104,6 +104,7 @@ class BookTransaction(rx.Model, table=True):
     return_date: datetime = Field(
         sa_column=Column(DateTime(timezone=True), nullable=False)
     )
+    qr_code_image_link: str = Field(nullable=True)
 
     book_inventory: Optional["BookInventory"] = Relationship()
     borrower: Optional["User"] = Relationship()
