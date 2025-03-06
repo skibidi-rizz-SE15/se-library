@@ -16,8 +16,8 @@ def borrow_item(transaction: TransactionDetails) -> rx.Component:
     return rx.grid(
         book_image(image=transaction.book_inventory_details.book_details.cover_image_link, class_name="w-full"),
         book_details(
-            book=transaction.book_inventory_details.book_details, 
-            available_on=transaction.borrow_date, 
+            book=transaction.book_inventory_details.book_details,
+            available_on=transaction.borrow_date,
             return_within=transaction.return_date,
             condition=transaction.book_inventory_details.condition,
             status=transaction.borrow_status
@@ -126,8 +126,8 @@ def borrow_approval_item(transaction: TransactionDetails) -> rx.Component:
             class_name="gap-2"
         ),
         rx.flex(
-            rx.button("Approve"),
-            rx.button("Reject"),
+            rx.button("Approve", color_scheme="grass"),
+            confirm_reject_dialog(trigger_btn=rx.button("Reject", color_scheme="red"), transaction=transaction),
             class_name="gap-4"
         ),
         class_name="leading-5 grid-cols-[max-content_1fr_1fr_min-content] items-center gap-2"
@@ -164,4 +164,38 @@ def profile_dashboard() -> rx.Component:
         ),
         background_color=rx.color_mode_cond(light=rx.color("indigo", 2), dark=rx.color("indigo", 1)),
         class_name="h-max min-h-full flex-col w-full max-w-4xl mx-auto p-4"
+    )
+
+def confirm_reject_dialog(trigger_btn: rx.Component, transaction: TransactionDetails) -> rx.Component:
+    return rx.alert_dialog.root(
+        rx.alert_dialog.trigger(
+            trigger_btn,
+        ),
+        rx.alert_dialog.content(
+            rx.alert_dialog.title("Are you sure you want to reject this borrow request?"),
+            rx.alert_dialog.description(
+                "This action cannot be undone. The request will be marked as rejected.",
+                size="1",
+            ),
+            rx.flex(
+                rx.alert_dialog.cancel(
+                    rx.button(
+                        "Cancle",
+                        variant="soft",
+                        color_scheme="gray",
+                    ),
+                ),
+                rx.alert_dialog.action(
+                    rx.button(
+                        "Revoke access",
+                        color_scheme="red",
+                        variant="solid",
+                    ),
+                ),
+                spacing="3",
+                margin_top="16px",
+                justify="end",
+            ),
+            style={"max_width": 450},
+        )
     )

@@ -1,3 +1,4 @@
+import asyncio
 import reflex as rx
 from se_library.models import User, BookTransaction, Book, BorrowStatusEnum, BookInventory, Author, ConditionEnum, AvailabilityEnum
 from se_library.states.base import BaseState
@@ -36,7 +37,7 @@ class ProfileState(rx.State):
 
     def get_formatted_authors(self, authors) -> str:
         return ", ".join(author.name for author in authors)
-    
+
     def get_formatted_condition(self, condition: ConditionEnum) -> str:
         match condition:
             case ConditionEnum.FACTORY_NEW:
@@ -51,7 +52,7 @@ class ProfileState(rx.State):
                 return "Battle Scarred"
             case _:
                 return "Unknown"
-    
+
     def get_formatted_availability(self, availability: AvailabilityEnum) -> str:
         match availability:
             case AvailabilityEnum.AVAILABLE:
@@ -77,7 +78,7 @@ class ProfileState(rx.State):
                 return "Returned"
             case _:
                 return "Unknown"
-            
+
     def get_formatted_datetime(self, datetime) -> str:
         return datetime.strftime("%B %d, %Y")
 
@@ -92,7 +93,7 @@ class ProfileState(rx.State):
     async def load_user(self):
         base_state = await self.get_state(BaseState)
         self.user = base_state.user
-    
+
     def load_borrowed_transactions(self):
         self.borrowed_transactions = []
         with rx.session() as db:
@@ -129,7 +130,7 @@ class ProfileState(rx.State):
                     approval_rate=-2
                 )
                 self.borrowed_transactions.append(transaction_details)
-            
+
     def load_lent_transactions(self):
         self.lent_transactions = []
         with rx.session() as db:
@@ -176,7 +177,8 @@ class ProfileState(rx.State):
 
             lent_book_instances = db.exec(
                 BookTransaction.select().where(
-                    BookTransaction.book_inventory_id.in_(lent_book_instance_ids)
+                    BookTransaction.book_inventory_id.in_(lent_book_instance_ids),
+                    BookTransaction.borrow_status == BorrowStatusEnum.PENDING
                 )
             ).all()
 
@@ -218,3 +220,48 @@ class ProfileState(rx.State):
                     approval_rate=accept_rate
                 )
                 self.pending_approvals.append(transaction_details)
+
+class ConfirmDialogState(ProfileState):
+    opened: bool = False
+    is_confirming: bool = False
+
+    @rx.event
+    def dialog_open(self):
+        self.opened = True
+
+    @rx.event
+    async def handle_on_reject(self, transaction: TransactionDetails):
+        self.is_confirming = True
+        yield
+        await asyncio.sleep(2)
+        try:
+            with rx.session() as db:
+                transaction_db = db.exec(
+                    BookTransaction.select().where(BookTransaction.id == transaction.id)
+                ).first
+                if not transaction_db:
+                    raise Exception
+                transaction_db.borrow_status = BorrowStatusEnum.REJECTED
+                db.commit()
+                res = await self.send_email_to_borrower(transaction=transaction)
+                if res.error:
+                    raise Exception
+            self.opened = False
+            self.is_confirming = False
+            yield rx.toast.success("Transaction successfully rejected")
+        except Exception as e:
+            self.opened = False
+            self.is_confirming = False
+            yield rx.toast.error(f"Failed to reject transaction: {str(e)}")
+
+
+    async def send_email_to_borrower(transaction: TransactionDetails):
+        try:
+            transaction_db = db.exec(
+                BookTransaction.select().where(BookTransaction.id == transaction.id)
+            ).first()
+            if not transaction_db:
+                return Result(error=True, message="Transaction not found")
+            return Result(error=False, message="")
+        except Exception as e:
+            return Result(error=True, message=str(e))
