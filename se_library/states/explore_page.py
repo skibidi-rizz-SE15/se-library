@@ -13,11 +13,13 @@ class BookDetails(BaseModel):
     authors: str
     image_src: str
     quantity: int
+    genre: GenreEnum
+
 class ExplorePageState(rx.State):
     search_input: str = ""
     search_query: str = ""
     genre: str = None
-    sort_by: str = "Newest"
+    sort_by: str = "Title"
     is_all_books: bool = True
     is_available_books: bool = False
     books: List[Book] = []
@@ -50,27 +52,35 @@ class ExplorePageState(rx.State):
         self.search_query = "Result for: " + self.search_input
 
     @rx.event
-    def handle_select_all(self) -> None:
-        self.is_all_books = True
-        self.is_available_books = False
+    def handle_select_option(self, selects_all_books: bool):
+        if selects_all_books:
+            self.is_all_books = True
+            self.is_available_books = False
+        else:
+            self.is_all_books = False
+            self.is_available_books = True
+        yield self.load_books()
 
     @rx.event
-    def handle_select_available(self) -> None:
-        self.is_all_books = False
-        self.is_available_books = True
-
-    @rx.event
-    def handle_change_genre(self, genre: str) -> None:
+    def handle_genre_selection(self, genre: GenreEnum):
         self.genre = genre
+        yield self.load_books()
+
+    @rx.event
+    def handle_sort_by_option(self, option: str):
+        self.sort_by = option
+        yield self.sort_books()
 
     def handle_on_load(self):
         yield BaseState.check_login()
         yield self.reset()
         yield self.load_books()
+        yield self.sort_books()
         yield BookRegistrationPageState.reset_states()
         yield BookPageState.reset_states()
 
     def load_books(self):
+        self.book_details = []
         with rx.session() as session:
             self.books = session.exec(
                 Book.select()
@@ -82,11 +92,34 @@ class ExplorePageState(rx.State):
                         BookInventory.availability == AvailabilityEnum.AVAILABLE
                     )
                 ).all())
-                self.book_details.append(BookDetails(
-                    id=book.id, 
-                    isbn13=book.isbn13,
-                    title=book.title, 
-                    authors=", ".join([author.name for author in book.authors]), 
-                    image_src=book.cover_image_link,
-                    quantity=quantity
-                ))
+
+                book_detail = BookDetails(
+                        id=book.id, 
+                        isbn13=book.isbn13,
+                        title=book.title, 
+                        authors=", ".join([author.name for author in book.authors]), 
+                        image_src=book.cover_image_link,
+                        quantity=quantity,
+                        genre=book.genre
+                )
+                if self.is_all_books and self.genre:
+                    if book_detail.genre == self.genre:
+                        self.book_details.append(book_detail)
+                elif self.is_all_books:
+                    self.book_details.append(book_detail)
+                elif quantity > 0 and self.genre:
+                    if book_detail.genre == self.genre:
+                        self.book_details.append(book_detail)
+                elif quantity > 0:
+                    self.book_details.append(book_detail)
+
+    def sort_books(self):
+        match self.sort_by:
+            case "Highest Quantity":
+                self.book_details.sort(reverse=True, key=lambda book: book.quantity)
+            case "Lowest Quantity":
+                self.book_details.sort(key=lambda book: book.quantity)
+            case "Title":
+                self.book_details.sort(key=lambda book: book.title)
+            case _:
+                pass

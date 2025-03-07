@@ -13,23 +13,23 @@ def genre_dropdown() -> rx.Component:
     return rx.menu.root(
         rx.menu.trigger(rx.button(button_title, rx.icon("chevron-right"), class_name="rounded-xl font-semibold font-Verela text-lg")),
         rx.menu.content(
-            rx.menu.item("All Genres", on_click=ExplorePageState.set_genre(None)),
+            rx.menu.item("All Genres", on_click=ExplorePageState.handle_genre_selection(None)),
             rx.separator(),
-            rx.menu.item("Programming Languages", on_click=ExplorePageState.set_genre(GenreEnum.PROGRAMMING_LANGUAGES)),
+            rx.menu.item("Programming Languages", on_click=ExplorePageState.handle_genre_selection(GenreEnum.PROGRAMMING_LANGUAGES)),
             rx.separator(),
-            rx.menu.item("Design Patterns", on_click=ExplorePageState.set_genre(GenreEnum.DESIGN_PATTERNS)),
+            rx.menu.item("Design Patterns", on_click=ExplorePageState.handle_genre_selection(GenreEnum.DESIGN_PATTERNS)),
             rx.separator(),
-            rx.menu.item("Software Architecture", on_click=ExplorePageState.set_genre(GenreEnum.SOFTWARE_ARCHITECTURE)),
+            rx.menu.item("Software Architecture", on_click=ExplorePageState.handle_genre_selection(GenreEnum.SOFTWARE_ARCHITECTURE)),
             rx.separator(),
-            rx.menu.item("DevOps", on_click=ExplorePageState.set_genre(GenreEnum.DEVOPS)),
+            rx.menu.item("DevOps", on_click=ExplorePageState.handle_genre_selection(GenreEnum.DEVOPS)),
             rx.separator(),
-            rx.menu.item("Software Testing", on_click=ExplorePageState.set_genre(GenreEnum.SOFTWARE_TESTING)),
+            rx.menu.item("Software Testing", on_click=ExplorePageState.handle_genre_selection(GenreEnum.SOFTWARE_TESTING)),
             rx.separator(),
-            rx.menu.item("Project Management", on_click=ExplorePageState.set_genre(GenreEnum.PROJECT_MANAGEMENT)),
+            rx.menu.item("Project Management", on_click=ExplorePageState.handle_genre_selection(GenreEnum.PROJECT_MANAGEMENT)),
             rx.separator(),
-            rx.menu.item("UX/UI", on_click=ExplorePageState.set_genre(GenreEnum.USER_EXPERIENCE)),
+            rx.menu.item("UX/UI", on_click=ExplorePageState.handle_genre_selection(GenreEnum.USER_EXPERIENCE)),
             rx.separator(),
-            rx.menu.item("Security", on_click=ExplorePageState.set_genre(GenreEnum.SECURITY)),
+            rx.menu.item("Security", on_click=ExplorePageState.handle_genre_selection(GenreEnum.SECURITY)),
             class_name="rounded-xl"
         )
     )
@@ -39,8 +39,8 @@ def all_button() -> rx.Component:
         ExplorePageState.is_all_books,
         rx.button("All Books", class_name="rounded-xl font-Verela text-lg"),
         rx.color_mode_cond(
-            light=rx.button("All Books", class_name="rounded-xl bg-white text-[#3358D4] font-Verela text-lg", on_click=ExplorePageState.handle_select_all),
-            dark=rx.button("All Books", class_name="rounded-xl bg-[#111113] text-[#FDFDFD] font-Verela text-lg", on_click=ExplorePageState.handle_select_all)
+            light=rx.button("All Books", class_name="rounded-xl bg-white text-[#3358D4] font-Verela text-lg", on_click=ExplorePageState.handle_select_option(True)),
+            dark=rx.button("All Books", class_name="rounded-xl bg-[#111113] text-[#FDFDFD] font-Verela text-lg", on_click=ExplorePageState.handle_select_option(True))
         )
     )
 
@@ -49,8 +49,8 @@ def available_button() -> rx.Component:
         ExplorePageState.is_available_books,
         rx.button("Available Books", class_name="rounded-xl font-Verela text-lg"),
         rx.color_mode_cond(
-            light=rx.button("Available Books", class_name="rounded-xl bg-white text-[#3358D4] font-Verela text-lg", on_click=ExplorePageState.handle_select_available),
-            dark=rx.button("Available Books", class_name="rounded-xl bg-[#111113] text-[#FDFDFD] font-Verela text-lg", on_click=ExplorePageState.handle_select_available)
+            light=rx.button("Available Books", class_name="rounded-xl bg-white text-[#3358D4] font-Verela text-lg", on_click=ExplorePageState.handle_select_option(False)),
+            dark=rx.button("Available Books", class_name="rounded-xl bg-[#111113] text-[#FDFDFD] font-Verela text-lg", on_click=ExplorePageState.handle_select_option(False))
         )
     )
 
@@ -69,15 +69,11 @@ def sort_by_dropdown() -> rx.Component:
             )
         ),
         rx.menu.content(
-            rx.menu.item("Newest", on_click=ExplorePageState.set_sort_by("Newest")),
+            rx.menu.item("Title", on_click=ExplorePageState.handle_sort_by_option("Title")),
             rx.separator(),
-            rx.menu.item("Oldest", on_click=ExplorePageState.set_sort_by("Oldest")),
+            rx.menu.item("Highest Quantity", on_click=ExplorePageState.handle_sort_by_option("Highest Quantity")),
             rx.separator(),
-            rx.menu.item("Highest Quantity", on_click=ExplorePageState.set_sort_by("Highest Quantity")),
-            rx.separator(),
-            rx.menu.item("Lowest Quantity", on_click=ExplorePageState.set_sort_by("Lowest Quantity")),
-            rx.separator(),
-            rx.menu.item("Title", on_click=ExplorePageState.set_sort_by("Title")),
+            rx.menu.item("Lowest Quantity", on_click=ExplorePageState.handle_sort_by_option("Lowest Quantity")),
             class_name="rounded-xl"
         ),
         class_name="self-end"
