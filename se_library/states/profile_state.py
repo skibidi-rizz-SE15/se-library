@@ -6,6 +6,13 @@ from pydantic import BaseModel
 from sqlalchemy import or_
 from sqlmodel import select, func
 from typing import List, Dict, Tuple
+import os
+from dotenv import load_dotenv
+from jinja2 import Environment, FileSystemLoader
+
+load_dotenv()
+
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 
 class BookDetails(BaseModel):
     title: str
@@ -230,6 +237,10 @@ class ConfirmDialogState(ProfileState):
         self.opened = True
 
     @rx.event
+    def dialog_close(self):
+        self.opened = False
+
+    @rx.event
     async def handle_on_reject(self, transaction: TransactionDetails):
         self.is_confirming = True
         yield
@@ -255,13 +266,59 @@ class ConfirmDialogState(ProfileState):
             yield rx.toast.error(f"Failed to reject transaction: {str(e)}")
 
 
-    async def send_email_to_borrower(transaction: TransactionDetails):
+    async def send_email_to_borrower(self, transaction: TransactionDetails):
         try:
             transaction_db = db.exec(
                 BookTransaction.select().where(BookTransaction.id == transaction.id)
             ).first()
             if not transaction_db:
                 return Result(error=True, message="Transaction not found")
+            template_data = {
+                "company_name": "SE Library",
+                "borrower_name": transaction.borrower.username,
+                "borrow_request": False,
+                "request_status": True,
+                "picked_up": False,
+                "approved": False,
+                "request_id": transaction.id,
+                "lender_name": transaction.book_inventory.owner.username,
+                "book_title": transaction.book_inventory.book.title,
+                "book_condition": self.enum_to_condition(transaction.book_inventory.condition),
+                "submission_date": transaction.borrow_date,
+                "status": "Reject",
+                "color": "#E53935"
+            }
+
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            templates_dir = os.path.abspath(os.path.join(current_dir, "..", "..", "assets", "html"))
+
+            env = Enviroment(loader=FileSystemLoader(templates_dir))
+            template = env.get_template("email_template.html")
+            html_content = template.render(**template_data)
+            mail = Mail(
+                from_email="noreply@se-library.org",
+                to_emails=transaction.borrower.email,
+                subject="Borrow Request Reject",
+                html_content=html_content
+            )
+
+            sg = SendGridAPIClient(api_key=SENDGRID_API_KEY)
+            res = sg.send(mail)
             return Result(error=False, message="")
         except Exception as e:
             return Result(error=True, message=str(e))
+
+    def enum_to_condition(self, condition: ConditionEnum) -> str:
+        match condition:
+            case ConditionEnum.FACTORY_NEW:
+                return "Factory New"
+            case ConditionEnum.MINIMAL_WEAR:
+                return "Minimal Wear"
+            case ConditionEnum.FIELD_TESTED:
+                return "Field Tested"
+            case ConditionEnum.WELL_WORN:
+                return "Well Worn"
+            case ConditionEnum.BATTLE_SCARRED:
+                return "Battle Scarred"
+            case _:
+                return "Unknown"
