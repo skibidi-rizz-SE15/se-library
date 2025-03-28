@@ -322,3 +322,4 @@ class ConditionDialogState(rx.State):
         self.reset()
         book_registration_state = await self.get_state(BookRegistrationPageState)
         book_registration_state.book_condition = None
+        book_registration_state.book_genre = None
