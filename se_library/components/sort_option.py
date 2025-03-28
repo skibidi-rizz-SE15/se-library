@@ -11,7 +11,7 @@ def genre_dropdown() -> rx.Component:
     )
 
     return rx.menu.root(
-        rx.menu.trigger(rx.button(button_title, rx.icon("chevron-right"), class_name="rounded-xl font-semibold font-Verela text-lg")),
+        rx.menu.trigger(rx.button(button_title, rx.icon("chevron-right"), class_name="rounded-xl font-semibold font-Verela")),
         rx.menu.content(
             rx.menu.item("All Genres", on_click=ExplorePageState.handle_genre_selection(None)),
             rx.separator(),
@@ -37,20 +37,20 @@ def genre_dropdown() -> rx.Component:
 def all_button() -> rx.Component:
     return rx.cond(
         ExplorePageState.is_all_books,
-        rx.button("All Books", class_name="rounded-xl font-Verela text-lg"),
+        rx.button("All Books", class_name="rounded-xl font-Verela"),
         rx.color_mode_cond(
-            light=rx.button("All Books", class_name="rounded-xl bg-white text-[#3358D4] font-Verela text-lg", on_click=ExplorePageState.handle_select_option(True)),
-            dark=rx.button("All Books", class_name="rounded-xl bg-[#111113] text-[#FDFDFD] font-Verela text-lg", on_click=ExplorePageState.handle_select_option(True))
+            light=rx.button("All Books", class_name="rounded-xl bg-white text-[#3358D4] font-Verela", on_click=ExplorePageState.handle_select_option(True)),
+            dark=rx.button("All Books", class_name="rounded-xl bg-[#111113] text-[#FDFDFD] font-Verela", on_click=ExplorePageState.handle_select_option(True))
         )
     )
 
 def available_button() -> rx.Component:
     return rx.cond(
         ExplorePageState.is_available_books,
-        rx.button("Available Books", class_name="rounded-xl font-Verela text-lg"),
+        rx.button("Available Books", class_name="rounded-xl font-Verela"),
         rx.color_mode_cond(
-            light=rx.button("Available Books", class_name="rounded-xl bg-white text-[#3358D4] font-Verela text-lg", on_click=ExplorePageState.handle_select_option(False)),
-            dark=rx.button("Available Books", class_name="rounded-xl bg-[#111113] text-[#FDFDFD] font-Verela text-lg", on_click=ExplorePageState.handle_select_option(False))
+            light=rx.button("Available Books", class_name="rounded-xl bg-white text-[#3358D4] font-Verela", on_click=ExplorePageState.handle_select_option(False)),
+            dark=rx.button("Available Books", class_name="rounded-xl bg-[#111113] text-[#FDFDFD] font-Verela", on_click=ExplorePageState.handle_select_option(False))
         )
     )
 
@@ -63,7 +63,7 @@ def sort_by_dropdown() -> rx.Component:
                     f"{ExplorePageState.sort_by}",
                 ),
                 rx.icon("chevron-down"),
-                class_name="rounded-xl font-Verela text-lg",
+                class_name="rounded-xl font-Verela",
                 color=rx.color_mode_cond(light=rx.color("indigo", 10), dark=rx.color("white")),
                 background_color=rx.color_mode_cond(light=rx.color("white"), dark=rx.color("black"))
             )
@@ -81,18 +81,11 @@ def sort_by_dropdown() -> rx.Component:
 
 def sort_option_desktop() -> rx.Component:
     return rx.flex(
-        rx.flex(
-            rx.text(f"{ExplorePageState.search_query}", class_name="font-bold text-xl text-[#182449]"),
-            class_name="w-[50%] h-full justify-start p-4"
-        ),
-        rx.flex(
-            genre_dropdown(),
-            all_button(),
-            available_button(),
-            sort_by_dropdown(),
-            class_name="items-center w-[50%] h-full justify-end space-x-4 p-4"                
-        ),
-        class_name="w-full h-[10%] mt-4"
+        genre_dropdown(),
+        all_button(),
+        available_button(),
+        sort_by_dropdown(),
+        class_name="items-center justify-end space-x-2"                
     )
 
 def sort_option_mobile_and_tablet() -> rx.Component:

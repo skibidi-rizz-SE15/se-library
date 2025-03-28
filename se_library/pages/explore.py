@@ -36,8 +36,11 @@ def page() -> rx.Component:
         # desktop only
         rx.flex(
             navbar_desktop(),
-            searchbar(),
-            sort_option_desktop(),
+            rx.flex(
+                sort_option_desktop(),
+                searchbar(),
+                class_name="gap-8 p-4"
+            ),
             book_library(),
             class_name="flex flex-col h-screen w-screen",
         ),
