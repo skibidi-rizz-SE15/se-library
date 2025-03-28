@@ -1,7 +1,7 @@
 from typing import Dict, Tuple
 import reflex as rx
 from se_library.models import ConditionEnum
-from se_library.states.profile_state import ProfileState, BookDetails, TransactionDetails
+from se_library.states.profile_state import ProfileState, BookDetails, TransactionDetails, ConfirmDialogState
 
 def borrowed_books_grid() -> rx.Component:
     return rx.grid(
@@ -127,7 +127,8 @@ def borrow_approval_item(transaction: TransactionDetails) -> rx.Component:
         ),
         rx.flex(
             rx.button("Approve", color_scheme="grass"),
-            confirm_reject_dialog(trigger_btn=rx.button("Reject", color_scheme="red"), transaction=transaction),
+            rx.button("Reject", color_scheme="red", on_click=ConfirmDialogState.dialog_open),
+            confirm_reject_dialog(transaction=transaction),
             class_name="gap-4"
         ),
         class_name="leading-5 grid-cols-[max-content_1fr_1fr_min-content] items-center gap-2"
@@ -166,11 +167,8 @@ def profile_dashboard() -> rx.Component:
         class_name="h-max min-h-full flex-col w-full max-w-4xl mx-auto p-4"
     )
 
-def confirm_reject_dialog(trigger_btn: rx.Component, transaction: TransactionDetails) -> rx.Component:
+def confirm_reject_dialog(transaction: TransactionDetails) -> rx.Component:
     return rx.alert_dialog.root(
-        rx.alert_dialog.trigger(
-            trigger_btn,
-        ),
         rx.alert_dialog.content(
             rx.alert_dialog.title("Are you sure you want to reject this borrow request?"),
             rx.alert_dialog.description(
@@ -180,9 +178,10 @@ def confirm_reject_dialog(trigger_btn: rx.Component, transaction: TransactionDet
             rx.flex(
                 rx.alert_dialog.cancel(
                     rx.button(
-                        "Cancle",
+                        "Cancel",
                         variant="soft",
                         color_scheme="gray",
+                        on_click=ConfirmDialogState.dialog_close,
                     ),
                 ),
                 rx.alert_dialog.action(
@@ -197,5 +196,6 @@ def confirm_reject_dialog(trigger_btn: rx.Component, transaction: TransactionDet
                 justify="end",
             ),
             style={"max_width": 450},
-        )
+        ),
+        open=ConfirmDialogState.opened,
     )
