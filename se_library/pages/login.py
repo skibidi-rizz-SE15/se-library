@@ -15,7 +15,7 @@ class LoginForm(AuthState):
 
 def login_form() -> rx.Component:
     return rx.flex(
-        rx.mobile_and_tablet(
+        rx.mobile_only(
             rx.flex(
                 rx.text("SELibrary", class_name="text-5xl font-semibold text-[#253974]"),
                 rx.vstack(
@@ -48,9 +48,9 @@ def login_form() -> rx.Component:
                 ),
                 class_name="w-full h-full items-center flex-col",
             ),
-            class_name="w-4/5 h-2/3 bg-[#FDFDFD] rounded-lg shadow-lg p-4",
+            class_name="min-w-[25rem] w-4/5 h-2/3 bg-[#FDFDFD] rounded-lg shadow-lg p-4",
         ),
-        rx.desktop_only(
+        rx.tablet_and_desktop(
             rx.flex(
                 rx.text("SELibrary", class_name="text-5xl font-semibold text-[#253974]"),
                 rx.vstack(

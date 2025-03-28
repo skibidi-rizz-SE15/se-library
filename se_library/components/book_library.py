@@ -9,7 +9,7 @@ def book_slot(isbn13: str, title: str, authors: str, image_src:str="", quantity:
                 rx.image(src=image_src, alt="BOOK COVER", class_name="self-center shadow-lg max-h-[20rem] rounded-md mt-auto"),
                 rx.icon("book-copy", class_name="self-center border-2 w-full h-[20rem] mt-auto"),
             ),
-            class_name="self-center h-[20rem]"
+            class_name="self-center"
         ),
         rx.text(title, title=title, class_name="line-clamp-3 text-ellipsis font-semibold text-[14px] leading-[1.2rem] font-Varela"),
         rx.text(authors, class_name="text-gray-500 font-Varela text-[0.9rem] leading-[1.2rem]"),

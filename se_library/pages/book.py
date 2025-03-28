@@ -9,9 +9,9 @@ from se_library.pages.homepage import footer
 @rx.page("/book", on_load=BookPageState.handle_on_load)
 def book_page() -> rx.Component:
     return rx.flex(
-        rx.mobile_and_tablet(
+        rx.mobile_only(
             rx.flex(
-                navbar_mobile_tablet(),
+                navbar_desktop(),
                 rx.flex(
                     book_details_mobile_tablet(),
                     footer(),
@@ -20,7 +20,7 @@ def book_page() -> rx.Component:
                 class_name="flex-col w-svw h-svh"
             )
         ),
-        rx.desktop_only(
+        rx.tablet_and_desktop(
             rx.flex(
                 navbar_desktop(),
                 rx.flex(

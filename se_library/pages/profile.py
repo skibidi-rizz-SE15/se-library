@@ -7,20 +7,19 @@ from ..components.profile_dashboard import profile_dashboard
 @rx.page("/profile", title="Profile", on_load=ProfileState.handle_on_load)
 def profile() -> rx.Component:
     return rx.flex(
-        rx.mobile_and_tablet(
+        # rx.mobile_and_tablet(
+        #     rx.flex(
+        #         navbar_mobile_tablet(),
+        #         class_name="w-svw h-svh"
+        #     ),
+        # ),
+        # desktop version
+        rx.flex(
+            navbar_desktop(),
             rx.flex(
-                navbar_mobile_tablet(),
-                class_name="w-svw h-svh"
+                profile_dashboard(),
+                class_name="overflow-y-auto grow"
             ),
-        ),
-        rx.desktop_only(
-            rx.flex(
-                navbar_desktop(),
-                rx.flex(
-                    profile_dashboard(),
-                    class_name="overflow-y-auto grow"
-                ),
-                class_name="flex flex-col h-screen w-screen",
-            ),
+            class_name="flex flex-col h-screen w-screen",
         ),
     )
