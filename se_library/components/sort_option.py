@@ -38,20 +38,14 @@ def all_button() -> rx.Component:
     return rx.cond(
         ExplorePageState.is_all_books,
         rx.button("All Books", class_name="rounded-xl font-Verela"),
-        rx.color_mode_cond(
-            light=rx.button("All Books", class_name="rounded-xl bg-white text-[#3358D4] font-Verela", on_click=ExplorePageState.handle_select_option(True)),
-            dark=rx.button("All Books", class_name="rounded-xl bg-[#111113] text-[#FDFDFD] font-Verela", on_click=ExplorePageState.handle_select_option(True))
-        )
+        rx.button("All Books", class_name="rounded-xl bg-white text-[#3358D4] font-Verela", on_click=ExplorePageState.handle_select_option(True))
     )
 
 def available_button() -> rx.Component:
     return rx.cond(
         ExplorePageState.is_available_books,
         rx.button("Available Books", class_name="rounded-xl font-Verela"),
-        rx.color_mode_cond(
-            light=rx.button("Available Books", class_name="rounded-xl bg-white text-[#3358D4] font-Verela", on_click=ExplorePageState.handle_select_option(False)),
-            dark=rx.button("Available Books", class_name="rounded-xl bg-[#111113] text-[#FDFDFD] font-Verela", on_click=ExplorePageState.handle_select_option(False))
-        )
+        rx.button("Available Books", class_name="rounded-xl bg-white text-[#3358D4] font-Verela", on_click=ExplorePageState.handle_select_option(False))
     )
 
 def sort_by_dropdown() -> rx.Component:
@@ -64,8 +58,8 @@ def sort_by_dropdown() -> rx.Component:
                 ),
                 rx.icon("chevron-down"),
                 class_name="rounded-xl font-Verela",
-                color=rx.color_mode_cond(light=rx.color("indigo", 10), dark=rx.color("white")),
-                background_color=rx.color_mode_cond(light=rx.color("white"), dark=rx.color("black"))
+                color=rx.color("indigo", 10),
+                background_color=rx.color("white")
             )
         ),
         rx.menu.content(
@@ -85,7 +79,7 @@ def sort_option_desktop() -> rx.Component:
         all_button(),
         available_button(),
         sort_by_dropdown(),
-        class_name="items-center justify-end space-x-2 mx-auto"                
+        class_name="flex-wrap items-center justify-end space-x-2 mx-auto"                
     )
 
 def sort_option_mobile_and_tablet() -> rx.Component:

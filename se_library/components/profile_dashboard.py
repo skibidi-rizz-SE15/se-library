@@ -163,7 +163,7 @@ def profile_dashboard() -> rx.Component:
             default_value="borrow_list",
             class_name="w-full"
         ),
-        background_color=rx.color_mode_cond(light=rx.color("indigo", 2), dark=rx.color("indigo", 1)),
+        background_color=rx.color("indigo", 2),
         class_name="h-max min-h-full flex-col w-full max-w-4xl mx-auto p-4"
     )
 

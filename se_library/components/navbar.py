@@ -100,18 +100,18 @@ def dark_mode_toggle() -> rx.Component:
     return rx.flex(
         rx.cond(
             toggle_btn_mode.is_clicked,
-            rx.button(rx.icon("moon", size=20), class_name="cursor-pointer", on_click=toggle_btn_mode.toggle, background_color=rx.color_mode_cond(light=rx.color("indigo", 10), dark=rx.color("indigo", 10))),
-            rx.button(rx.icon("sun", size=20), class_name="cursor-pointer", on_click=toggle_btn_mode.toggle, background_color=rx.color_mode_cond(light=rx.color("indigo", 10), dark=rx.color("indigo", 10))),
+            rx.button(rx.icon("moon", size=20), class_name="cursor-pointer", on_click=toggle_btn_mode.toggle, background_color=rx.color("indigo", 10)),
+            rx.button(rx.icon("sun", size=20), class_name="cursor-pointer", on_click=toggle_btn_mode.toggle, background_color=rx.color("indigo", 10)),
         ),
         on_click=toggle_color_mode,
         class_name="cursor-pointer border-gray-300 rounded-lg",
-        background_color=rx.color_mode_cond(light=rx.color("indigo", 10), dark=rx.color("indigo", 10))
+        background_color=rx.color("indigo", 10)
     )
 
 def profile_menu_desktop() -> rx.Component:
     return rx.menu.root(
         rx.menu.trigger(
-            rx.icon("circle-user-round", color="#FDFDFD", size=24, class_name="cursor-pointer"),
+            rx.icon("circle-user-round", color="#FDFDFD", size=24, class_name="shrink-0 cursor-pointer"),
         ),
         rx.menu.content(
             rx.menu.item("Profile", on_click=rx.redirect("/profile"), class_name="cursor-pointer"),
@@ -127,7 +127,7 @@ def book_menu_desktop() -> rx.Component:
         color="#FDFDFD", 
         size=24, 
         title="Lend a book",
-        class_name="cursor-pointer"
+        class_name="shrink-0 cursor-pointer"
         ),
             
 
@@ -138,11 +138,10 @@ def navbar_desktop(class_name: str="") -> rx.Component:
             on_click=rx.redirect("/explore"), 
             class_name="mr-auto text-3xl font-semibold text-[#FDFDFD] font-Outfit cursor-pointer"
         ),
-        dark_mode_toggle(),
         book_menu_desktop(),
         profile_menu_desktop(),
         class_name=f"w-full items-center justify-center drop-shadow-lg px-8 py-2 gap-6 rounded-b-md {class_name}",
-        background_color=rx.color_mode_cond(light=rx.color("indigo", 10), dark=rx.color("indigo", 10))
+        background_color=rx.color("indigo", 10)
     )
 
 def navbar_mobile_tablet() -> rx.Component:
@@ -155,11 +154,11 @@ def navbar_mobile_tablet() -> rx.Component:
                 rx.drawer.content(
                     drawer_content(),
                     class_name="w-[65%] h-full",
-                    background_color=rx.color_mode_cond(light=rx.color("sage", 6), dark=rx.color("indigo", 1))
+                    background_color=rx.color("sage", 6)
                 ),
             ),
             direction="left",
         ),
         class_name="w-full h-fit items-center justify-between drop-shadow-lg p-2 rounded-b-md",
-        background_color=rx.color_mode_cond(light=rx.color("indigo", 10), dark=rx.color("indigo", 10))
+        background_color=rx.color("indigo", 10)
     )
