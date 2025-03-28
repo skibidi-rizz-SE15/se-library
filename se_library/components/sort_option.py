@@ -85,7 +85,7 @@ def sort_option_desktop() -> rx.Component:
         all_button(),
         available_button(),
         sort_by_dropdown(),
-        class_name="items-center justify-end space-x-2"                
+        class_name="items-center justify-end space-x-2 mx-auto"                
     )
 
 def sort_option_mobile_and_tablet() -> rx.Component:

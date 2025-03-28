@@ -111,7 +111,7 @@ def dark_mode_toggle() -> rx.Component:
 def profile_menu_desktop() -> rx.Component:
     return rx.menu.root(
         rx.menu.trigger(
-            rx.icon("circle-user-round", color="#FDFDFD", size=24, class_name="flex cursor-pointer"),
+            rx.icon("circle-user-round", color="#FDFDFD", size=24, class_name="cursor-pointer"),
         ),
         rx.menu.content(
             rx.menu.item("Profile", on_click=rx.redirect("/profile"), class_name="cursor-pointer"),
@@ -121,16 +121,15 @@ def profile_menu_desktop() -> rx.Component:
     )
 
 def book_menu_desktop() -> rx.Component:
-    return rx.menu.root(
-            rx.menu.trigger(
-                rx.icon("book-copy", color="#FDFDFD", size=24, class_name="flex cursor-pointer"),
-            ),
-            rx.menu.content(
-                rx.menu.item("Borrow a book", class_name="cursor-pointer"),
-                rx.separator(),
-                rx.menu.item("Lend a book", on_click=rx.redirect("/book-registration"), class_name="cursor-pointer"),
-            ),
-        )
+    return rx.icon(
+        "book-copy", 
+        on_click=rx.redirect("/book-registration"),
+        color="#FDFDFD", 
+        size=24, 
+        title="Lend a book",
+        class_name="cursor-pointer"
+        ),
+            
 
 def navbar_desktop(class_name: str="") -> rx.Component:
     return rx.flex(

@@ -39,7 +39,7 @@ def page() -> rx.Component:
             rx.flex(
                 sort_option_desktop(),
                 searchbar(),
-                class_name="gap-8 p-4"
+                class_name="flex-wrap-reverse gap-x-8 gap-y-4 p-4"
             ),
             book_library(),
             class_name="flex flex-col h-screen w-screen",
