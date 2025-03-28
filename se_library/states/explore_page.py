@@ -113,6 +113,8 @@ class ExplorePageState(rx.State):
                 elif quantity > 0:
                     self.book_details.append(book_detail)
 
+            self.sort_books()
+
     def sort_books(self):
         match self.sort_by:
             case "Highest Quantity":
