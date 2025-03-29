@@ -16,7 +16,6 @@ class BookDetails(BaseModel):
     genre: GenreEnum
 
 class ExplorePageState(rx.State):
-    search_input: str = ""
     search_query: str = ""
     genre: str = None
     sort_by: str = "Title"
@@ -48,8 +47,10 @@ class ExplorePageState(rx.State):
                 return "All Genres"
 
     @rx.event
-    def handle_search(self) -> None:
-        self.search_query = "Result for: " + self.search_input
+    def handle_search(self, dict) -> None:
+        query = dict["search_query"]
+        if query:
+            self.search_query = f"Result for: {query}"
 
     @rx.event
     def handle_select_option(self, selects_all_books: bool):

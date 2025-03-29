@@ -20,6 +20,7 @@ def book_slot(isbn13: str, title: str, authors: str, image_src:str="", quantity:
 
 def book_display(class_name: str="", min_item_width=12) -> rx.Component:
     return rx.grid(
+        query_result_display(class_name="col-span-full"),
         rx.foreach(ExplorePageState.book_details, lambda book: book_slot(book.isbn13, book.title, book.authors, book.image_src, book.quantity,has_quantity=True, class_name="w-full")),
         class_name=f"grid grid-cols-[repeat(auto-fill,minmax({min_item_width}rem,1fr))] gap-5 {class_name}"
     )
@@ -30,4 +31,13 @@ def book_library(min_item_width=12) -> rx.Component:
         book_display(min_item_width=min_item_width),
         class_name="flex flex-col overflow-y-auto px-8 py-4 gap-2 rounded-t-xl grow",
         background_color=rx.color_mode_cond(light="#F7F9FF", dark="#11131F")
+    )
+
+def query_result_display(class_name="") -> rx.Component:
+    return rx.cond(
+        ExplorePageState.search_query,
+        rx.flex(
+            ExplorePageState.search_query,
+            class_name=f"w-full font-semibold text-lg {class_name}"
+        )
     )
