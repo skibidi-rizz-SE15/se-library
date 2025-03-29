@@ -126,8 +126,8 @@ def borrow_approval_item(transaction: TransactionDetails) -> rx.Component:
             class_name="gap-2"
         ),
         rx.flex(
-            rx.button("Approve", color_scheme="grass"),
-            rx.button("Reject", color_scheme="red", on_click=ConfirmDialogState.dialog_open),
+            rx.button("Approve", color_scheme="grass", on_click=ConfirmDialogState.handle_on_approve(transaction), loading=ConfirmDialogState.is_loading),
+            rx.button("Reject", color_scheme="red", on_click=ConfirmDialogState.dialog_open, disabled=ConfirmDialogState.is_loading),
             confirm_reject_dialog(transaction=transaction),
             class_name="gap-4"
         ),
@@ -186,9 +186,11 @@ def confirm_reject_dialog(transaction: TransactionDetails) -> rx.Component:
                 ),
                 rx.alert_dialog.action(
                     rx.button(
-                        "Revoke access",
+                        "Reject",
                         color_scheme="red",
                         variant="solid",
+                        on_click=ConfirmDialogState.handle_on_reject(transaction),
+                        loading=ConfirmDialogState.is_loading,
                     ),
                 ),
                 spacing="3",

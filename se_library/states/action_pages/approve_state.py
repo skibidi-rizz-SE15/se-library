@@ -91,7 +91,8 @@ class ApproveState(rx.State):
     async def send_email(self, transaction, cipher_suite):
         try:
             transaction_id = cipher_suite.encrypt(str(transaction.id).encode()).decode()
-            template_data = {
+            
+            lender_template_data = {
                 "company_name": "SE Library",
                 "lender_name": transaction.book_inventory.owner.username,
                 "borrow_request": False,
@@ -107,21 +108,48 @@ class ApproveState(rx.State):
                 "qr_image": transaction.qr_code_image_link,
                 "action_url": f"{BASE_URL}/confirm?q={transaction_id}&role=lender"
             }
+            borrower_template_data = {
+                "company_name": "SE Library",
+                "borrower_name": transaction.borrower.username,
+                "borrow_request": False,
+                "request_status": True,
+                "picked_up": False,
+                "approved": True,
+                "request_id": transaction.id,
+                "lender_name": transaction.book_inventory.owner.username,
+                "book_title": transaction.book_inventory.book.title,
+                "book_condition": self.enum_to_condition(transaction.book_inventory.condition),
+                "submission_date": transaction.borrow_date,
+                "status": "Approved",
+                "color": "#4CAF50"
+            }
 
             current_dir = os.path.dirname(os.path.abspath(__file__))
             templates_dir = os.path.abspath(os.path.join(current_dir, '..', '..', "..", "assets", "html"))
             env = Environment(loader=FileSystemLoader(templates_dir))
-            template = env.get_template("lender_template.html")
-            html = template.render(**template_data)
+            
+            lender_template = env.get_template("lender_template.html")
+            lender_html = lender_template.render(**lender_template_data)
 
-            mail = Mail(
+            borrower_template = env.get_template("borrower_template.html")
+            borrower_html = borrower_template.render(**borrower_template_data)
+            
+            borrower_mail = Mail(
+                from_email="noreply@se-library.org",
+                to_emails=transaction.borrower.email,
+                subject="Borrow Request Approved",
+                html_content=borrower_html,
+            )
+            lender_mail = Mail(
                 from_email="noreply@se-library.org",
                 to_emails=transaction.book_inventory.owner.email,
                 subject="Borrow Request Approved",
-                html_content=html,
+                html_content=lender_html,
             )
+            
             sg = SendGridAPIClient(api_key=SENDGRID_API_KEY)
-            response = sg.send(mail)
+            response = sg.send(lender_mail)
+            response = sg.send(borrower_mail)
             return Result(error=False, message="Email sent successfully")
         except Exception as e:
             return Result(error=True, message=str(e))

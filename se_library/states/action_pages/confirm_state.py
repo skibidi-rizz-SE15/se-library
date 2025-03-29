@@ -123,7 +123,6 @@ class ConfirmState(rx.State):
             )
             sg = SendGridAPIClient(api_key=SENDGRID_API_KEY)
             response = sg.send(mail)
-            print(response)
             return Result(error=False, message="")
         except Exception as e:
             return Result(error=True, message=str(e))
@@ -185,7 +184,6 @@ class ConfirmState(rx.State):
             )
             sg = SendGridAPIClient(api_key=SENDGRID_API_KEY)
             response = sg.send(mail)
-            print(response)
             return Result(error=False, message="")
         except Exception as e:
             return Result(error=True, message=str(e))
