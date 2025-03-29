@@ -35,9 +35,14 @@ def book_library(min_item_width=12) -> rx.Component:
 
 def query_result_display(class_name="") -> rx.Component:
     return rx.cond(
-        ExplorePageState.search_query,
+        ExplorePageState.query_input,
         rx.flex(
-            ExplorePageState.search_query,
-            class_name=f"w-full font-semibold text-lg {class_name}"
+            ExplorePageState.query_display,
+            rx.text(
+                "x", 
+                on_click=ExplorePageState.reset_search_query,
+                class_name="cursor-pointer peer px-2 rounded-full text-white bg-red-400 hover:bg-red-300"
+            ),
+            class_name=f"w-full gap-2 font-semibold text-lg {class_name}"
         )
     )

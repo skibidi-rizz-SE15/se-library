@@ -16,7 +16,8 @@ class BookDetails(BaseModel):
     genre: GenreEnum
 
 class ExplorePageState(rx.State):
-    search_query: str = ""
+    query_display: str = ""
+    query_input: str = ""
     genre: str = None
     sort_by: str = "Title"
     is_all_books: bool = True
@@ -50,7 +51,15 @@ class ExplorePageState(rx.State):
     def handle_search(self, dict) -> None:
         query = dict["search_query"]
         if query:
-            self.search_query = f"Result for: {query}"
+            self.query_display = f"Result for: {query}"
+            self.query_input = query
+            self.load_books()
+
+    @rx.event
+    def reset_search_query(self):
+        self.query_input = ""
+        self.query_display = ""
+        self.load_books()
 
     @rx.event
     def handle_select_option(self, selects_all_books: bool):
@@ -71,6 +80,9 @@ class ExplorePageState(rx.State):
     def handle_sort_by_option(self, option: str):
         self.sort_by = option
         yield self.sort_books()
+
+    def is_in_query(self, book_title: str) -> bool:
+        return self.query_input.lower().strip() in book_title.lower()
 
     def handle_on_load(self):
         yield BaseState.check_login()
@@ -103,16 +115,17 @@ class ExplorePageState(rx.State):
                         quantity=quantity,
                         genre=book.genre
                 )
-                if self.is_all_books and self.genre:
-                    if book_detail.genre == self.genre:
+                if self.is_in_query(book_detail.title):
+                    if self.is_all_books and self.genre:
+                        if book_detail.genre == self.genre:
+                            self.book_details.append(book_detail)
+                    elif self.is_all_books:
                         self.book_details.append(book_detail)
-                elif self.is_all_books:
-                    self.book_details.append(book_detail)
-                elif quantity > 0 and self.genre:
-                    if book_detail.genre == self.genre:
+                    elif quantity > 0 and self.genre:
+                        if book_detail.genre == self.genre:
+                            self.book_details.append(book_detail)
+                    elif quantity > 0:
                         self.book_details.append(book_detail)
-                elif quantity > 0:
-                    self.book_details.append(book_detail)
 
             self.sort_books()
 
