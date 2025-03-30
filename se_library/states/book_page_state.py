@@ -137,6 +137,7 @@ class BorrowDialogState(BookPageState):
         self.is_submitted = False
         self.is_error = False
         self.error_message = ""
+        self.available_copies_amount -= 1
         yield rx.toast.success(result.message, position="top-center")
         self.is_open = False
 

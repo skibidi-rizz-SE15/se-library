@@ -19,6 +19,8 @@ def book_details_mobile_tablet() -> rx.Component:
     )
 
 def content() -> rx.Component:
+    borrowed_amount = BookPageState.total_copies_amount - BookPageState.available_copies_amount
+
     return rx.fragment(
         rx.text(BookPageState.title, class_name="text-sm font-Varela font-semibold text-center"),
         rx.image(src=BookPageState.cover_image_link, class_name="max-w-[45rem] max-h-[35rem] w-[300px] mx-auto rounded-sm shadow-md"),
@@ -26,10 +28,8 @@ def content() -> rx.Component:
         borrow_dialog(available_conditions=BookPageState.available_conditions, state=BorrowDialogState, dialog_btn=rx.flex("Borrow", class_name="col-span-2 w-fit justify-center mx-auto px-8 py-2 mt-4 rounded-xl text-white font-semibold cursor-pointer", background_color=rx.Color("indigo", 10))),
         rx.grid(
             stock_status(remaining=BookPageState.available_copies_amount, actual=BookPageState.total_copies_amount),
-            queue_status(),
-            borrowed_status(),
-            queue_duration_status(class_name="col-span-3 text-center"),
-            class_name="grid-cols-[1fr_1fr_1fr] w-full gap-1"
+            borrowed_status(borrowed_amount),
+            class_name="grid-cols-[1fr_1fr] w-full gap-1"
         ),
         rx.separator(),
         rx.text("Details", class_name="text-xl text-gray-400 font-Varela font-semibold"),

@@ -19,7 +19,7 @@ from cryptography.fernet import Fernet
 load_dotenv()
 
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
-IMGBB_API_KEY = os.getenv("IMGBB_API_KET")
+IMGBB_API_KEY = os.getenv("IMGBB_API_KEY")
 BASE_URL = os.getenv("BASE_URL")
 
 class BookDetails(BaseModel):
@@ -250,24 +250,26 @@ class Result:
 class ConfirmDialogState(ProfileState):
     opened: bool = False
     is_loading: bool = False
+    selected_id: int = 0
 
     @rx.event
-    def dialog_open(self):
+    def dialog_open(self, id: int):
         self.opened = True
+        self.selected_id = id
 
     @rx.event
     def dialog_close(self):
         self.opened = False
 
     @rx.event
-    async def handle_on_approve(self, transaction: TransactionDetails):
+    async def handle_on_approve(self, id: int):
         self.is_loading = True
         yield
         await asyncio.sleep(2)
         try:
             with rx.session() as db:
                 transaction_db = db.exec(
-                    BookTransaction.select().where(BookTransaction.id == transaction.id)
+                    BookTransaction.select().where(BookTransaction.id == id)
                 ).first()
                 if not transaction_db:
                     raise Exception
@@ -284,20 +286,23 @@ class ConfirmDialogState(ProfileState):
                     print(res.message)
                     raise Exception(res.message)
                 self.is_loading = False
+                self.pending_approvals = [
+                    transaction for transaction in self.pending_approvals if transaction.id != id
+                ]
                 yield rx.toast.info("Transaction successfully approved")
         except Exception as e:
             self.is_loading = False
             yield rx.toast.error(f"Failed to approve transaction: {str(e)}")
 
     @rx.event
-    async def handle_on_reject(self, transaction: TransactionDetails):
+    async def handle_on_reject(self):
         self.is_loading = True
         yield
         await asyncio.sleep(2)
         try:
             with rx.session() as db:
                 transaction_db = db.exec(
-                    BookTransaction.select().where(BookTransaction.id == transaction.id)
+                    BookTransaction.select().where(BookTransaction.id == self.selected_id)
                 ).first()
                 if not transaction_db:
                     raise Exception
@@ -306,15 +311,19 @@ class ConfirmDialogState(ProfileState):
                 transaction_db.borrow_status = BorrowStatusEnum.REJECTED
                 transaction_db.book_inventory.availability = AvailabilityEnum.AVAILABLE
                 db.commit()
-                res = await self.send_email_to_borrower(db=db, transaction_id=transaction.id)
+                res = await self.send_email_to_borrower(db=db, transaction_id=self.selected_id)
                 if res.error:
                     raise Exception(res.message)
             self.opened = False
             self.is_loading = False
+            self.pending_approvals = [
+                transaction for transaction in self.pending_approvals if transaction.id != self.selected_id
+            ]
             yield rx.toast.info("Transaction successfully rejected")
         except Exception as e:
             self.opened = False
             self.is_loading = False
+            print(str(e))
             yield rx.toast.error(f"Failed to reject transaction: {str(e)}")
 
     async def send_email_to_borrower(self, transaction_id: int, db):
@@ -355,7 +364,7 @@ class ConfirmDialogState(ProfileState):
             )
 
             sg = SendGridAPIClient(api_key=SENDGRID_API_KEY)
-            res = sg.send(mail)
+            # res = sg.send(mail)
             return Result(error=False, message="")
         except Exception as e:
             return Result(error=True, message=str(e))
@@ -429,8 +438,8 @@ class ConfirmDialogState(ProfileState):
             )
 
             sg = SendGridAPIClient(api_key=SENDGRID_API_KEY)
-            res = sg.send(lender_mail)
-            res = sg.send(borrower_mail)
+            # res = sg.send(lender_mail)
+            # res = sg.send(borrower_mail)
             return Result(error=False, message="Email sent successfully")
         except Exception as e:
             return Result(error=True, message=str(e))
@@ -467,6 +476,9 @@ class ConfirmDialogState(ProfileState):
                 }
                 # Call the API to upload the image
                 res = requests.post("https://api.imgbb.com/1/upload", data=payload)
+                if res.json().get("status") != 200:
+                    print(res.status)
+                    raise Exception("Failed to upload image")
                 data = res.json().get("data")
                 image_url = data.get("image").get("url")
                 transaction.qr_code_image_link = image_url

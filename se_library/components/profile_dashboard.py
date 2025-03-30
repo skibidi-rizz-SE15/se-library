@@ -126,9 +126,8 @@ def borrow_approval_item(transaction: TransactionDetails) -> rx.Component:
             class_name="gap-2"
         ),
         rx.flex(
-            rx.button("Approve", color_scheme="grass", on_click=ConfirmDialogState.handle_on_approve(transaction), loading=ConfirmDialogState.is_loading),
-            rx.button("Reject", color_scheme="red", on_click=ConfirmDialogState.dialog_open, disabled=ConfirmDialogState.is_loading),
-            confirm_reject_dialog(transaction=transaction),
+            rx.button("Approve", color_scheme="grass", on_click=ConfirmDialogState.handle_on_approve(transaction.id), loading=ConfirmDialogState.is_loading),
+            rx.button("Reject", color_scheme="red", on_click=ConfirmDialogState.dialog_open(transaction.id), disabled=ConfirmDialogState.is_loading),
             class_name="gap-4"
         ),
         class_name="leading-5 grid-cols-[max-content_1fr_1fr_min-content] items-center gap-2"
@@ -163,11 +162,12 @@ def profile_dashboard() -> rx.Component:
             default_value="borrow_list",
             class_name="w-full"
         ),
+        confirm_reject_dialog(),
         background_color=rx.color("indigo", 2),
         class_name="h-max min-h-full flex-col w-full max-w-4xl mx-auto p-4"
     )
 
-def confirm_reject_dialog(transaction: TransactionDetails) -> rx.Component:
+def confirm_reject_dialog() -> rx.Component:
     return rx.alert_dialog.root(
         rx.alert_dialog.content(
             rx.alert_dialog.title("Are you sure you want to reject this borrow request?"),
@@ -189,7 +189,7 @@ def confirm_reject_dialog(transaction: TransactionDetails) -> rx.Component:
                         "Reject",
                         color_scheme="red",
                         variant="solid",
-                        on_click=ConfirmDialogState.handle_on_reject(transaction),
+                        on_click=ConfirmDialogState.handle_on_reject(),
                         loading=ConfirmDialogState.is_loading,
                     ),
                 ),

@@ -18,6 +18,8 @@ def book_details_desktop() -> rx.Component:
     )
 
 def content() -> rx.Component:
+    borrowed_amount = BookPageState.total_copies_amount - BookPageState.available_copies_amount
+
     return rx.fragment(
         rx.text(f"{BookPageState.title}", class_name="font-semibold col-span-2 font-Valera text-center text-2xl mb-2"),
         rx.flex(
@@ -28,10 +30,8 @@ def content() -> rx.Component:
         rx.grid(
             rx.grid(
                 stock_status(remaining=BookPageState.available_copies_amount, actual=BookPageState.total_copies_amount),
-                queue_status(),
-                borrowed_status(),
-                queue_duration_status(class_name="col-span-3 text-center"),
-                class_name="grid-cols-[1fr_1fr_1fr] w-full gap-1"
+                borrowed_status(borrowed_amount),
+                class_name="grid-cols-[1fr_1fr] w-full gap-1"
             ),
             rx.separator(),
             book_details_list(isbn13=BookPageState.isbn13, publisher=BookPageState.publisher, pages=BookPageState.pages),
