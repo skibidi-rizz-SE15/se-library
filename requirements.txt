@@ -29,11 +29,12 @@ nh3==0.2.20
 packaging==24.2
 platformdirs==4.3.6
 psutil==6.1.1
-psycopg2==2.9.10
+psycopg2-binary==2.9.10
 pydantic==2.10.6
 pydantic_core==2.27.2
 Pygments==2.19.1
 pyproject_hooks==1.2.0
+python-dotenv==1.0.1
 python-engineio==4.11.2
 python-multipart==0.0.20
 python-socketio==5.12.1
@@ -65,3 +66,7 @@ uvicorn==0.34.0
 wheel==0.45.1
 wrapt==1.17.2
 wsproto==1.2.0
+cryptography==44.0.2
+passlib==1.7.4
+bcrypt==4.0.1
+PyJWT==2.10.1

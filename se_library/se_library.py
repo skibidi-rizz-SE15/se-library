@@ -3,37 +3,40 @@
 import reflex as rx
 
 from rxconfig import config
+from .pages.homepage import homepage
+from .pages.login import login_page
+from .pages.explore import explore
+from .pages.profile import profile
+from .pages.book_registration import book_registration_page
+from .pages.book import book_page
+from .pages.actions.approve import approve_page
+from .pages.actions.confirm import confirm_page
+from dotenv import load_dotenv
+from se_library.states.base import BaseState
+from se_library.states.book_page_state import BookPageState
+load_dotenv()
+rx.remove_local_storage("chakra-ui-color-mode")
 
+app = rx.App(
+    theme=rx.theme(
+        appearance="light",
+        has_background=True,
+        radius="large",
+        accent_color="indigo",
+    ),
+    stylesheets=[
+        "https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap",
+        "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap",
+        "https://fonts.googleapis.com/css2?family=Varela&display=swap",
+        "https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900"
+    ],
+)
+app.add_page(homepage)
+app.add_page(login_page)
 
-class State(rx.State):
-    """The app state."""
-
-    ...
-
-
-def index() -> rx.Component:
-    # Welcome Page (Index)
-    return rx.container(
-        rx.color_mode.button(position="top-right"),
-        rx.vstack(
-            rx.heading("Welcome to Reflex!", size="9"),
-            rx.text(
-                "Get started by editing ",
-                rx.code(f"{config.app_name}/{config.app_name}.py"),
-                size="5",
-            ),
-            rx.link(
-                rx.button("Check out our docs!"),
-                href="https://reflex.dev/docs/getting-started/introduction/",
-                is_external=True,
-            ),
-            spacing="5",
-            justify="center",
-            min_height="85vh",
-        ),
-        rx.logo(),
-    )
-
-
-app = rx.App()
-app.add_page(index)
+app.add_page(explore)
+app.add_page(profile, on_load=BaseState.check_login())
+app.add_page(book_registration_page, on_load=BaseState.check_login())
+app.add_page(book_page, on_load=BookPageState.handle_on_load)
+app.add_page(approve_page)
+app.add_page(confirm_page)
