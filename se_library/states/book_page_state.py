@@ -57,20 +57,20 @@ class BookPageState(rx.State):
                 self.description = book.description
                 self.cover_image_link = book.cover_image_link
                 self.book_exists = True
-                self.available_copies_amount = len(
-                    session.exec(
-                        BookInventory.select().where(
-                            BookInventory.book_id == book.id,
-                            BookInventory.availability == AvailabilityEnum.AVAILABLE
-                        )
-                    ).all()
-                )
+                available_copies = session.exec(
+                    BookInventory.select().where(
+                        BookInventory.book_id == book.id,
+                        BookInventory.availability == AvailabilityEnum.AVAILABLE
+                    )
+                ).all()
+                self.available_copies_amount = len(available_copies)
                 self.book_copies = session.exec(
                     BookInventory.select().where(
                         BookInventory.book_id == book.id
                     )
                 ).all()
-                for book in self.book_copies:
+                self.total_copies_amount = len(self.book_copies)
+                for book in available_copies:
                     if len(self.available_conditions) == len(ConditionEnum):
                         break
                     match book.condition:
@@ -101,7 +101,6 @@ class BookPageState(rx.State):
                                 continue
                         case _:
                             continue
-                self.total_copies_amount = len(self.book_copies)
             else:
                 self.book_exists = False
 
