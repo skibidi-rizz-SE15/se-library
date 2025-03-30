@@ -2,13 +2,14 @@ import reflex as rx
 from cryptography.fernet import Fernet
 import os
 from dotenv import load_dotenv
-from se_library.models import BookTransaction, ConditionEnum, BorrowStatusEnum
+from se_library.models import BookTransaction, ConditionEnum, BorrowStatusEnum, BORROW_DURATION
 from jinja2 import Environment, FileSystemLoader
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import asyncio
 import base64
 import requests
+from datetime import datetime, timedelta
 
 load_dotenv()
 
@@ -69,6 +70,8 @@ class ApproveState(rx.State):
                     print("Transaction not pending")
                     raise Exception
                 transaction.borrow_status = BorrowStatusEnum.APPROVED
+                transaction.borrow_date = datetime.now()
+                transaction.return_date = datetime.now() + timedelta(days=BORROW_DURATION)
                 db.commit()
                 res = await self.get_qrcode(transaction=transaction, db=db)
                 if res.error:

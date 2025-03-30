@@ -8,7 +8,6 @@ from sendgrid.helpers.mail import Mail
 import os
 from dotenv import load_dotenv
 from se_library.states.base import BaseState
-from datetime import datetime, timedelta
 from jinja2 import Environment, FileSystemLoader
 from cryptography.fernet import Fernet
 
@@ -30,7 +29,6 @@ class BookPageState(rx.State):
     book_copies: List[BookInventory] = []
     available_conditions: List[str] = []
     total_copies_amount: int = 0
-    BORROW_DURATION = 7
 
     @rx.var
     def is_out_of_stock(self) -> bool:
@@ -208,8 +206,8 @@ class BorrowDialogState(BookPageState):
                 book_inventory_id=book_to_be_borrowed.id,
                 borrow_status=BorrowStatusEnum.PENDING,
                 duration=7,
-                borrow_date=datetime.now(),
-                return_date=datetime.now() + timedelta(days=self.BORROW_DURATION)
+                borrow_date=None,
+                return_date=None
             )
             db.add(transaction)
             db.commit()

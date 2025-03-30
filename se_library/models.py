@@ -8,6 +8,8 @@ from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+BORROW_DURATION = 7 # days
+
 class GenreEnum(str, Enum):
     PROGRAMMING_LANGUAGES = "programming_languages"
     DESIGN_PATTERNS = "design_patterns"
@@ -99,10 +101,10 @@ class BookTransaction(rx.Model, table=True):
     )
     duration: int
     borrow_date: datetime = Field(
-        sa_column=Column(DateTime(timezone=True), nullable=False)
+        sa_column=Column(DateTime(timezone=True), nullable=True)
     )
     return_date: datetime = Field(
-        sa_column=Column(DateTime(timezone=True), nullable=False)
+        sa_column=Column(DateTime(timezone=True), nullable=True)
     )
     qr_code_image_link: str = Field(nullable=True)
 

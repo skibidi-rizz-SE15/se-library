@@ -1,7 +1,7 @@
 import asyncio
 import asyncio.selector_events
 import reflex as rx
-from se_library.models import User, BookTransaction, Book, BorrowStatusEnum, BookInventory, Author, ConditionEnum, AvailabilityEnum
+from se_library.models import User, BookTransaction, Book, BorrowStatusEnum, BookInventory, ConditionEnum, AvailabilityEnum, BORROW_DURATION
 from se_library.states.base import BaseState
 from pydantic import BaseModel
 from sqlalchemy import or_
@@ -15,6 +15,7 @@ from sendgrid.helpers.mail import Mail
 import requests
 import base64
 from cryptography.fernet import Fernet
+from datetime import datetime, timedelta
 
 load_dotenv()
 
@@ -96,7 +97,7 @@ class ProfileState(rx.State):
                 return "Unknown"
 
     def get_formatted_datetime(self, datetime) -> str:
-        return datetime.strftime("%B %d, %Y")
+        return datetime.strftime("%B %d, %Y") if datetime else "TBD"
 
     @rx.event
     async def handle_on_load(self):
@@ -276,6 +277,8 @@ class ConfirmDialogState(ProfileState):
                 if transaction_db.borrow_status != BorrowStatusEnum.PENDING:
                     raise Exception("Transaction is not pending")
                 transaction_db.borrow_status = BorrowStatusEnum.APPROVED
+                transaction_db.borrow_date = datetime.now()
+                transaction_db.return_date = datetime.now() + timedelta(days=BORROW_DURATION)
                 db.commit()
                 res = await self.get_qrcode(transaction=transaction_db, db=db)
                 if res.error:
