@@ -367,7 +367,7 @@ class ConfirmDialogState(ProfileState):
             )
 
             sg = SendGridAPIClient(api_key=SENDGRID_API_KEY)
-            # res = sg.send(mail)
+            res = sg.send(mail)
             return Result(error=False, message="")
         except Exception as e:
             return Result(error=True, message=str(e))
@@ -441,8 +441,8 @@ class ConfirmDialogState(ProfileState):
             )
 
             sg = SendGridAPIClient(api_key=SENDGRID_API_KEY)
-            # res = sg.send(lender_mail)
-            # res = sg.send(borrower_mail)
+            res = sg.send(lender_mail)
+            res = sg.send(borrower_mail)
             return Result(error=False, message="Email sent successfully")
         except Exception as e:
             return Result(error=True, message=str(e))
