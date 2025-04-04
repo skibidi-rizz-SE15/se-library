@@ -10,11 +10,14 @@ from dotenv import load_dotenv
 from se_library.states.base import BaseState
 from jinja2 import Environment, FileSystemLoader
 from cryptography.fernet import Fernet
+from sqlalchemy import or_
 
 load_dotenv()
 
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 BASE_URL = os.getenv("BASE_URL")
+
+MAX_BORROW_LIMIT = 5
 
 class BookPageState(rx.State):
     authors: str = ""
@@ -198,8 +201,20 @@ class BorrowDialogState(BookPageState):
                     BookInventory.condition == self.condition_to_enum(condition)
                 )
             ).first()
+            current_borrow_count = len(db.exec(
+                BookTransaction.select().where(
+                    BookTransaction.borrower_id == user.id,
+                    or_(
+                        BookTransaction.borrow_status == BorrowStatusEnum.APPROVED,
+                        BookTransaction.borrow_status == BorrowStatusEnum.PENDING,
+                        BookTransaction.borrow_status == BorrowStatusEnum.BORROWED
+                    )
+                )
+            ))
             if not book_to_be_borrowed:
                 return Result(error=True, message="Book unavailable")
+            elif current_borrow_count < MAX_BORROW_LIMIT:
+                return Result(error=True, message="Maximum borrow count reached")
             book_to_be_borrowed.availability = AvailabilityEnum.UNAVAILABLE
             transaction = BookTransaction(
                 borrower_id=user.id,
