@@ -6,8 +6,7 @@ load_dotenv()
 
 config = rx.Config(
     app_name="se_library",
-    # db_url=os.environ.get("DATABASE_URL", "postgresql://rachatapondee@localhost:5432/se_library"),
-    db_url=os.getenv("DATABASE_URL", "postgresql://rachatapondee@localhost:5432/se_library"),
+    db_url=os.environ.get("DATABASE_URL"),
     tailwind={
         "theme": {
             "extend": {
