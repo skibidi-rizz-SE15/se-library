@@ -85,7 +85,7 @@ class ConfirmState(rx.State):
                 return Result(error=True, message="Transaction not found")
             if transaction.borrow_status != "borrowed":
                 return Result(error=True, message="Transaction not in borrowed status")
-            if transaction.return_date - timedelta(7) < datetime.now():
+            if transaction.return_date < datetime.now():
                 res = await self.send_billing_email(transaction=transaction)
                 if res.error:
                     return res
