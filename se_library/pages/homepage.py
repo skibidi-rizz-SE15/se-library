@@ -240,13 +240,7 @@ def faqs() -> rx.Component:
                             rx.text(
                                 "If a borrower ",
                                 rx.text.strong("does not return a book by the due date"),
-                                "the system will:",
-                                rx.list.unordered(
-                                    rx.list.item(rx.text(rx.text.strong("Send reminders "), "to return the book.")),
-                                    rx.list.item(rx.text(rx.text.strong("Restrict further borrowing "), "until the overdue book is returned.")),
-                                    rx.list.item(rx.text("Notify the book owner and ", rx.text.strong("allow them to report issues "), rx.text.strong("to administrators if needed."))),
-                                    rx.list.item(rx.text("If the issue persists, administrators may ", rx.text.strong("impose penalties "), "or take further actions based on the library's policies.")),
-                                ),
+                                " the system will send a bill of 150 THB per request. The book owner can receive the payment by reaching out to a contact listed in the footer below.",
                                 class_name="font-Roboto text-base text-[#182449] w-[18rem]"
                             ),
                         ),
@@ -333,13 +327,7 @@ def faqs() -> rx.Component:
                             rx.text(
                                 "If a borrower ",
                                 rx.text.strong("does not return a book by the due date"),
-                                "the system will:",
-                                rx.list.unordered(
-                                    rx.list.item(rx.text(rx.text.strong("Send reminders "), "to return the book.")),
-                                    rx.list.item(rx.text(rx.text.strong("Restrict further borrowing "), "until the overdue book is returned.")),
-                                    rx.list.item(rx.text("Notify the book owner and ", rx.text.strong("allow them to report issues "), rx.text.strong("to administrators if needed."))),
-                                    rx.list.item(rx.text("If the issue persists, administrators may ", rx.text.strong("impose penalties "), "or take further actions based on the library's policies.")),
-                                ),
+                                " the system will send a bill of 150 THB per request. The book owner can receive the payment by reaching out to a contact listed in the footer below.",
                                 class_name="font-Roboto text-base text-[#182449]"
                             ),
                         ),
@@ -392,9 +380,9 @@ def footer() -> rx.Component:
                     rx.text("SELibrary", class_name="text-[#FDFDFD] font-Outfit text-3xl font-semibold"),
                     rx.flex(
                         rx.text("Contact", class_name="text-[#FDFDFD] font-Roboto text-lg font-semibold"),
-                        rx.text("example@domain.com", class_name="text-[#FDFDFD] font-Roboto text-sm cursor-pointer"),
-                        rx.text("example@domain.com", class_name="text-[#FDFDFD] font-Roboto text-sm cursor-pointer"),
-                        rx.text("example@domain.com", class_name="text-[#FDFDFD] font-Roboto text-sm cursor-pointer"),
+                        rx.text("rachata.pho@se-library.org", class_name="text-[#FDFDFD] font-Roboto text-sm cursor-pointer"),
+                        rx.text("sorasich.ler@se-library.org", class_name="text-[#FDFDFD] font-Roboto text-sm cursor-pointer"),
+                        rx.text("phattadon.sor@se-library.org", class_name="text-[#FDFDFD] font-Roboto text-sm cursor-pointer"),
                         class_name="w-fit h-full flex-col justify-evenly"
                     ),
                     rx.flex(

@@ -208,10 +208,10 @@ class BorrowDialogState(BookPageState):
                         BookTransaction.borrow_status == BorrowStatusEnum.BORROWED
                     )
                 )
-            ))
+            ).all())
             if not book_to_be_borrowed:
                 return Result(error=True, message="Book unavailable")
-            elif current_borrow_count < MAX_BORROW_LIMIT:
+            elif current_borrow_count >= MAX_BORROW_LIMIT:
                 return Result(error=True, message="Maximum borrow count reached")
             book_to_be_borrowed.availability = AvailabilityEnum.UNAVAILABLE
             transaction = BookTransaction(

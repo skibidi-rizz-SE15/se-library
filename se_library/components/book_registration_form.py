@@ -35,14 +35,14 @@ def book_condition_dialog() -> rx.Component:
             rx.dialog.title(rx.text("Your Book Details", class_name="font-semibold font-Valera text-center text-lg")),
             rx.form(
                 rx.text("Quantity", class_name="font-semibold font-Valera"),
-                rx.checkbox(rx.text("Multiple Books", class_name="font-semibold font-Valera"), name="has_multiple_books", default_checked=False, on_change=ConditionDialogState.set_has_multiple_books),
+                rx.checkbox(rx.text("Multiple Copies", class_name="font-semibold font-Valera"), name="has_multiple_copies", default_checked=False, on_change=ConditionDialogState.set_has_multiple_copies),
                 rx.cond(
                     # not book_exists
                     ~BookRegistrationPageState.book_in_db,
                     genre_subform_contents(),
                 ),
                 rx.cond(
-                    ConditionDialogState.has_multiple_books,
+                    ConditionDialogState.has_multiple_copies,
                     multiple_quantity_subform_contents(),
                     single_quantity_subform_contents(),
                 ),

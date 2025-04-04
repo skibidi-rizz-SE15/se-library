@@ -140,6 +140,8 @@ class BookRegistrationPageState(BookPreviewDetails):
         
     @rx.event
     async def handle_register_book(self, form_data: dict):
+        if not self.book_genre:
+            return
         dialog_state = await self.get_state(ConditionDialogState)
         self.submit_loading = True
         yield
@@ -211,9 +213,9 @@ class BookRegistrationPageState(BookPreviewDetails):
             # add instance
             base_state = await self.get_state(BaseState)
             user = base_state.user
-            has_multiple_books = form_data["has_multiple_books"] if "has_multiple_books" in form_data else None
+            has_multiple_copies = form_data["has_multiple_copies"] if "has_multiple_copies" in form_data else None
             # multiple books
-            if has_multiple_books:
+            if has_multiple_copies:
                 try:
                     quantities = []
                     total = 0
@@ -313,7 +315,7 @@ class BookRegistrationPageState(BookPreviewDetails):
 
 class ConditionDialogState(rx.State):
     is_dialog_open: bool = False
-    has_multiple_books: bool = False
+    has_multiple_copies: bool = False
 
     @rx.event
     async def reset_states(self):

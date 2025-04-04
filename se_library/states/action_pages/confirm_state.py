@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+from datetime import datetime, timedelta
+import hashlib
 
 load_dotenv()
 
@@ -83,6 +85,10 @@ class ConfirmState(rx.State):
                 return Result(error=True, message="Transaction not found")
             if transaction.borrow_status != "borrowed":
                 return Result(error=True, message="Transaction not in borrowed status")
+            if transaction.return_date - timedelta(7) < datetime.now():
+                res = await self.send_billing_email(transaction=transaction)
+                if res.error:
+                    return res
             transaction.borrow_status = BorrowStatusEnum.RETURNED
             transaction.book_inventory.availability = AvailabilityEnum.AVAILABLE
             db.commit()
@@ -187,3 +193,42 @@ class ConfirmState(rx.State):
             return Result(error=False, message="")
         except Exception as e:
             return Result(error=True, message=str(e))
+        
+    async def send_billing_email(self, transaction):
+        try:
+            bill_id = self.hash_string_sha256_truncated(str(transaction.id))
+            template_data = {
+                "company_name": "SELibrary",
+                "request_id": transaction.id,
+                "lender_name": transaction.book_inventory.owner.username,
+                "borrower_name": transaction.borrower.username,
+                "title": transaction.book_inventory.book.title,
+                "condition": self.enum_to_condition(transaction.book_inventory.condition),
+                "borrow_date": transaction.borrow_date,
+                "return_date": transaction.return_date,
+                "status": "Returned",
+                "color": "#FF9800",
+                "hash_id": bill_id,
+            }
+
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            templates_dir = os.path.abspath(os.path.join(current_dir, "..", "..", "..", "assets", "html"))
+            env = Environment(loader=FileSystemLoader(templates_dir))
+            template = env.get_template("billing_template.html")
+            html = template.render(**template_data)
+
+            mail = Mail(
+                from_email=EMAIL,
+                to_emails=transaction.borrower.email,
+                subject="Billing Due to Return Delay",
+                html_content=html
+            )
+            sg = SendGridAPIClient(api_key=SENDGRID_API_KEY)
+            response = sg.send(mail)
+            return Result(error=False, message="")
+        except Exception as e:
+            return Result(error=True, message=str(e))
+
+    def hash_string_sha256_truncated(self, input_string, length=16):
+        full_hash = hashlib.sha256(input_string.encode()).hexdigest()
+        return full_hash[:length]

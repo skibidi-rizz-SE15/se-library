@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loan Request Notification</title>
+    <title>Book Transaction Bill</title>
     <style>
         /* Reset styles */
         body, p, h1, h2, h3, h4, h5, h6, table, td {
@@ -77,26 +77,40 @@
             background-color: #f9f9f9;
         }
         
-        .button {
-            display: inline-block;
-            background-color: #3498db;
-            color: #ffffff;
-            text-decoration: none;
-            padding: 12px 25px;
+        .fee-details {
+            background-color: #f2f7fa;
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            margin: 20px 0;
             border-radius: 4px;
-            margin-top: 20px;
+        }
+        
+        .fee-amount {
+            font-size: 24px;
             font-weight: bold;
+            color: #2c3e50;
+            margin: 10px 0;
         }
         
-        .button:hover {
-            background-color: #2980b9;
+        .contact-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
         }
         
-        .note {
+        .promptpay-container {
+            text-align: center;
             margin-top: 30px;
-            font-size: 14px;
-            color: #777777;
-            font-style: italic;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .promptpay-logo {
+            height: 40px;
+            margin-bottom: 15px;
         }
         
         /* Footer */
@@ -108,25 +122,9 @@
             color: #666666;
         }
         
-        .social-links {
-            margin: 15px 0;
-        }
-        
-        .social-link {
-            display: inline-block;
-            margin: 0 10px;
-            color: #3498db;
-            text-decoration: none;
-        }
-        
         @media screen and (max-width: 600px) {
             .email-container {
                 width: 100%;
-            }
-            
-            .button {
-                display: block;
-                text-align: center;
             }
         }
     </style>
@@ -135,26 +133,28 @@
     <div class="email-container">
         <div class="header">
             <!-- Replace with your actual logo URL -->
-            <img src="https://i.ibb.co/9kTt14H6/SE-Library-Logo.png" alt="{{ company_name|default('Your Company') }} Logo" class="logo">
+            <img
+                src="https://i.ibb.co/9kTt14H6/SE-Library-Logo.png"
+                alt="{{ company_name|default('Your Company') }} Logo"
+                class="logo"
+            />
             <h2>Borrow Request Notification</h2>
         </div>
         
         <div class="content">
-            <p class="greeting">Dear {{ lender_name }},</p>
+            <p class="greeting">Dear {{ borrower_name }},</p>
 
-            {% if borrow_request %}
-            <p>We are writing to inform you that a new borrowing request has been submitted by <strong>{{ borrower_name }}</strong>.</p>
-            {% elif approval_succeed %}
-            <p>We are writing to inform you that you have approve borrowing request that has been submitted by <strong>{{ borrower_name }}</strong>.</p>
-            {% elif pick_up %}
-            <p>We are writing to inform you that <strong>{{ borrower_name }}</strong> has returned the book.</p>
-            {% endif %}
+            <p>This is the billing statement for your book transaction.</p>
 
-            <h3>Borrow Request Details:</h3>
+            <h3>Borrower Request Details:</h3>
             <table class="details-table">
                 <tr>
                     <th>Request ID</th>
-                    <td>{{ request_id }}</td>
+                    <td>{{ id }}</td>
+                </tr>
+                <tr>
+                    <th>Lender</th>
+                    <td>{{ lender_name }}</td>
                 </tr>
                 <tr>
                     <th>Borrower</th>
@@ -162,40 +162,45 @@
                 </tr>
                 <tr>
                     <th>Book Title</th>
-                    <td>{{ book_title }}</td>
+                    <td>{{ title }}</td>
                 </tr>
                 <tr>
-                    <th>Condition</th>
-                    <td>{{ book_condition }}</td>
+                    <th>Book Condition</th>
+                    <td>{{ condition }}</td>
                 </tr>
                 <tr>
-                    <th>Borrow Request Submitted</th>
-                    <td>{{ submission_date }}</td>
+                    <th>Borrow Date</th>
+                    <td>{{ borrow_date }}</td>
                 </tr>
                 <tr>
-                    <th>Status</th>
-                    <td><span style="color: {{ color }}; font-weight: bold;">{{ status }}</span></td>
+                    <th>Return Date</th>
+                    <td>{{ return_date }}</td>
                 </tr>
+                <tr>
+                    <tr>
+                        <th>Status</th>
+                        <td><span style="color: {{ color }}; font-weight: bold;">{{ status }}</span></td>
+                    </tr>
             </table>
 
-            {% if approval_succeed or pick_up %}
-            <p>Please use below QRCode to scan at the smart locker id: {{ locker_id }}</p>
-            <img src="{{ qr_image }}" alt="QRCODE" width="350" height="350" />
-            {% endif %}
+            <div class="fee-details">
+                <h3>Billing Information:</h3>
+                <p>Transaction Fee: <span class="fee-amount">150 THB</span></p>
+                <p>This is a standard fee per transaction request.</p>
+                <p>For any questions regarding payment, please contact our support team.</p>
+            </div>
             
-            {% if borrow_request %}
-            <p>Please review this request at your earliest convenience. You can approve this request by clicking the button below:</p>
-            
-            <a href="{{ action_url }}" class="button">Approve The Request</a>
-            
-            <p class="note">Note: This request will expire in 3 days if no action is taken.</p>
-            {% elif approval_succeed %}
-            <p style="margin-top: 32px;">When you already have put the book inside the locker, please let us know by clicking below button:</p>
-            
-            <a href="{{ action_url }}" class="button">The book is ready</a>
-            
-            <p class="note">Note: This request will expire in 3 days if no action is taken.</p>
-            {% endif %}
+            <div class="promptpay-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/PromptPay-logo.png" alt="PromptPay Logo" class="promptpay-logo">
+                <h3>PromptPay Payment</h3>
+                <p>Please scan the QR code below to make your payment</p>
+                <img src="https://i.ibb.co/8Ds21cD8/IMG-7102-2.jpg" alt="PromptPay QR Code" width="200" height="200">
+                <p style="margin-top: 15px;">
+                    <strong>Amount:</strong> 150.00 THB<br>
+                    <strong>Recipient:</strong> SELibrary<br>
+                    <strong>Reference:</strong> TXN{{ hash_id }}
+                </p>
+            </div>
         </div>
         
         <div class="footer">
@@ -205,8 +210,7 @@
             <p>If you have any questions, please contact our support team at <a href="mailto:admin@se-library.org">admin@se-library.org</a>.</p>
             
             <p style="margin-top: 15px; font-size: 11px;">
-                You're receiving this email because you're registered as a lender on our platform.
-                <br>
+                You're receiving this email because you're involved in a book transaction on our platform.
             </p>
         </div>
     </div>
