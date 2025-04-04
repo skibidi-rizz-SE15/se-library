@@ -3,15 +3,13 @@ import requests
 import json
 from typing import List
 from enum import Enum
-from ..models import Book, BookInventory, Publisher, Author, BookAuthorLink, ConditionEnum, AvailabilityEnum, GenreEnum
+from ..models import Book, BookInventory, Publisher, Author, BookAuthorLink, ConditionEnum, AvailabilityEnum, GenreEnum, BOOK_REGISTRATION_LIMIT
 from .base import BaseState
 from dotenv import load_dotenv
 import os
 import asyncio
 
 load_dotenv()
-
-BOOK_REGISTRATION_LIMIT = 50
 
 class BookPreviewDetails(rx.State):
     title: str = ""

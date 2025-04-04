@@ -1,5 +1,5 @@
 import reflex as rx
-from se_library.models import AvailabilityEnum, Book, BookInventory, ConditionEnum, User, BorrowStatusEnum, BookTransaction
+from se_library.models import AvailabilityEnum, Book, BookInventory, ConditionEnum, User, BorrowStatusEnum, BookTransaction, MAX_BORROW_LIMIT
 from typing import List
 from sqlalchemy.orm import Session
 import asyncio
@@ -16,8 +16,6 @@ load_dotenv()
 
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 BASE_URL = os.getenv("BASE_URL")
-
-MAX_BORROW_LIMIT = 5
 
 class BookPageState(rx.State):
     authors: str = ""

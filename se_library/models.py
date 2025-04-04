@@ -9,6 +9,8 @@ from passlib.context import CryptContext
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 BORROW_DURATION = 7 # days
+MAX_BORROW_LIMIT = 5
+BOOK_REGISTRATION_LIMIT = 50
 
 class GenreEnum(str, Enum):
     PROGRAMMING_LANGUAGES = "programming_languages"
