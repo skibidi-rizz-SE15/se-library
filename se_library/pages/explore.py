@@ -19,20 +19,6 @@ def explore():
 
 def page() -> rx.Component:
     return rx.flex(
-        # rx.mobile_and_tablet(
-        #     rx.flex(
-        #         navbar_mobile_tablet(),
-        #         searchbar(),
-        #         sort_option_mobile_and_tablet(),
-        #         rx.mobile_only(
-        #             book_library(min_item_width=5),
-        #         ),
-        #         rx.tablet_only(
-        #             book_library(min_item_width=10),
-        #         ),
-        #         class_name="w-svw h-svh flex flex-col",
-        #     ),
-        # ),
         # desktop only
         rx.flex(
             navbar_desktop(),

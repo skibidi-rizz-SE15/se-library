@@ -7,12 +7,6 @@ from ..components.profile_dashboard import profile_dashboard
 @rx.page("/profile", title="Profile", on_load=ProfileState.handle_on_load)
 def profile() -> rx.Component:
     return rx.flex(
-        # rx.mobile_and_tablet(
-        #     rx.flex(
-        #         navbar_mobile_tablet(),
-        #         class_name="w-svw h-svh"
-        #     ),
-        # ),
         # desktop version
         rx.flex(
             navbar_desktop(),
