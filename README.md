@@ -58,9 +58,7 @@ To set up the project locally:
 
 6. **Apply Migrations**:
 
-   ```bash
-   alembic upgrade head
-   ```
+   Please refer to the reflex [documentation](https://reflex.dev/docs/database/overview/).
 
 7. **Run the Application**:
 
