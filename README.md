@@ -1,6 +1,4 @@
-Certainly! Here's an updated `README.md` for your project:
 
-```markdown
 # SE-Library
 
 SE-Library is a web-based platform that enables community members to register books they own and make them available for borrowing. Borrowers can request books, and owners have the ability to accept or decline these requests. The system ensures fair allocation of books by managing handovers through a Smart Locker.
@@ -14,7 +12,7 @@ SE-Library is a web-based platform that enables community members to register bo
 
 ## Technologies Used
 
-- **Framework**: [Reflex](https://reflex.dev/) – A pure Python web framework for building full-stack applications. citeturn0search0
+- **Framework**: [Reflex](https://reflex.dev/) – A pure Python web framework for building full-stack applications.
 - **Database**: PostgreSQL – A powerful, open-source relational database system.
 
 ## Getting Started
@@ -44,8 +42,6 @@ To set up the project locally:
 
 4. **Install Dependencies**:
 
-   Install the required Python packages:
-
    ```bash
    pip install -r requirements.txt
    ```
@@ -62,21 +58,17 @@ To set up the project locally:
 
 6. **Apply Migrations**:
 
-   Apply database migrations to set up the schema:
-
    ```bash
    alembic upgrade head
    ```
 
 7. **Run the Application**:
 
-   Start the development server:
-
    ```bash
    reflex run
    ```
 
-   Access the application by navigating to `http://localhost:3000` in your web browser.
+   Open your browser and go to `http://localhost:3000`.
 
 ## Contributing
 
@@ -85,6 +77,3 @@ We welcome contributions! Please fork the repository and submit a pull request w
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-```
-
-This `README.md` provides an overview of the SE-Library project, its features, technologies used, setup instructions, contribution guidelines, and licensing information. 
